@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد الرسائل الذكي - OctoSHOT WhatsApp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/spintax.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🐙</span>
+                    <span class="logo-text">اكــتوشــوت</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/profiles" class="nav-item">
+                    <span class="nav-icon">📱</span>
+                    <span class="nav-text">الأجهزة</span>
+                </a>
+                <a href="/api-docs" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">دليل API للمطورين</span>
+                </a>
+                <a href="/api-logs" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">سجل الرسائل</span>
+                </a>
+                <a href="/dashboard" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="/chats" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-text">المحادثات</span>
+                </a>
+                <a href="/spintax" class="nav-item active">
+                    <span class="nav-icon">✨</span>
+                    <span class="nav-text">مولد الرسائل الذكي</span>
+                </a>
+                <a href="/campaigns" class="nav-item">
+                    <span class="nav-icon">📣</span>
+                    <span class="nav-text">الحملات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="spintax-layout">
+                <!-- Header - Full Width -->
+                <div class="spintax-header">
+                    <h1>✨ Smart Spintax Generator</h1>
+                    <p>AI-powered message variations to avoid spam detection</p>
+                </div>
+
+                <!-- Generator Panel (Right in RTL) -->
+                <div class="generator-panel">
+                    <div class="form-card">
+                        <div class="form-group">
+                            <label>📝 Original Message</label>
+                            <textarea id="originalMessage"
+                                placeholder="اكتب رسالتك هنا وسيتم تحويلها إلى spintax..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="spinner-group">
+                                <label>Variations per word</label>
+                                <input type="number" id="variationsCount" class="spinner-input" value="5" min="3"
+                                    max="10" step="1">
+                                <span class="spinner-hint">(3 - 10)</span>
+                            </div>
+                        </div>
+
+                        <button class="generate-btn" id="generateBtn" onclick="generateSpintax()">
+                            <span>✨</span>
+                            Convert to Spintax
+                        </button>
+
+                        <div id="convertResult" class="result-section">
+                            <div class="result-header">
+                                <h3>✅ Spintax Result</h3>
+                                <button class="copy-btn" onclick="copyResult('spintaxOutput')">
+                                    <span>📋</span> Copy
+                                </button>
+                            </div>
+                            <textarea id="spintaxOutput" class="result-box editable"
+                                placeholder="Spintax will appear here..."></textarea>
+                        </div>
+
+                        <div id="convertError" class="error-box" style="display: none;">
+                            <span>❌</span>
+                            <span id="convertErrorText"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Examples Panel (Left in RTL) -->
+                <div id="examplesPanel" class="examples-panel">
+                    <div class="examples-card">
+                        <div class="examples-header">
+                            <h3>📋 Message Examples</h3>
+                            <span id="examplesCount" class="examples-count">0</span>
+                        </div>
+                        <ul id="examplesList" class="examples-list"></ul>
+                        <button id="showMoreBtn" class="show-more-btn" onclick="loadMoreExamples()">
+                            <span>➕</span> Show More Examples
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('.theme-icon');
+            const themeText = themeToggle.querySelector('.theme-text');
+
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', isDark);
+                themeIcon.textContent = isDark ? '☀️' : '🌙';
+                themeText.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+            });
+
+            // Store current spintax for generating examples
+            let currentSpintax = '';
+            let currentExamplesCount = 0;
+
+            // Generate Spintax
+            async function generateSpintax() {
+                const text = document.getElementById('originalMessage').value.trim();
+                const variations = parseInt(document.getElementById('variationsCount').value) || 5;
+                const btn = document.getElementById('generateBtn');
+                const resultSection = document.getElementById('convertResult');
+                const errorSection = document.getElementById('convertError');
+                const examplesPanel = document.getElementById('examplesPanel');
+
+                if (!text) {
+                    showError('convertError', 'Please enter a message to convert');
+                    return;
+                }
+
+                const clampedVariations = Math.min(10, Math.max(3, variations));
+                document.getElementById('variationsCount').value = clampedVariations;
+
+                btn.disabled = true;
+                btn.innerHTML = '<div class="spinner"></div> Generating...';
+                errorSection.style.display = 'none';
+                resultSection.classList.remove('show');
+                examplesPanel.classList.remove('show');
+
+                try {
+                    const response = await fetch('/api/spintax/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text, variations: clampedVariations })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        currentSpintax = data.spintax;
+                        document.getElementById('spintaxOutput').value = data.spintax;
+                        resultSection.classList.add('show');
+
+                        // Show examples panel and generate initial examples
+                        currentExamplesCount = 0;
+                        document.getElementById('examplesList').innerHTML = '';
+                        examplesPanel.classList.add('show');
+                        loadMoreExamples();
+                    } else {
+                        showError('convertError', data.error || 'Failed to generate spintax');
+                    }
+                } catch (error) {
+                    showError('convertError', 'Connection error. Please try again.');
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = '<span>✨</span> Convert to Spintax';
+            }
+
+            // Load more examples
+            async function loadMoreExamples() {
+                // Use the current value from the textarea (in case user edited it)
+                const spintaxText = document.getElementById('spintaxOutput').value || currentSpintax;
+                if (!spintaxText) return;
+
+                const btn = document.getElementById('showMoreBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;"></div> Loading...';
+
+                try {
+                    const response = await fetch('/api/spintax/expand', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ spintax: spintaxText, count: 5 })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const list = document.getElementById('examplesList');
+                        data.variations.forEach(v => {
+                            currentExamplesCount++;
+                            const li = document.createElement('li');
+                            li.textContent = v;
+                            list.appendChild(li);
+                        });
+                        document.getElementById('examplesCount').textContent = currentExamplesCount;
+                    }
+                } catch (error) {
+                    console.error('Error loading examples:', error);
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = '<span>➕</span> Show More Examples';
+            }
+
+            // Show error
+            function showError(id, message) {
+                const errorSection = document.getElementById(id);
+                document.getElementById(id + 'Text').textContent = message;
+                errorSection.style.display = 'flex';
+            }
+
+            // Copy to clipboard
+            function copyResult(elementId) {
+                const element = document.getElementById(elementId);
+                const text = element.value || element.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = event.target.closest('.copy-btn');
+                    btn.classList.add('copied');
+                    btn.innerHTML = '<span>✅</span> Copied!';
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.innerHTML = '<span>📋</span> Copy';
+                    }, 2000);
+                });
+            }
+        </script>
+</body>
+
+</html>

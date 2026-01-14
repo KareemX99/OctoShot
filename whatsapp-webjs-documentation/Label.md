@@ -1,0 +1,63 @@
+# whatsapp-web.js 1.34.2 » Class: Label
+
+class
+
+# Label
+
+Source: [structures/Label.js:10](structures_Label.js.html#source-line-10)
+
+WhatsApp Business Label information
+
+## Properties
+
+[hexColor](Label.html#hexColor)
+
+[id](Label.html#id)
+
+[name](Label.html#name)
+
+## Method
+
+[getChats()](Label.html#getChats)
+
+## new Label(client, labelData)
+
+### Parameters
+
+Name
+
+Type
+
+Optional
+
+Description
+
+client
+
+labelData
+
+## Properties
+
+### hexColor  string
+
+Label hex color
+
+### id  string
+
+Label ID
+
+### name  string
+
+Label name
+
+## Method
+
+async
+
+### getChats() → Promise containing Array of [Chat](Chat.html)
+
+Get all chats that have been assigned this Label
+
+Returns
+
+`Promise containing Array of [Chat](Chat.html)`

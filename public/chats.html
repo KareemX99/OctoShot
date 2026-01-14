@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحادثات | اكــتوشــوت واتساب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/chats.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🐙</span>
+                    <span class="logo-text">اكــتوشــوت</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/profiles" class="nav-item">
+                    <span class="nav-icon">📱</span>
+                    <span class="nav-text">الأجهزة</span>
+                </a>
+                <a href="/api-docs" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">دليل API للمطورين</span>
+                </a>
+                <a href="/api-logs" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">سجل الرسائل</span>
+                </a>
+                <a href="/dashboard" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="/chats" class="nav-item active">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-text">المحادثات</span>
+                </a>
+                <a href="/spintax" class="nav-item">
+                    <span class="nav-icon">✨</span>
+                    <span class="nav-text">مولد الرسائل الذكي</span>
+                </a>
+                <a href="/campaigns" class="nav-item">
+                    <span class="nav-icon">📢</span>
+                    <span class="nav-text">الحملات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="main-content chats-layout">
+            <!-- Chats List -->
+            <div class="chats-sidebar">
+                <div class="chats-header">
+                    <h2>💬 المحادثات</h2>
+                    <button class="btn btn-sm" id="newChatBtn">+ جديد</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="chatSearch" placeholder="🔍 بحث في المحادثات...">
+                </div>
+                <div class="chats-list" id="chatsList">
+                    <div class="empty-state">
+                        <span>💬</span>
+                        <p>لا توجد محادثات</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat View -->
+            <div class="chat-view" id="chatView">
+                <div class="chat-placeholder">
+                    <span>💬</span>
+                    <h3>اختر محادثة</h3>
+                    <p>اختر محادثة من القائمة أو ابدأ محادثة جديدة</p>
+                </div>
+
+                <!-- Chat Header (hidden by default) -->
+                <div class="chat-header hidden" id="chatHeader">
+                    <div class="chat-user-info">
+                        <div class="user-avatar">👤</div>
+                        <div class="user-details">
+                            <span class="user-name" id="chatUserName">-</span>
+                            <span class="user-number" id="chatUserNumber">-</span>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="btn btn-icon" title="معلومات">ℹ️</button>
+                    </div>
+                </div>
+
+                <!-- Messages Container (hidden by default) -->
+                <div class="messages-container hidden" id="messagesContainer">
+                    <div class="messages-list" id="messagesList"></div>
+                </div>
+
+                <!-- Message Input (hidden by default) -->
+                <div class="message-input-container hidden" id="messageInputContainer">
+                    <form id="messageForm" class="message-form">
+                        <button type="button" class="btn btn-icon" id="attachBtn" title="إرفاق ملف">📎</button>
+                        <input type="file" id="fileInput" hidden>
+                        <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا..." autocomplete="off">
+                        <button type="submit" class="btn btn-primary btn-send">
+                            <span>إرسال</span>
+                            <span>📤</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- New Chat Modal -->
+            <div class="modal hidden" id="newChatModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>محادثة جديدة</h3>
+                        <button class="btn btn-icon modal-close" id="closeNewChatModal">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="newChatNumber">رقم الهاتف</label>
+                            <input type="tel" id="newChatNumber" placeholder="مثال: 201234567890">
+                            <small>أدخل الرقم بالصيغة الدولية بدون + أو 00</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" id="cancelNewChat">إلغاء</button>
+                        <button class="btn btn-primary" id="startNewChat">بدء المحادثة</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/chats.js"></script>
+</body>
+
+</html>

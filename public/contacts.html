@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جهات الاتصال | اكــتوشــوت واتساب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🐙</span>
+                    <span class="logo-text">اكــتوشــوت</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/profiles" class="nav-item">
+                    <span class="nav-icon">📱</span>
+                    <span class="nav-text">الأجهزة</span>
+                </a>
+                <a href="/api-docs" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">دليل API للمطورين</span>
+                </a>
+                <a href="/api-logs" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">سجل الرسائل</span>
+                </a>
+                <a href="/dashboard" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="/chats" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-text">المحادثات</span>
+                </a>
+                <a href="/contacts" class="nav-item active">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">جهات الاتصال</span>
+                </a>
+                <a href="/auto-reply" class="nav-item">
+                    <span class="nav-icon">🤖</span>
+                    <span class="nav-text">الرد التلقائي</span>
+                </a>
+                <a href="/spintax" class="nav-item">
+                    <span class="nav-icon">✨</span>
+                    <span class="nav-text">مولد الرسائل الذكي</span>
+                </a>
+                <a href="/campaigns" class="nav-item">
+                    <span class="nav-icon">📢</span>
+                    <span class="nav-text">الحملات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>👥 جهات الاتصال</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="syncBtn">
+                        🔄 مزامنة
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <section class="stats-row">
+                <div class="stat-mini">
+                    <span class="stat-value" id="totalContacts">0</span>
+                    <span class="stat-label">إجمالي</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-value" id="blockedContacts">0</span>
+                    <span class="stat-label">محظور</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-value" id="businessContacts">0</span>
+                    <span class="stat-label">نشاط تجاري</span>
+                </div>
+            </section>
+
+            <!-- Search & Filter -->
+            <section class="toolbar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 بحث عن جهة اتصال...">
+                </div>
+                <div class="filter-group">
+                    <select id="filterSelect">
+                        <option value="all">الكل</option>
+                        <option value="blocked">المحظورين</option>
+                        <option value="business">نشاط تجاري</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Contacts Table -->
+            <section class="card">
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="data-table" id="contactsTable">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>الرقم</th>
+                                    <th>النوع</th>
+                                    <th>الحالة</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contactsBody">
+                                <tr class="empty-row">
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <span>👥</span>
+                                            <p>لا توجد جهات اتصال</p>
+                                            <button class="btn btn-primary" id="syncBtnEmpty">مزامنة الآن</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/contacts.js"></script>
+</body>
+
+</html>

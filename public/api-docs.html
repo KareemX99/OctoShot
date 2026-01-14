@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - OctoSHOT WhatsApp Platform</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Fira+Code:wght@400&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ===== MAIN LAYOUT ===== */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        /* Right Main Sidebar - Fixed */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            width: 220px;
+            z-index: 100;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-right: 220px;
+            /* Space for right sidebar */
+            margin-left: 0;
+            padding: 0;
+            width: calc(100% - 220px);
+            display: flex;
+            direction: ltr;
+            overflow: visible;
+        }
+
+        /* Doc Container - Grid with fixed left nav */
+        .doc-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Left Documentation Navigation - Fixed */
+        .doc-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 240px;
+            background: white;
+            padding: 20px;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.08);
+            overflow-y: auto;
+            z-index: 50;
+            border-radius: 0;
+        }
+
+        .doc-sidebar h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #64748b;
+            margin: 0 0 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .doc-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .doc-nav li {
+            margin-bottom: 4px;
+        }
+
+        .doc-nav a {
+            display: block;
+            padding: 10px 16px;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .doc-nav a:hover {
+            background: #f1f5f9;
+            color: #25D366;
+            transform: translateX(5px);
+        }
+
+        .doc-nav a.active {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            transform: translateX(8px);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .doc-nav .nav-section {
+            font-weight: 600;
+            color: #1e293b;
+            margin-top: 16px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* Middle Content - Scrollable */
+        .doc-content {
+            margin-left: 240px;
+            /* Space for left nav */
+            padding: 30px 40px;
+            width: calc(100% - 240px);
+            height: 100vh;
+            overflow-y: auto;
+            background: #f8fafc;
+            scroll-behavior: smooth;
+        }
+
+        .doc-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+        }
+
+        .doc-header h1 {
+            margin: 0 0 12px;
+            font-size: 2rem;
+        }
+
+        .doc-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .doc-section {
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #e2e8f0;
+            scroll-margin-top: 20px;
+        }
+
+        .doc-section:last-child {
+            border-bottom: none;
+        }
+
+        .doc-section h2 {
+            color: #1e293b;
+            font-size: 1.5rem;
+            margin: 0 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .doc-section h3 {
+            color: #334155;
+            font-size: 1.1rem;
+            margin: 24px 0 12px;
+        }
+
+        .doc-section p {
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        /* Code Blocks */
+        .code-wrapper {
+            position: relative;
+            margin: 16px 0;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            padding-left: 16px;
+            padding-right: 70px;
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre;
+            direction: ltr;
+            text-align: left;
+            margin: 0;
+            border-left: 4px solid #4ade80;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .copy-btn:hover {
+            background: #64748b;
+        }
+
+        .copy-btn.copied {
+            background: #22c55e;
+        }
+
+        .code-block .method {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .code-block .url {
+            color: #60a5fa;
+        }
+
+        .code-block .key {
+            color: #fbbf24;
+        }
+
+        .code-block .string {
+            color: #a78bfa;
+        }
+
+        .code-block .comment {
+            color: #64748b;
+        }
+
+        /* Tables */
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        .doc-table th,
+        .doc-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .doc-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .doc-table td {
+            color: #334155;
+            font-size: 0.9rem;
+        }
+
+        .doc-table code {
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-required {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-optional {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-post {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .badge-get {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        /* Trust Level Cards */
+        .trust-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .trust-card {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .trust-card.level-1 {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+
+        .trust-card.level-2 {
+            background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%);
+            border: 2px solid #3b82f6;
+        }
+
+        .trust-card.level-3 {
+            background: linear-gradient(135deg, #dcfce7 0%, #86efac 100%);
+            border: 2px solid #22c55e;
+        }
+
+        .trust-card.level-4 {
+            background: linear-gradient(135deg, #fef08a 0%, #4ade80 100%);
+            border: 2px solid #facc15;
+        }
+
+        .trust-card h4 {
+            margin: 0 0 8px;
+            font-size: 1.25rem;
+        }
+
+        .trust-card p {
+            margin: 4px 0;
+            font-size: 0.85rem;
+            color: #334155;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            border-left: 4px solid #22c55e;
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-content strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #1e293b;
+        }
+
+        .alert-content p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Dark Mode */
+        body.dark-mode .doc-sidebar,
+        body.dark-mode .doc-content {
+            background: #1e293b;
+        }
+
+        body.dark-mode .doc-sidebar h3,
+        body.dark-mode .doc-nav a {
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .doc-nav a:hover {
+            background: #334155;
+        }
+
+        body.dark-mode .doc-section h2,
+        body.dark-mode .doc-section h3 {
+            color: white;
+        }
+
+        body.dark-mode .doc-section p {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .doc-table th {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .doc-table td {
+            color: #e2e8f0;
+            border-color: #334155;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .doc-container {
+                grid-template-columns: 1fr;
+            }
+
+            .doc-sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .trust-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🐙</span>
+                    <span class="logo-text">اكــتوشــوت</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/profiles" class="nav-item">
+                    <span class="nav-icon">📱</span>
+                    <span class="nav-text">الأجهزة</span>
+                </a>
+                <a href="/api-docs" class="nav-item active">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">دليل API للمطورين</span>
+                </a>
+                <a href="/api-logs" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">سجل الرسائل</span>
+                </a>
+                <a href="/dashboard" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="/chats" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-text">المحادثات</span>
+                </a>
+                <a href="/spintax" class="nav-item">
+                    <span class="nav-icon">✨</span>
+                    <span class="nav-text">مولد الرسائل الذكي</span>
+                </a>
+                <a href="/campaigns" class="nav-item">
+                    <span class="nav-icon">📢</span>
+                    <span class="nav-text">الحملات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="doc-container">
+                <!-- Documentation Sidebar -->
+                <nav class="doc-sidebar">
+                    <h3>📖 Navigation</h3>
+                    <ul class="doc-nav">
+                        <li><a href="#overview">Overview</a></li>
+                        <li><a href="#authentication">Authentication</a></li>
+                        <li class="nav-section">📨 Messaging APIs</li>
+                        <li><a href="#send-text">Send Text</a></li>
+                        <li><a href="#send-image">Send Image</a></li>
+                        <li><a href="#send-document">Send Document</a></li>
+                        <li><a href="#send-audio">Send Audio</a></li>
+                        <li><a href="#send-video">Send Video</a></li>
+                        <li><a href="#send-location">Send Location</a></li>
+                        <li><a href="#send-contact">Send Contact</a></li>
+                        <li class="nav-section">🔔 Webhook Notifications</li>
+                        <li><a href="#incoming-webhook">Incoming Messages</a></li>
+                        <li><a href="#unread-webhook">Unread Message Notifier</a></li>
+                        <li><a href="#noreply-webhook">Read No-Reply Notifier</a></li>
+                        <li><a href="#webhook-message-types">Message Types</a></li>
+                        <li><a href="#webhook-media">Media Handling</a></li>
+                        <li class="nav-section">⚙️ Features</li>
+                        <li><a href="#bulk-messaging">Bulk Messaging</a></li>
+                        <li><a href="#spintax">Spintax Support</a></li>
+                        <li><a href="#trust-levels">Trust Levels</a></li>
+                        <li><a href="#message-status">Message Status</a></li>
+                        <li class="nav-section">📊 Monitoring</li>
+                        <li><a href="#api-logs">API Logs</a></li>
+                        <li><a href="#batch-management">Batch Management</a></li>
+                        <li class="nav-section">⚠️ Limits</li>
+                        <li><a href="#limitations">Limitations</a></li>
+                        <li><a href="#best-practices">Best Practices</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Main Documentation -->
+                <div class="doc-content">
+                    <div class="doc-header">
+                        <h1>🐙 OctoSHOT WhatsApp API</h1>
+                        <p>Complete documentation for the WhatsApp messaging platform API</p>
+                    </div>
+
+                    <!-- Overview -->
+                    <section id="overview" class="doc-section">
+                        <h2>📋 Overview</h2>
+                        <p>The OctoSHOT WhatsApp API provides a powerful interface for sending messages through
+                            WhatsApp. It
+                            supports single and bulk messaging with smart batching, spintax for message variation, and
+                            real-time delivery tracking.</p>
+
+                        <h3>Base URL</h3>
+                        <div class="code-block">
+                            <span class="url">http://localhost:3002/api/v1</span>
+                        </div>
+
+                        <h3>Key Features</h3>
+                        <table class="doc-table">
+                            <tr>
+                                <td>📤 Multiple Message Types</td>
+                                <td>Text, Image, Document, Audio, Video, Location, Contact</td>
+                            </tr>
+                            <tr>
+                                <td>📦 Bulk Messaging</td>
+                                <td>Send to multiple recipients with smart batching</td>
+                            </tr>
+                            <tr>
+                                <td>🔄 Spintax Support</td>
+                                <td>Automatic message variation for uniqueness</td>
+                            </tr>
+                            <tr>
+                                <td>⚡ Trust-Based Rate Limiting</td>
+                                <td>Dynamic limits based on account trust level</td>
+                            </tr>
+                            <tr>
+                                <td>📊 Real-Time Status Tracking</td>
+                                <td>Sent → Delivered → Read status updates</td>
+                            </tr>
+                        </table>
+                    </section>
+
+                    <!-- Authentication -->
+                    <section id="authentication" class="doc-section">
+                        <h2>🔐 Authentication</h2>
+                        <p>All API requests require two authentication headers:</p>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Header</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>X-Device-UUID</code></td>
+                                    <td>Your device's unique identifier</td>
+                                    <td><code>11666fa0-2cbb-4b1f-...</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>X-API-Token</code></td>
+                                    <td>Your API authentication token</td>
+                                    <td><code>1e21fac6d84fa4ecb46...</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-info">
+                            <span class="alert-icon">💡</span>
+                            <div class="alert-content">
+                                <strong>Where to find your credentials?</strong>
+                                <p>Go to <a href="/profiles">WhatsApp Profiles</a> and click on your device to view the
+                                    UUID
+                                    and API Token.</p>
+                            </div>
+                        </div>
+
+                        <h3>Example Request</h3>
+                        <div class="code-block">
+                            <span class="method">POST</span> <span class="url">/api/v1/messages/send-text</span>
+                            <span class="comment">// Headers:</span>
+                            <span class="key">X-Device-UUID:</span> <span
+                                class="string">11666fa0-2cbb-4b1f-b6ba-29b63fd7ed51</span>
+                            <span class="key">X-API-Token:</span> <span
+                                class="string">1e21fac6d84fa4ecb46e8c32d0d0f0fc95e05a88</span>
+                            <span class="key">Content-Type:</span> <span class="string">application/json</span>
+                        </div>
+                    </section>
+
+                    <!-- Send Text -->
+                    <section id="send-text" class="doc-section">
+                        <h2><span class="badge badge-post">POST</span> Send Text Message</h2>
+                        <p>Send a text message to one or multiple recipients. Supports bulk messaging and spintax.</p>
+
+                        <div class="code-block">
+                            <span class="method">POST</span> <span class="url">/api/v1/messages/send-text</span>
+                        </div>
+
+                        <h3>Request Body</h3>
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>to</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                    <td>Phone number(s). Comma-separated for bulk.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>message</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                    <td>Message content. Supports spintax.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Single Message Example</h3>
+                        <div class="code-block">
+                            {
+                            <span class="key">"to"</span>: <span class="string">"201234567890"</span>,
+                            <span class="key">"message"</span>: <span class="string">"Hello! This is a test
+                                message."</span>
+                            }
+                        </div>
+
+                        <h3>Bulk Message Example</h3>
+                        <div class="code-block">
+                            {
+                            <span class="key">"to"</span>: <span
+                                class="string">"201234567890,201098765432,201111222333"</span>,
+                            <span class="key">"message"</span>: <span class="string">"{Hello|Hi|Hey}! Your order is
+                                {ready|prepared}."</span>
+                            }
+                        </div>
+
+                        <h3>Response (Single)</h3>
+                        <div class="code-block">
+                            {
+                            <span class="key">"success"</span>: true,
+                            <span class="key">"messageId"</span>: <span
+                                class="string">"true_201234567890@c.us_3EB0..."</span>,
+                            <span class="key">"timestamp"</span>: 1765148664,
+                            <span class="key">"to"</span>: <span class="string">"201234567890@c.us"</span>
+                            }
+                        </div>
+
+                        <h3>Response (Bulk)</h3>
+                        <div class="code-block">
+                            {
+                            <span class="key">"success"</span>: true,
+                            <span class="key">"mode"</span>: <span class="string">"bulk"</span>,
+                            <span class="key">"batchId"</span>: <span
+                                class="string">"ec84838a-6047-438f-8c29-..."</span>,
+                            <span class="key">"originalCount"</span>: 125,
+                            <span class="key">"duplicateCount"</span>: 20,
+                            <span class="key">"uniqueCount"</span>: 105,
+                            <span class="key">"blacklistedCount"</span>: 0,
+                            <span class="key">"recipientCount"</span>: 105,
+                            <span class="key">"batchCount"</span>: 3,
+                            <span class="key">"messagesPerBatch"</span>: 50,
+                            <span class="key">"intervalBetweenBatches"</span>: <span class="string">"12 hours"</span>,
+                            <span class="key">"trustLevel"</span>: 1,
+                            <span class="key">"estimatedCompletionTime"</span>: <span class="string">"25 hours"</span>,
+                            <span class="key">"message"</span>: <span class="string">"Messages queued. 20 duplicate
+                                numbers
+                                removed."</span>
+                            }
+                        </div>
+                    </section>
+
+                    <!-- Send Image -->
+                    <section id="send-image" class="doc-section">
+                        <h2><span class="badge badge-post">POST</span> Send Image</h2>
+                        <p>Send an image message with optional caption.</p>
+
+                        <div class="code-block">
+                            <span class="method">POST</span> <span class="url">/api/v1/messages/send-image</span>
+                        </div>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>to</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                    <td>Recipient phone number</td>
+                                </tr>
+                                <tr>
+                                    <td><code>imageUrl</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-optional">Optional</span></td>
+                                    <td>URL of the image</td>
+                                </tr>
+                                <tr>
+                                    <td><code>imageBase64</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-optional">Optional</span></td>
+                                    <td>Base64 encoded image</td>
+                                </tr>
+                                <tr>
+                                    <td><code>caption</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-optional">Optional</span></td>
+                                    <td>Image caption</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-warning">
+                            <span class="alert-icon">⚠️</span>
+                            <div class="alert-content">
+                                <strong>Note</strong>
+                                <p>You must provide either <code>imageUrl</code> OR <code>imageBase64</code>, but not
+                                    both.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Send Document -->
+                    <section id="send-document" class="doc-section">
+                        <h2><span class="badge badge-post">POST</span> Send Document</h2>
+                        <p>Send a document/file attachment.</p>
+
+                        <div class="code-block">
+                            <span class="method">POST</span> <span class="url">/api/v1/messages/send-document</span>
+                        </div>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>to</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>documentUrl</code> or <code>documentBase64</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>filename</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-optional">Optional</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>caption</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-optional">Optional</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Send Audio -->
+                    <section id="send-audio" class="doc-section">
+                        <h2><span class="badge badge-post">POST</span> Send Audio</h2>
+                        <p>Send an audio message. Can be sent as voice note (PTT).</p>
+
+                        <div class="code-block">
+                            <span class="method">POST</span> <span class="url">/api/v1/messages/send-audio</span>
+                        </div>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>to</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>audioUrl</code> or <code>audioBase64</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>ptt</code></td>
+                                    <td>boolean</td>
+                                    <td><span class="badge badge-optional">Optional</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-info">
+                            <span class="alert-icon">🎤</span>
+                            <div class="alert-content">
+                                <strong>Voice Note</strong>
+                                <p>Set <code>ptt: true</code> to send as a voice note (Push-To-Talk).</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Send Video -->
+                    <section id="send-video" class="doc-section">
+                        <h2><span class="badge badge-post">POST</span> Send Video</h2>
+                        <p>Send a video message with optional caption.</p>
+
+                        <div class="code-block">
+                            <span class="method">POST</span> <span class="url">/api/v1/messages/send-video</span>
+                        </div>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>to</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>videoUrl</code> or <code>videoBase64</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>caption</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-optional">Optional</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Send Location -->
+                    <section id="send-location" class="doc-section">
+                        <h2><span class="badge badge-post">POST</span> Send Location</h2>
+                        <p>Send a location pin with coordinates.</p>
+
+                        <div class="code-block">
+                            <span class="method">POST</span> <span class="url">/api/v1/messages/send-location</span>
+                        </div>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>to</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>latitude</code></td>
+                                    <td>number</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>longitude</code></td>
+                                    <td>number</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>description</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-optional">Optional</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Send Contact -->
+                    <section id="send-contact" class="doc-section">
+                        <h2><span class="badge badge-post">POST</span> Send Contact</h2>
+                        <p>Send a contact card.</p>
+
+                        <div class="code-block">
+                            <span class="method">POST</span> <span class="url">/api/v1/messages/send-contact</span>
+                        </div>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>to</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>contactName</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>contactNumber</code></td>
+                                    <td>string</td>
+                                    <td><span class="badge badge-required">Required</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- =====================================================
+                     WEBHOOK NOTIFICATIONS DOCUMENTATION
+                     ===================================================== -->
+
+                    <!-- Incoming Messages Webhook -->
+                    <section id="incoming-webhook" class="doc-section">
+                        <h2>📥 Incoming Messages Webhook</h2>
+                        <p>Receive real-time notifications when messages arrive on your WhatsApp device. Configure a
+                            webhook
+                            URL in your device profile settings.</p>
+
+                        <h3>Configuration</h3>
+                        <p>Go to <strong>WhatsApp Profiles</strong> → Edit Device → Set the
+                            <code>رابط Webhook (optional)</code> field.
+                        </p>
+
+                        <h3>Webhook Payload</h3>
+                        <p>The following JSON payload is sent to your رابط Webhook for each incoming message:</p>
+
+                        <div class="code-wrapper">
+
+                            <pre class="code-block">{
+  <span class="key">"type"</span>: <span class="string">"incoming_message"</span>,
+  <span class="key">"from"</span>: <span class="string">"201234567890"</span>,
+  <span class="key">"from_name"</span>: <span class="string">"John Doe"</span>,
+  <span class="key">"message_id"</span>: <span class="string">"false_201234567890@c.us_3EB0..."</span>,
+  <span class="key">"body"</span>: <span class="string">"Hello, this is the message text"</span>,
+  <span class="key">"type"</span>: <span class="string">"text"</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"is_group"</span>: <span class="number">false</span>,
+  <span class="key">"device_id"</span>: <span class="number">1</span>
+}</pre>
+                        </div>
+
+                        <h3>Payload Fields</h3>
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>type</code></td>
+                                    <td>string</td>
+                                    <td>Always <code>"incoming_message"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>from</code></td>
+                                    <td>string</td>
+                                    <td>Sender's phone number (without +)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>from_name</code></td>
+                                    <td>string</td>
+                                    <td>Contact name if saved</td>
+                                </tr>
+                                <tr>
+                                    <td><code>message_id</code></td>
+                                    <td>string</td>
+                                    <td>WhatsApp message unique identifier</td>
+                                </tr>
+                                <tr>
+                                    <td><code>body</code></td>
+                                    <td>string</td>
+                                    <td>Message text content (empty for media)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>timestamp</code></td>
+                                    <td>string</td>
+                                    <td>Message time in Cairo timezone (+02:00)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>is_group</code></td>
+                                    <td>boolean</td>
+                                    <td>Whether message is from a group</td>
+                                </tr>
+                                <tr>
+                                    <td><code>device_id</code></td>
+                                    <td>number</td>
+                                    <td>Your device's internal ID</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Unread Message Webhook -->
+                    <section id="unread-webhook" class="doc-section">
+                        <h2>📭 Unread Message Notifier Webhook</h2>
+                        <p>Get notified when messages you sent remain unread (not delivered or delivered but not read)
+                            after
+                            a specified time period. You can configure up to <strong>5 webhooks per device</strong> with
+                            different timers.</p>
+
+                        <div class="alert alert-info">
+                            <span class="alert-icon">💡</span>
+                            <div class="alert-content">
+                                <strong>Use Case</strong>
+                                <p>Perfect for follow-up automation - trigger a reminder sequence when customers don't
+                                    read
+                                    your messages.</p>
+                            </div>
+                        </div>
+
+                        <h3>Configuration</h3>
+                        <p>Go to <strong>WhatsApp Profiles</strong> → Edit Device → <strong>Webhook
+                                Notifications</strong> →
+                            <strong>Unread Messages</strong> tab.
+                        </p>
+                        <p>Set timer value and unit (minutes/hours/days), then add your رابط Webhook.</p>
+
+                        <h3>Webhook Payload</h3>
+                        <div class="code-wrapper">
+
+                            <pre class="code-block">{
+  <span class="key">"type"</span>: <span class="string">"unread_message"</span>,
+  <span class="key">"recipient"</span>: <span class="string">"201234567890"</span>,
+  <span class="key">"message_id"</span>: <span class="string">"true_201234567890@c.us_3EB0..."</span>,
+  <span class="key">"sent_at"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"unread_duration_minutes"</span>: <span class="number">5</span>,
+  <span class="key">"timer_setting"</span>: <span class="string">"5 minutes"</span>,
+  <span class="key">"device_id"</span>: <span class="number">1</span>,
+  <span class="key">"chat_history"</span>: [
+    {
+      <span class="key">"body"</span>: <span class="string">"Message text"</span>,
+      <span class="key">"from_me"</span>: <span class="number">true</span>,
+      <span class="key">"timestamp"</span>: <span class="string">"2025-12-08T01:12:08.000Z"</span>,
+      <span class="key">"local_timestamp"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+      <span class="key">"type"</span>: <span class="string">"text"</span>
+    }
+  ]
+}</pre>
+                        </div>
+
+                        <h3>Payload Fields</h3>
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>type</code></td>
+                                    <td>string</td>
+                                    <td>Always <code>"unread_message"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>recipient</code></td>
+                                    <td>string</td>
+                                    <td>Phone number message was sent to</td>
+                                </tr>
+                                <tr>
+                                    <td><code>message_id</code></td>
+                                    <td>string</td>
+                                    <td>WhatsApp message unique identifier</td>
+                                </tr>
+                                <tr>
+                                    <td><code>sent_at</code></td>
+                                    <td>string</td>
+                                    <td>When message was sent (Cairo timezone +02:00)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>unread_duration_minutes</code></td>
+                                    <td>number</td>
+                                    <td>Configured timer in minutes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>timer_setting</code></td>
+                                    <td>string</td>
+                                    <td>Human-readable timer (e.g., "5 minutes")</td>
+                                </tr>
+                                <tr>
+                                    <td><code>device_id</code></td>
+                                    <td>number</td>
+                                    <td>Your device's internal ID</td>
+                                </tr>
+                                <tr>
+                                    <td><code>chat_history</code></td>
+                                    <td>array</td>
+                                    <td>Last 10 messages in the conversation</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Read No-Reply Webhook -->
+                    <section id="noreply-webhook" class="doc-section">
+                        <h2>👁️ Read No-Reply Notifier Webhook</h2>
+                        <p>Get notified when customers <strong>read your message but don't reply</strong> within a
+                            specified
+                            time. You can configure up to <strong>5 webhooks per device</strong>.</p>
+
+                        <div class="alert alert-warning">
+                            <span class="alert-icon">⚠️</span>
+                            <div class="alert-content">
+                                <strong>How it Works</strong>
+                                <p>The timer starts when the customer <strong>reads</strong> your message (blue ticks).
+                                    If
+                                    they don't reply before the timer expires, the webhook fires.</p>
+                            </div>
+                        </div>
+
+                        <h3>Configuration</h3>
+                        <p>Go to <strong>WhatsApp Profiles</strong> → Edit Device → <strong>Webhook
+                                Notifications</strong> →
+                            <strong>Read No-Reply</strong> tab.
+                        </p>
+
+                        <h3>Webhook Payload</h3>
+                        <div class="code-wrapper">
+
+                            <pre class="code-block">{
+  <span class="key">"type"</span>: <span class="string">"read_no_reply"</span>,
+  <span class="key">"recipient"</span>: <span class="string">"201234567890"</span>,
+  <span class="key">"message_id"</span>: <span class="string">"true_201234567890@c.us_3EB0..."</span>,
+  <span class="key">"sent_at"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"read_at"</span>: <span class="string">"2025-12-08T03:14:30.000+02:00"</span>,
+  <span class="key">"no_reply_duration_minutes"</span>: <span class="number">1</span>,
+  <span class="key">"timer_setting"</span>: <span class="string">"1 minutes"</span>,
+  <span class="key">"device_id"</span>: <span class="number">1</span>,
+  <span class="key">"chat_history"</span>: [...]
+}</pre>
+                        </div>
+
+                        <h3>Payload Fields</h3>
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>type</code></td>
+                                    <td>string</td>
+                                    <td>Always <code>"read_no_reply"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>recipient</code></td>
+                                    <td>string</td>
+                                    <td>Phone number message was sent to</td>
+                                </tr>
+                                <tr>
+                                    <td><code>sent_at</code></td>
+                                    <td>string</td>
+                                    <td>When message was sent (Cairo +02:00)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>read_at</code></td>
+                                    <td>string</td>
+                                    <td>When customer read the message (Cairo +02:00)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>no_reply_duration_minutes</code></td>
+                                    <td>number</td>
+                                    <td>Configured timer in minutes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>chat_history</code></td>
+                                    <td>array</td>
+                                    <td>Last 10 messages in the conversation</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-info">
+                            <span class="alert-icon">💡</span>
+                            <div class="alert-content">
+                                <strong>When Webhook Does NOT Fire</strong>
+                                <p>If the customer replies before the timer expires, the webhook will
+                                    <strong>not</strong>
+                                    be triggered.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Webhook Message Types -->
+                    <section id="webhook-message-types" class="doc-section">
+                        <h2>📋 Message Types in chat_history</h2>
+                        <p>Each message in the <code>chat_history</code> array has a <code>type</code> field. Here's
+                            what
+                            each type means:</p>
+
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0;">
+
+                            <!-- Text Messages -->
+                            <div
+                                style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #22c55e;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">💬</div>
+                                <div style="font-weight: 700; color: #166534; font-size: 1.1rem;">text</div>
+                                <div style="color: #15803d; font-size: 0.9rem; margin-top: 4px;">Regular text message
+                                </div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #166534; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    ✅ Has body text</div>
+                            </div>
+
+                            <!-- Image -->
+                            <div
+                                style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">🖼️</div>
+                                <div style="font-weight: 700; color: #1e40af; font-size: 1.1rem;">image</div>
+                                <div style="color: #1d4ed8; font-size: 0.9rem; margin-top: 4px;">Photo with optional
+                                    caption
+                                </div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #1e40af; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    📎 Has media_url</div>
+                            </div>
+
+                            <!-- Video -->
+                            <div
+                                style="background: linear-gradient(135deg, #fae8ff 0%, #f5d0fe 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #a855f7;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">🎬</div>
+                                <div style="font-weight: 700; color: #6b21a8; font-size: 1.1rem;">video</div>
+                                <div style="color: #7e22ce; font-size: 0.9rem; margin-top: 4px;">Video with optional
+                                    caption
+                                </div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #6b21a8; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    📎 Has media_url</div>
+                            </div>
+
+                            <!-- Voice -->
+                            <div
+                                style="background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #f97316;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">🎤</div>
+                                <div style="font-weight: 700; color: #c2410c; font-size: 1.1rem;">voice</div>
+                                <div style="color: #ea580c; font-size: 0.9rem; margin-top: 4px;">Voice message (PTT)
+                                </div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #c2410c; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    📎 Has media_url</div>
+                            </div>
+
+                            <!-- Audio -->
+                            <div
+                                style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #eab308;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">🎵</div>
+                                <div style="font-weight: 700; color: #a16207; font-size: 1.1rem;">audio</div>
+                                <div style="color: #ca8a04; font-size: 0.9rem; margin-top: 4px;">Audio file (.mp3, .m4a)
+                                </div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #a16207; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    📎 Has media_url</div>
+                            </div>
+
+                            <!-- Document -->
+                            <div
+                                style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #6366f1;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">📄</div>
+                                <div style="font-weight: 700; color: #4338ca; font-size: 1.1rem;">document</div>
+                                <div style="color: #4f46e5; font-size: 0.9rem; margin-top: 4px;">PDF, Word, Excel, etc.
+                                </div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #4338ca; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    📎 Has media_url</div>
+                            </div>
+
+                            <!-- Sticker -->
+                            <div
+                                style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #ec4899;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">😀</div>
+                                <div style="font-weight: 700; color: #9d174d; font-size: 1.1rem;">sticker</div>
+                                <div style="color: #db2777; font-size: 0.9rem; margin-top: 4px;">Animated or static
+                                    sticker
+                                </div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #9d174d; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    📎 Has media_url</div>
+                            </div>
+
+                            <!-- Location -->
+                            <div
+                                style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #ef4444;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">📍</div>
+                                <div style="font-weight: 700; color: #b91c1c; font-size: 1.1rem;">location</div>
+                                <div style="color: #dc2626; font-size: 0.9rem; margin-top: 4px;">GPS location pin</div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #b91c1c; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    ❌ No media</div>
+                            </div>
+
+                            <!-- Contact -->
+                            <div
+                                style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #64748b;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">👤</div>
+                                <div style="font-weight: 700; color: #334155; font-size: 1.1rem;">contact</div>
+                                <div style="color: #475569; font-size: 0.9rem; margin-top: 4px;">Contact vCard</div>
+                                <div
+                                    style="margin-top: 8px; font-size: 0.8rem; color: #334155; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 6px; display: inline-block;">
+                                    ❌ No media</div>
+                            </div>
+
+                        </div>
+
+                        <div class="alert alert-info">
+                            <span class="alert-icon">💡</span>
+                            <div class="alert-content">
+                                <strong>Quick Reference</strong>
+                                <p>
+                                    <strong>📎 Has media_url</strong> = Message includes downloadable file<br>
+                                    <strong>✅ Has body text</strong> = Message text in <code>body</code> field<br>
+                                    <strong>Caption</strong> = For image/video, caption is in <code>body</code> field
+                                </p>
+                            </div>
+                        </div>
+
+                        <h3>Chat History Message Structure</h3>
+                        <div class="code-wrapper">
+
+                            <pre class="code-block"><span class="comment">// Text Message</span>
+{
+  <span class="key">"body"</span>: <span class="string">"Hello there!"</span>,
+  <span class="key">"from_me"</span>: <span class="number">false</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2025-12-08T01:12:08.000Z"</span>,
+  <span class="key">"local_timestamp"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"type"</span>: <span class="string">"text"</span>
+}
+
+<span class="comment">// Reply Message</span>
+{
+  <span class="key">"body"</span>: <span class="string">"This is a reply"</span>,
+  <span class="key">"from_me"</span>: <span class="number">false</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2025-12-08T01:12:08.000Z"</span>,
+  <span class="key">"local_timestamp"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"type"</span>: <span class="string">"text"</span>,
+  <span class="key">"is_reply"</span>: <span class="number">true</span>,
+  <span class="key">"quoted_message"</span>: {
+    <span class="key">"body"</span>: <span class="string">"Original message text"</span>,
+    <span class="key">"from_me"</span>: <span class="number">true</span>,
+    <span class="key">"type"</span>: <span class="string">"text"</span>
+  }
+}</pre>
+                        </div>
+
+                        <h3>Timestamp Fields</h3>
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Format</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>timestamp</code></td>
+                                    <td>ISO 8601 UTC</td>
+                                    <td>Message time in UTC timezone</td>
+                                </tr>
+                                <tr>
+                                    <td><code>local_timestamp</code></td>
+                                    <td>ISO 8601 +02:00</td>
+                                    <td>Message time in Cairo timezone (recommended)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Webhook Media Handling -->
+                    <section id="webhook-media" class="doc-section">
+                        <h2>📎 Webhook Media Handling</h2>
+                        <p>When messages contain media (images, videos, audio, documents), the webhook includes
+                            additional
+                            fields with download URLs.</p>
+
+                        <h3>Media Message Structure</h3>
+                        <div class="code-wrapper">
+
+                            <pre class="code-block"><span class="comment">// Image Message with Media URL</span>
+{
+  <span class="key">"body"</span>: <span class="string">""</span>,
+  <span class="key">"from_me"</span>: <span class="number">false</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2025-12-08T01:12:08.000Z"</span>,
+  <span class="key">"local_timestamp"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"type"</span>: <span class="string">"image"</span>,
+  <span class="key">"media_url"</span>: <span class="string">"https://your-server.com/uploads/webhook_1234_image.jpeg"</span>,
+  <span class="key">"mimetype"</span>: <span class="string">"image/jpeg"</span>,
+  <span class="key">"filename"</span>: <span class="string">"webhook_1234_image.jpeg"</span>
+}
+
+<span class="comment">// Video Message</span>
+{
+  <span class="key">"body"</span>: <span class="string">"Check this video!"</span>,
+  <span class="key">"from_me"</span>: <span class="number">true</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2025-12-08T01:12:08.000Z"</span>,
+  <span class="key">"local_timestamp"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"type"</span>: <span class="string">"video"</span>,
+  <span class="key">"media_url"</span>: <span class="string">"https://your-server.com/uploads/webhook_1234_video.mp4"</span>,
+  <span class="key">"mimetype"</span>: <span class="string">"video/mp4"</span>,
+  <span class="key">"filename"</span>: <span class="string">"webhook_1234_video.mp4"</span>
+}
+
+<span class="comment">// Voice Message</span>
+{
+  <span class="key">"body"</span>: <span class="string">""</span>,
+  <span class="key">"from_me"</span>: <span class="number">false</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2025-12-08T01:12:08.000Z"</span>,
+  <span class="key">"local_timestamp"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"type"</span>: <span class="string">"voice"</span>,
+  <span class="key">"media_url"</span>: <span class="string">"https://your-server.com/uploads/webhook_1234_voice.ogg"</span>,
+  <span class="key">"mimetype"</span>: <span class="string">"audio/ogg; codecs=opus"</span>,
+  <span class="key">"filename"</span>: <span class="string">"webhook_1234_voice.ogg"</span>
+}
+
+<span class="comment">// Document Message</span>
+{
+  <span class="key">"body"</span>: <span class="string">""</span>,
+  <span class="key">"from_me"</span>: <span class="number">false</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2025-12-08T01:12:08.000Z"</span>,
+  <span class="key">"local_timestamp"</span>: <span class="string">"2025-12-08T03:12:08.000+02:00"</span>,
+  <span class="key">"type"</span>: <span class="string">"document"</span>,
+  <span class="key">"media_url"</span>: <span class="string">"https://your-server.com/uploads/webhook_1234_doc.pdf"</span>,
+  <span class="key">"mimetype"</span>: <span class="string">"application/pdf"</span>,
+  <span class="key">"filename"</span>: <span class="string">"contract.pdf"</span>
+}</pre>
+                        </div>
+
+                        <h3>Media Fields</h3>
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>media_url</code></td>
+                                    <td>string</td>
+                                    <td>Full URL to download the media file</td>
+                                </tr>
+                                <tr>
+                                    <td><code>mimetype</code></td>
+                                    <td>string</td>
+                                    <td>MIME type of the file (image/jpeg, video/mp4, etc.)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>filename</code></td>
+                                    <td>string</td>
+                                    <td>Original or generated filename</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-warning">
+                            <span class="alert-icon">⚠️</span>
+                            <div class="alert-content">
+                                <strong>Media URL Availability</strong>
+                                <p>Media files are stored on the server. Old media may be cleaned up periodically.
+                                    Download
+                                    important files promptly.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <span class="alert-icon">🔧</span>
+                            <div class="alert-content">
+                                <strong>BASE_URL Configuration</strong>
+                                <p>Media URLs use the <code>BASE_URL</code> environment variable. In production, set
+                                    this to
+                                    your public server URL.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Bulk Messaging -->
+                    <section id="bulk-messaging" class="doc-section">
+                        <h2>📦 Bulk Messaging</h2>
+                        <p>Send messages to multiple recipients with smart batching to avoid WhatsApp rate limits.</p>
+
+                        <h3>How It Works</h3>
+                        <ol>
+                            <li>Provide comma-separated phone numbers in the <code>to</code> field</li>
+                            <li>System detects bulk mode (2+ recipients)</li>
+                            <li>Duplicates are automatically removed</li>
+                            <li>Messages are split into batches based on your Trust Level</li>
+                            <li>Batches are scheduled with intervals between them</li>
+                            <li>Within each batch, messages are sent with 15-second delays</li>
+                        </ol>
+
+                        <div class="alert alert-success">
+                            <span class="alert-icon">✅</span>
+                            <div class="alert-content">
+                                <strong>Smart Features</strong>
+                                <p>Spintax is automatically resolved to create unique messages for each recipient.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Spintax -->
+                    <section id="spintax" class="doc-section">
+                        <h2>🔄 Spintax Support</h2>
+                        <p>Spintax allows you to create message variations automatically. Use
+                            <code>{option1|option2|option3}</code> syntax.
+                        </p>
+
+                        <h3>Example</h3>
+                        <div class="code-block">
+                            <span class="key">"message"</span>: <span class="string">"{Hello|Hi|Hey}! Your order is
+                                {ready|prepared|complete}."</span>
+                        </div>
+
+                        <h3>Possible Outputs</h3>
+                        <ul>
+                            <li>"Hello! Your order is ready."</li>
+                            <li>"Hi! Your order is prepared."</li>
+                            <li>"Hey! Your order is complete."</li>
+                            <li>... and more combinations</li>
+                        </ul>
+
+                        <div class="alert alert-info">
+                            <span class="alert-icon">💡</span>
+                            <div class="alert-content">
+                                <strong>Why Use Spintax?</strong>
+                                <p>Unique messages for each recipient help avoid spam detection and make communications
+                                    feel
+                                    more personal.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Trust Levels -->
+                    <section id="trust-levels" class="doc-section">
+                        <h2>⭐ Trust Levels</h2>
+                        <p>Your account's trust level determines messaging limits. Trust increases automatically based
+                            on
+                            connection duration.</p>
+
+                        <div class="trust-cards">
+                            <div class="trust-card level-1">
+                                <h4>Level 1</h4>
+                                <p><strong>New Account</strong></p>
+                                <p>0-7 days connected</p>
+                                <p>50 msgs/batch</p>
+                                <p>12hr intervals</p>
+                                <p>Max 300 total</p>
+                            </div>
+                            <div class="trust-card level-2">
+                                <h4>Level 2</h4>
+                                <p><strong>Established</strong></p>
+                                <p>7-14 days connected</p>
+                                <p>100 msgs/batch</p>
+                                <p>4hr intervals</p>
+                                <p>Unlimited</p>
+                            </div>
+                            <div class="trust-card level-3">
+                                <h4>Level 3</h4>
+                                <p><strong>Trusted</strong></p>
+                                <p>14-30 days connected</p>
+                                <p>200 msgs/batch</p>
+                                <p>2hr intervals</p>
+                                <p>Unlimited</p>
+                            </div>
+                            <div class="trust-card level-4">
+                                <h4>Level 4</h4>
+                                <p><strong>Excellent</strong></p>
+                                <p>30+ days connected</p>
+                                <p>300 msgs/batch</p>
+                                <p>1hr intervals</p>
+                                <p>Unlimited</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <span class="alert-icon">⚠️</span>
+                            <div class="alert-content">
+                                <strong>Trust Reset</strong>
+                                <p>Disconnecting from WhatsApp resets your trust level to 1. Keep connected for best
+                                    performance!</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Message Status -->
+                    <section id="message-status" class="doc-section">
+                        <h2>📊 Message Status</h2>
+                        <p>Track your message delivery in real-time.</p>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Icon</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>queued</code></td>
+                                    <td>🕐</td>
+                                    <td>Waiting to be sent</td>
+                                </tr>
+                                <tr>
+                                    <td><code>sending</code></td>
+                                    <td>⏳</td>
+                                    <td>Being processed</td>
+                                </tr>
+                                <tr>
+                                    <td><code>sent</code></td>
+                                    <td>✓</td>
+                                    <td>Sent to WhatsApp servers</td>
+                                </tr>
+                                <tr>
+                                    <td><code>delivered</code></td>
+                                    <td>✓✓</td>
+                                    <td>Delivered to recipient's device</td>
+                                </tr>
+                                <tr>
+                                    <td><code>read</code></td>
+                                    <td>✓✓ (blue)</td>
+                                    <td>Read by recipient</td>
+                                </tr>
+                                <tr>
+                                    <td><code>failed</code></td>
+                                    <td>❌</td>
+                                    <td>Failed to send</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- API Logs -->
+                    <section id="api-logs" class="doc-section">
+                        <h2>📋 API Logs</h2>
+                        <p>Monitor all your API messages at <a href="/api-logs">/api-logs</a>.</p>
+
+                        <h3>Features</h3>
+                        <ul>
+                            <li>View all sent messages with status</li>
+                            <li>Filter by status or batch ID</li>
+                            <li>Real-time status updates</li>
+                            <li>Batch management (view and delete)</li>
+                            <li>Configurable rows per page</li>
+                        </ul>
+                    </section>
+
+                    <!-- Batch Management -->
+                    <section id="batch-management" class="doc-section">
+                        <h2>📦 Batch Management</h2>
+                        <p>Manage your bulk message batches.</p>
+
+                        <h3>View All Batches</h3>
+                        <div class="code-block">
+                            <span class="method">GET</span> <span class="url">/api/logs/batches</span>
+                        </div>
+
+                        <h3>Delete a Batch</h3>
+                        <div class="code-block">
+                            <span class="method">DELETE</span> <span class="url">/api/logs/batch/{batchId}</span>
+                        </div>
+                        <p>This removes all pending messages from the batch and cancels scheduled sends.</p>
+                    </section>
+
+                    <!-- Limitations -->
+                    <section id="limitations" class="doc-section">
+                        <h2>⚠️ Limitations</h2>
+
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Limit</th>
+                                    <th>Value</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Message delay</td>
+                                    <td>15 seconds</td>
+                                    <td>Between each message in a batch</td>
+                                </tr>
+                                <tr>
+                                    <td>Batch interval (L1)</td>
+                                    <td>12 hours</td>
+                                    <td>Between batches at Trust Level 1</td>
+                                </tr>
+                                <tr>
+                                    <td>Max total (L1)</td>
+                                    <td>300 messages</td>
+                                    <td>Per campaign at Trust Level 1</td>
+                                </tr>
+                                <tr>
+                                    <td>Media size</td>
+                                    <td>16 MB</td>
+                                    <td>WhatsApp limit for media files</td>
+                                </tr>
+                                <tr>
+                                    <td>Duplicate removal</td>
+                                    <td>Automatic</td>
+                                    <td>Duplicate numbers are filtered</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section id="best-practices" class="doc-section">
+                        <h2>✅ Best Practices</h2>
+
+                        <div class="alert alert-success">
+                            <span class="alert-icon">1️⃣</span>
+                            <div class="alert-content">
+                                <strong>Stay Connected</strong>
+                                <p>Keep your WhatsApp connected to build trust level and increase limits.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <span class="alert-icon">2️⃣</span>
+                            <div class="alert-content">
+                                <strong>Use Spintax</strong>
+                                <p>Always use spintax for bulk messages to avoid spam detection.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <span class="alert-icon">3️⃣</span>
+                            <div class="alert-content">
+                                <strong>Clean Your Lists</strong>
+                                <p>Remove invalid numbers before sending to reduce failures.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <span class="alert-icon">4️⃣</span>
+                            <div class="alert-content">
+                                <strong>Monitor Logs</strong>
+                                <p>Check API logs regularly to track delivery rates and identify issues.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <span class="alert-icon">5️⃣</span>
+                            <div class="alert-content">
+                                <strong>Respect Rate Limits</strong>
+                                <p>Don't try to bypass rate limits - they protect your account from being banned.</p>
+                            </div>
+                        </div>
+                    </section>
+
+
+
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // Smooth scroll for navigation
+            document.querySelectorAll('.doc-nav a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth' });
+
+                            // Update active state
+                            document.querySelectorAll('.doc-nav a').forEach(l => l.classList.remove('active'));
+                            link.classList.add('active');
+                        }
+                    }
+                });
+            });
+
+            // Highlight active section on scroll
+            const sections = document.querySelectorAll('.doc-section');
+            const navLinks = document.querySelectorAll('.doc-nav a[href^="#"]');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Theme toggle
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                if (localStorage.getItem('darkMode') === 'true') {
+                    document.body.classList.add('dark-mode');
+                    themeToggle.innerHTML = '<span class="theme-icon">☀️</span><span class="theme-text">Light Mode</span>';
+                }
+
+                themeToggle.addEventListener('click', () => {
+                    document.body.classList.toggle('dark-mode');
+                    const isDark = document.body.classList.contains('dark-mode');
+                    localStorage.setItem('darkMode', isDark);
+                    themeToggle.innerHTML = isDark
+                        ? '<span class="theme-icon">☀️</span><span class="theme-text">Light Mode</span>'
+                        : '<span class="theme-icon">🌙</span><span class="theme-text">Dark Mode</span>';
+                });
+            }
+
+            // Enhanced Copy Functionality
+            document.addEventListener('DOMContentLoaded', () => {
+                const copyIcon = '📋';
+                const checkIcon = '✅';
+                const errorIcon = '❌';
+
+                // Function to copy text
+                async function copyToClipboard(text, btn) {
+                    try {
+                        // Try modern API first
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            await navigator.clipboard.writeText(text);
+                        } else {
+                            throw new Error('Clipboard API not available');
+                        }
+
+                        // Success Feedback
+                        const originalHtml = btn.innerHTML;
+                        btn.innerHTML = `${checkIcon} Copied!`;
+                        btn.classList.add('copied');
+
+                        setTimeout(() => {
+                            if (btn.innerHTML.includes('Copied')) {
+                                btn.innerHTML = originalHtml;
+                                btn.classList.remove('copied');
+                            }
+                        }, 2000);
+
+                    } catch (err) {
+                        console.warn('Modern copy failed, trying fallback:', err);
+
+                        // Fallback method
+                        try {
+                            const textArea = document.createElement('textarea');
+                            textArea.value = text;
+                            textArea.style.position = 'fixed';
+                            textArea.style.left = '-9999px';
+                            textArea.style.top = '0';
+                            document.body.appendChild(textArea);
+                            textArea.focus();
+                            textArea.select();
+
+                            const successful = document.execCommand('copy');
+                            document.body.removeChild(textArea);
+
+                            if (!successful) throw new Error('execCommand failed');
+
+                            // Success Feedback
+                            const originalHtml = btn.innerHTML;
+                            btn.innerHTML = `${checkIcon} Copied!`;
+                            btn.classList.add('copied');
+
+                            setTimeout(() => {
+                                if (btn.innerHTML.includes('Copied')) {
+                                    btn.innerHTML = originalHtml;
+                                    btn.classList.remove('copied');
+                                }
+                            }, 2000);
+
+                        } catch (fallbackErr) {
+                            console.error('All copy methods failed:', fallbackErr);
+                            btn.innerHTML = `${errorIcon} Failed`;
+                            setTimeout(() => {
+                                btn.innerHTML = `${copyIcon} Copy`;
+                            }, 2000);
+                        }
+                    }
+                }
+
+                // Clean text content (remove excessive indentation)
+                function getCleanText(element) {
+                    const clone = element.cloneNode(true);
+                    let text = clone.textContent;
+                    const lines = text.split('\n');
+
+                    // Remove empty first/last lines
+                    if (lines.length > 0 && lines[0].trim() === '') lines.shift();
+                    if (lines.length > 0 && lines[lines.length - 1].trim() === '') lines.pop();
+
+                    const nonEmptyLines = lines.filter(line => line.trim().length > 0);
+
+                    if (nonEmptyLines.length > 0) {
+                        const minIndent = nonEmptyLines.reduce((min, line) => {
+                            const match = line.match(/^\s*/);
+                            const indent = match ? match[0].length : 0;
+                            return indent < min ? indent : min;
+                        }, Infinity);
+
+                        if (minIndent > 0 && minIndent !== Infinity) {
+                            text = lines.map(line => {
+                                return line.length >= minIndent ? line.slice(minIndent) : line;
+                            }).join('\n');
+                        } else {
+                            text = lines.join('\n');
+                        }
+                    }
+                    return text;
+                }
+
+                // Add buttons to all code blocks
+                document.querySelectorAll('.code-block').forEach(block => {
+                    if (!block.parentElement.classList.contains('code-wrapper')) {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'code-wrapper';
+                        block.parentNode.insertBefore(wrapper, block);
+                        wrapper.appendChild(block);
+                    }
+
+                    const wrapper = block.parentElement;
+                    if (wrapper.querySelector('.copy-btn')) return;
+
+                    const btn = document.createElement('button');
+                    btn.className = 'copy-btn';
+                    btn.innerHTML = `${copyIcon} Copy`;
+                    btn.type = 'button';
+
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const text = getCleanText(block);
+                        copyToClipboard(text, btn);
+                    });
+
+                    wrapper.appendChild(btn);
+                });
+
+                // ===== PARALLAX NAVIGATION HIGHLIGHTING =====
+                const docContent = document.querySelector('.doc-content');
+                const sections = document.querySelectorAll('.doc-section');
+                const navLinks = document.querySelectorAll('.doc-nav a[href^="#"]');
+
+                function updateActiveNav() {
+                    let currentSection = '';
+                    const scrollPosition = docContent.scrollTop + 100;
+
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        const sectionHeight = section.offsetHeight;
+
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                            currentSection = section.getAttribute('id');
+                        }
+                    });
+
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + currentSection) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+
+                // Listen for scroll on doc-content
+                if (docContent) {
+                    docContent.addEventListener('scroll', updateActiveNav);
+                    // Initial call
+                    updateActiveNav();
+                }
+
+                // Smooth scroll to section when clicking nav
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href').substring(1);
+                        const targetSection = document.getElementById(targetId);
+                        if (targetSection && docContent) {
+                            docContent.scrollTo({
+                                top: targetSection.offsetTop - 20,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+</body>
+
+</html>

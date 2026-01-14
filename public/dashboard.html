@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | اكــتوشــوت واتساب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        /* Dashboard Specific Styles */
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .dashboard-content {
+            flex: 1;
+            margin-right: 240px;
+            background: var(--bg-color);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-content {
+                margin-right: 65px;
+            }
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            color: white;
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .stat-box .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-box .value {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-box .label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content Grid */
+        .main-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            padding: 1.5rem;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .panel:first-child {
+            border-left: none;
+        }
+
+        .panel-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-title h2 {
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .panel-title a {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        /* Recent Messages */
+        .messages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .message-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .message-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        /* Quick Actions */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .action-card:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .action-card .icon {
+            font-size: 1.5rem;
+        }
+
+        .action-card span {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Auto-Reply & Connection */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .info-card h3 {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ar-stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .ar-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .ar-stat .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .conn-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .conn-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .conn-row .label {
+            color: var(--text-secondary);
+        }
+
+        .conn-row .value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state span {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🐙</span>
+                    <span class="logo-text">اكــتوشــوت</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/profiles" class="nav-item">
+                    <span class="nav-icon">📱</span>
+                    <span class="nav-text">الأجهزة</span>
+                </a>
+                <a href="/api-docs" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">دليل API للمطورين</span>
+                </a>
+                <a href="/api-logs" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">سجل الرسائل</span>
+                </a>
+                <a href="/dashboard" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="/chats" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-text">المحادثات</span>
+                </a>
+                <a href="/spintax" class="nav-item">
+                    <span class="nav-icon">✨</span>
+                    <span class="nav-text">مولد الرسائل الذكي</span>
+                </a>
+                <a href="/campaigns" class="nav-item">
+                    <span class="nav-icon">📢</span>
+                    <span class="nav-text">الحملات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <!-- Stats Header -->
+            <section class="stats-section">
+                <div class="stats-header">
+                    <h1>📊 لوحة التحكم</h1>
+                    <button class="btn-refresh" id="refreshBtn" title="تحديث">🔄</button>
+                </div>
+                <div class="stats-cards">
+                    <div class="stat-box">
+                        <span class="icon">📤</span>
+                        <span class="value" id="sentToday">0</span>
+                        <span class="label">مرسلة اليوم</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="icon">📥</span>
+                        <span class="value" id="receivedToday">0</span>
+                        <span class="label">مستلمة اليوم</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="icon">💬</span>
+                        <span class="value" id="totalMessages">0</span>
+                        <span class="label">إجمالي الرسائل</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="icon">👥</span>
+                        <span class="value" id="totalContacts">0</span>
+                        <span class="label">جهات الاتصال</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content -->
+            <div class="main-grid">
+                <!-- Left Panel -->
+                <div class="panel">
+                    <div class="panel-title">
+                        <h2>📩 آخر الرسائل</h2>
+                        <a href="/chats">عرض الكل</a>
+                    </div>
+                    <div class="messages-list" id="recentMessages">
+                        <div class="empty-state">
+                            <span>📭</span>
+                            <p>لا توجد رسائل</p>
+                        </div>
+                    </div>
+
+                    <div class="panel-title" style="margin-top: 1.5rem;">
+                        <h2>⚡ إجراءات سريعة</h2>
+                    </div>
+                    <div class="actions-grid">
+                        <a href="/" class="action-card">
+                            <span class="icon">📱</span>
+                            <span>ربط الواتساب</span>
+                        </a>
+                        <a href="/chats" class="action-card">
+                            <span class="icon">✉️</span>
+                            <span>إرسال رسالة</span>
+                        </a>
+                        <button class="action-card" id="syncContactsBtn">
+                            <span class="icon">🔄</span>
+                            <span>مزامنة جهات الاتصال</span>
+                        </button>
+                        <a href="/auto-reply" class="action-card">
+                            <span class="icon">🤖</span>
+                            <span>إضافة رد تلقائي</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Panel -->
+                <div class="panel">
+                    <div class="panel-title">
+                        <h2>📋 معلومات النظام</h2>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>🤖 الرد التلقائي</h3>
+                            <div class="ar-stats">
+                                <div class="ar-stat">
+                                    <span class="value" id="totalRules">0</span>
+                                    <span class="label">قواعد</span>
+                                </div>
+                                <div class="ar-stat">
+                                    <span class="value" id="activeRules">0</span>
+                                    <span class="label">نشطة</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <h3>📱 الاتصال</h3>
+                            <div class="conn-rows">
+                                <div class="conn-row">
+                                    <span class="label">الحالة:</span>
+                                    <span class="value" id="connStatus">غير متصل</span>
+                                </div>
+                                <div class="conn-row">
+                                    <span class="label">الرقم:</span>
+                                    <span class="value" id="connNumber">-</span>
+                                </div>
+                                <div class="conn-row">
+                                    <span class="label">الاسم:</span>
+                                    <span class="value" id="connName">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

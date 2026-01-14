@@ -1,0 +1,383 @@
+/* ===================================
+   Spintax CSS - OctoSHOT WhatsApp Platform
+   Styles for spintax.html
+   =================================== */
+
+/* ===================================
+   Two Column Layout
+   =================================== */
+.spintax-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+@media (max-width: 1200px) {
+    .spintax-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===================================
+   Header - Full Width
+   =================================== */
+.spintax-header {
+    grid-column: 1 / -1;
+    background: var(--brand-gradient);
+    color: white;
+    padding: 28px 32px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.spintax-header h1 {
+    margin: 0 0 6px;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: white;
+}
+
+.spintax-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+/* ===================================
+   Generator Panel
+   =================================== */
+.generator-panel {
+    order: 1;
+}
+
+.examples-panel {
+    order: 2;
+    display: none;
+}
+
+.examples-panel.show {
+    display: block;
+}
+
+/* ===================================
+   Form Card
+   =================================== */
+.form-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.form-card .form-group {
+    margin-bottom: 20px;
+}
+
+.form-card .form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.form-card .form-group textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 14px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.3s ease;
+    direction: rtl;
+    text-align: right;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.form-card .form-group textarea:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* ===================================
+   Spinner Input
+   =================================== */
+.spinner-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.spinner-group label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.spinner-input {
+    width: 80px;
+    padding: 10px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.spinner-input:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.spinner-hint {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* ===================================
+   Generate Button
+   =================================== */
+.generate-btn {
+    width: 100%;
+    padding: 14px 28px;
+    background: var(--brand-gradient);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
+}
+
+.generate-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.generate-btn .spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+}
+
+/* ===================================
+   Result Section
+   =================================== */
+.result-section {
+    margin-top: 24px;
+    display: none;
+}
+
+.result-section.show {
+    display: block;
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.result-header h3 {
+    margin: 0;
+    color: var(--accent-success);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.copy-btn {
+    padding: 6px 14px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: var(--hover-bg);
+}
+
+.copy-btn.copied {
+    background: rgba(39, 174, 96, 0.1);
+    border-color: var(--accent-success);
+    color: var(--accent-success);
+}
+
+.result-box {
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    direction: rtl;
+    text-align: right;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+    color: var(--text-primary);
+}
+
+textarea.result-box.editable {
+    width: 100%;
+    min-height: 150px;
+    resize: vertical;
+    font-family: inherit;
+    cursor: text;
+    transition: all 0.3s ease;
+}
+
+textarea.result-box.editable:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+    background: var(--bg-card);
+}
+
+/* ===================================
+   Examples Card
+   =================================== */
+.examples-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    height: fit-content;
+}
+
+.examples-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.examples-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.examples-count {
+    background: var(--brand-gradient);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.examples-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.examples-list li {
+    padding: 14px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    direction: rtl;
+    text-align: right;
+    line-height: 1.6;
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+}
+
+.examples-list li:hover {
+    border-color: var(--brand-primary);
+    background: var(--hover-bg);
+}
+
+.examples-list li:nth-child(odd) {
+    background: var(--bg-card);
+}
+
+.show-more-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--bg-primary);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    margin-top: 12px;
+}
+
+.show-more-btn:hover {
+    background: var(--hover-bg);
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+}
+
+.show-more-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===================================
+   Error State
+   =================================== */
+.error-box {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--accent-error);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+}

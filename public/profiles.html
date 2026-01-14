@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأجهزة - OctoSHOT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/profiles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🐙</span>
+                    <span class="logo-text">اكــتوشــوت</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/profiles" class="nav-item active">
+                    <span class="nav-icon">📱</span>
+                    <span class="nav-text">الأجهزة</span>
+                </a>
+                <a href="/api-docs" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">دليل API للمطورين</span>
+                </a>
+                <a href="/api-logs" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">سجل الرسائل</span>
+                </a>
+                <a href="/dashboard" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="/chats" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-text">المحادثات</span>
+                </a>
+                <a href="/spintax" class="nav-item">
+                    <span class="nav-icon">✨</span>
+                    <span class="nav-text">مولد الرسائل الذكي</span>
+                </a>
+                <a href="/campaigns" class="nav-item">
+                    <span class="nav-icon">📢</span>
+                    <span class="nav-text">الحملات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="profiles-header">
+                <div class="header-info">
+                    <h1>📱 إدارة الأجهزة</h1>
+                    <p class="subtitle">إدارة أجهزة واتساب والاتصالات</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" id="howToConnectBtn">
+                        <span>❔</span> كيفية الربط؟
+                    </button>
+                    <button class="btn btn-primary" id="addDeviceBtn">
+                        <span>+</span> إضافة جهاز
+                    </button>
+                </div>
+            </header>
+
+            <!-- Devices Section -->
+            <section class="devices-section">
+                <div class="section-header">
+                    <h2>الأجهزة (<span id="deviceCount">0</span>/<span id="deviceLimit">75</span>)</h2>
+                </div>
+
+                <!-- Search -->
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="🔍 بحث عن الأجهزة..." class="search-input">
+                </div>
+
+                <!-- Table -->
+                <div class="table-container">
+                    <table class="profiles-table">
+                        <thead>
+                            <tr>
+                                <th>المعرف</th>
+                                <th>اسم الجهاز</th>
+                                <th>رقم الهاتف</th>
+                                <th>الحالة</th>
+                                <th>مستوى الثقة</th>
+                                <th>صحة الرقم</th>
+                                <th>رابط Webhook</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="profilesTableBody">
+                            <!-- Profiles will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state hidden">
+                    <span class="empty-icon">📱</span>
+                    <h3>لا توجد أجهزة</h3>
+                    <p>أضف أول جهاز واتساب للبدء</p>
+                    <button class="btn btn-primary" onclick="openAddModal()">+ إضافة جهاز</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Add/Edit Modal -->
+        <div id="deviceModal" class="modal hidden">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-content modal-large">
+                <div class="modal-header modal-header-premium">
+                    <div class="modal-header-content">
+                        <span class="modal-icon">📱</span>
+                        <h3 id="modalTitle">إضافة جهاز جديد</h3>
+                    </div>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+                <form id="deviceForm">
+                    <input type="hidden" id="deviceId">
+
+                    <div class="form-group">
+                        <label for="deviceName">اسم الجهاز</label>
+                        <input type="text" id="deviceName" placeholder="مثال: واتساب المتجر" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="webhookUrl">رابط Webhook (اختياري)</label>
+                        <input type="url" id="webhookUrl" placeholder="https://your-server.com/webhook">
+                        <span class="form-hint">استقبل الرسائل والأحداث على هذا العنوان</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone">المنطقة الزمنية</label>
+                        <select id="timezone">
+                            <optgroup label="🌍 Middle East & Africa">
+                                <option value="Africa/Cairo" selected>🇪🇬 Egypt (Cairo) UTC+02</option>
+                                <option value="Asia/Riyadh">🇸🇦 Saudi Arabia UTC+03</option>
+                                <option value="Asia/Dubai">🇦🇪 UAE (Dubai) UTC+04</option>
+                                <option value="Asia/Kuwait">🇰🇼 Kuwait UTC+03</option>
+                                <option value="Asia/Qatar">🇶🇦 Qatar UTC+03</option>
+                                <option value="Asia/Amman">🇯🇴 Jordan UTC+03</option>
+                                <option value="Asia/Beirut">🇱🇧 Lebanon UTC+02</option>
+                                <option value="Africa/Lagos">🇳🇬 Nigeria UTC+01</option>
+                                <option value="Africa/Nairobi">🇰🇪 Kenya UTC+03</option>
+                            </optgroup>
+                            <optgroup label="🌍 Europe">
+                                <option value="Europe/London">🇬🇧 UK (London) UTC+00</option>
+                                <option value="Europe/Paris">🇫🇷 France/Germany UTC+01</option>
+                                <option value="Europe/Istanbul">🇹🇷 Turkey UTC+03</option>
+                                <option value="Europe/Moscow">🇷🇺 Russia (Moscow) UTC+03</option>
+                            </optgroup>
+                            <optgroup label="🌎 Americas">
+                                <option value="America/New_York">🇺🇸 USA East UTC-05</option>
+                                <option value="America/Los_Angeles">🇺🇸 USA West UTC-08</option>
+                                <option value="America/Sao_Paulo">🇧🇷 Brazil UTC-03</option>
+                            </optgroup>
+                            <optgroup label="🌏 Asia & Oceania">
+                                <option value="Asia/Shanghai">🇨🇳 China UTC+08</option>
+                                <option value="Asia/Tokyo">🇯🇵 Japan UTC+09</option>
+                                <option value="Asia/Kolkata">🇮🇳 India UTC+05:30</option>
+                                <option value="Australia/Sydney">🇦🇺 Australia UTC+10</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- Webhook Settings Section (only visible when editing) -->
+                    <div id="webhookTabsSection" style="display: none;">
+                        <div class="section-divider">
+                            <div class="section-divider-icon">🔔</div>
+                            <div class="section-divider-content">
+                                <h4>إشعارات Webhook</h4>
+                                <p>تنبيهات تلقائية حسب حالة الرسالة</p>
+                            </div>
+                        </div>
+
+                        <!-- Modern Tab Navigation -->
+                        <div class="webhook-tabs">
+                            <button type="button" class="webhook-tab active" data-tab="unread"
+                                onclick="switchWebhookTab('unread')">
+                                📭 رسائل غير مقروءة
+                            </button>
+                            <button type="button" class="webhook-tab" data-tab="noReply"
+                                onclick="switchWebhookTab('noReply')">
+                                👁️ مقروءة بدون رد
+                            </button>
+                        </div>
+
+                        <!-- Unread Messages Tab Content -->
+                        <div id="unreadTab" class="webhook-tab-content active">
+                            <p class="form-hint">إشعار عندما تكون الرسائل موصلة ولكن لم تُقرأ بعد وقت محدد.
+                            </p>
+
+                            <div id="unreadWebhooksList" class="webhooks-list"></div>
+
+                            <div class="add-webhook-form">
+                                <div class="webhook-input-row">
+                                    <input type="url" id="newUnreadWebhookUrl"
+                                        placeholder="https://your-webhook-url.com"
+                                        class="form-control webhook-url-input">
+                                    <input type="number" id="newUnreadWebhookTimer" placeholder="5" min="1"
+                                        class="form-control webhook-timer-input">
+                                    <select id="newUnreadWebhookUnit" class="form-control webhook-unit-select">
+                                        <option value="minutes">دقيقة</option>
+                                        <option value="hours">ساعة</option>
+                                        <option value="days">يوم</option>
+                                    </select>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addUnreadWebhook()">+
+                                        إضافة</button>
+                                </div>
+                                <p class="webhooks-count"><span id="unreadWebhookCount">0</span>/5 webhooks</p>
+                            </div>
+                        </div>
+
+                        <!-- Read No-Reply Tab Content -->
+                        <div id="noReplyTab" class="webhook-tab-content">
+                            <p class="form-hint">إشعار عندما تكون الرسائل <strong>مقروءة</strong> ولكن العميل لم يرد بعد
+                                وقت محدد.</p>
+
+                            <div id="noReplyWebhooksList" class="webhooks-list"></div>
+
+                            <div class="add-webhook-form">
+                                <div class="webhook-input-row">
+                                    <input type="url" id="newNoReplyWebhookUrl"
+                                        placeholder="https://your-webhook-url.com"
+                                        class="form-control webhook-url-input">
+                                    <input type="number" id="newNoReplyWebhookTimer" placeholder="5" min="1"
+                                        class="form-control webhook-timer-input">
+                                    <select id="newNoReplyWebhookUnit" class="form-control webhook-unit-select">
+                                        <option value="minutes">دقيقة</option>
+                                        <option value="hours">ساعة</option>
+                                        <option value="days">يوم</option>
+                                    </select>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addNoReplyWebhook()">+
+                                        إضافة</button>
+                                </div>
+                                <p class="webhooks-count"><span id="noReplyWebhookCount">0</span>/5 webhooks</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+                        <button type="submit" class="btn btn-primary" id="saveBtn">حفظ الجهاز</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- QR Code Modal -->
+        <div id="qrModal" class="modal hidden">
+            <div class="modal-overlay" onclick="closeQRModal()"></div>
+            <div class="modal-content qr-modal">
+                <div class="modal-header">
+                    <h3>مسح QR Code</h3>
+                    <button class="modal-close" onclick="closeQRModal()">×</button>
+                </div>
+                <div class="qr-content">
+                    <div id="qrLoading" class="qr-loading">
+                        <div class="spinner"></div>
+                        <p>جاري تهيئة واتساب...</p>
+                    </div>
+                    <div id="qrDisplay" class="qr-display hidden">
+                        <img id="qrImage" src="" alt="QR Code">
+                        <p>امسح هذا الكود باستخدام واتساب على هاتفك</p>
+                    </div>
+                    <div id="qrConnected" class="qr-connected hidden">
+                        <span class="success-icon">✅</span>
+                        <h4>تم الاتصال بنجاح!</h4>
+                        <p id="connectedPhone"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Modal -->
+        <div id="detailsModal" class="modal hidden">
+            <div class="modal-overlay" onclick="closeDetailsModal()"></div>
+            <div class="modal-content details-modal">
+                <div class="modal-header">
+                    <h3>تفاصيل الجهاز</h3>
+                    <button class="modal-close" onclick="closeDetailsModal()">×</button>
+                </div>
+                <div class="details-content">
+                    <div class="detail-row">
+                        <label>المعرف</label>
+                        <div class="detail-value">
+                            <code id="detailUUID"></code>
+                            <button class="copy-btn"
+                                onclick="copyToClipboard(document.getElementById('detailUUID').textContent)">📋</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <label>مفتاح API</label>
+                        <div class="detail-value">
+                            <code id="detailAPIKey"></code>
+                            <button class="copy-btn"
+                                onclick="copyToClipboard(document.getElementById('detailAPIKey').textContent)">📋</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <label>اسم الجهاز</label>
+                        <span id="detailDeviceName"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>رقم الهاتف</label>
+                        <span id="detailPhone"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>الحالة</label>
+                        <span id="detailStatus"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>رابط Webhook</label>
+                        <span id="detailWebhook"></span>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-warning" onclick="regenerateAPIKey()">🔄 تجديد مفتاح API</button>
+                    <button class="btn btn-secondary" onclick="closeDetailsModal()">إغلاق</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disconnect Confirmation Modal -->
+        <div id="disconnectModal" class="modal hidden">
+            <div class="modal-overlay" onclick="closeDisconnectModal()"></div>
+            <div class="modal-content disconnect-modal">
+                <div class="modal-header modal-header-danger">
+                    <div class="modal-header-content">
+                        <span class="modal-icon">⚠️</span>
+                        <h3>فصل الجهاز</h3>
+                    </div>
+                    <button class="modal-close" onclick="closeDisconnectModal()">×</button>
+                </div>
+                <div class="disconnect-content">
+                    <div class="disconnect-warning">
+                        <span class="warning-icon">🚨</span>
+                        <p>هذا الإجراء سيفصل جلسة واتساب و<strong>يحذف كل بيانات الجلسة</strong>.
+                            ستحتاج لمسح QR Code مرة أخرى لإعادة الاتصال.</p>
+                    </div>
+
+                    <div class="profile-id-display">
+                        <label>معرف الجهاز للتأكيد:</label>
+                        <div class="profile-id-box">
+                            <code id="disconnectProfileId">-</code>
+                            <button class="copy-btn-small" onclick="copyDisconnectId()">📋 نسخ</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmProfileId">الصق معرف الجهاز لتفعيل الفصل:</label>
+                        <input type="text" id="confirmProfileId" placeholder="الصق معرف الجهاز هنا..."
+                            oninput="validateDisconnectId()">
+                    </div>
+
+                    <div class="disconnect-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeDisconnectModal()">إلغاء</button>
+                        <button type="button" class="btn btn-danger" id="confirmDisconnectBtn" disabled
+                            onclick="executeDisconnect()">
+                            🔌 فصل الجهاز
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Questionnaire Modal -->
+        <div id="questionnaireModal" class="modal hidden">
+            <div class="modal-overlay" onclick="closeQuestionnaireModal()"></div>
+            <div class="modal-content modal-large questionnaire-modal">
+                <div class="modal-header modal-header-premium">
+                    <div class="modal-header-content">
+                        <span class="modal-icon">📋</span>
+                        <h3>إعدادات استخدام واتساب</h3>
+                    </div>
+                    <button class="modal-close" onclick="closeQuestionnaireModal()">×</button>
+                </div>
+                <div class="questionnaire-content">
+                    <p class="questionnaire-intro">أجب على الأسئلة التالية لتحديد مستوى الاستخدام المناسب لحسابك</p>
+
+                    <div class="questionnaire-form" id="questionnaireForm">
+                        <!-- Question 1: Phone Age -->
+                        <div class="question-group">
+                            <label class="question-label">1️⃣ عمر رقم الواتساب؟</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="phoneAge" value="new">
+                                    <span class="radio-text">جديد (أقل من شهر)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="phoneAge" value="medium">
+                                    <span class="radio-text">متوسط (1-6 أشهر)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="phoneAge" value="old">
+                                    <span class="radio-text">قديم (أكثر من 6 أشهر)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Question 2: Daily Message Rate -->
+                        <div class="question-group">
+                            <label class="question-label">2️⃣ معدل الرسايل اليومية الطبيعي؟</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="dailyMessageRate" value="0-50">
+                                    <span class="radio-text">0-50 رسالة</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="dailyMessageRate" value="50-100">
+                                    <span class="radio-text">50-100 رسالة</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="dailyMessageRate" value="100-300">
+                                    <span class="radio-text">100-300 رسالة</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="dailyMessageRate" value="300-500">
+                                    <span class="radio-text">300-500 رسالة</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Question 3: Spam Software -->
+                        <div class="question-group">
+                            <label class="question-label">3️⃣ هل استخدمت برامج تسويق واتساب من قبل؟</label>
+                            <p class="question-hint">(WaSender, WhatsApp Sender Pro, أو برامج سطح مكتب أخرى)</p>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="usedSpamSoftware" value="no">
+                                    <span class="radio-text">لا، أبداً</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="usedSpamSoftware" value="yes">
+                                    <span class="radio-text">نعم، استخدمت من قبل</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Question 4: Previous Ban -->
+                        <div class="question-group">
+                            <label class="question-label">4️⃣ هل تم حظر الرقم من قبل؟</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="previousBan" value="never">
+                                    <span class="radio-text">لا، لم يتم حظره</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="previousBan" value="1-3days">
+                                    <span class="radio-text">نعم - من 1-3 أيام فاتوا</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="previousBan" value="3-7days">
+                                    <span class="radio-text">نعم - من 3-7 أيام فاتوا</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="previousBan" value="7-15days">
+                                    <span class="radio-text">نعم - من 7-15 يوم</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="previousBan" value="15-30days">
+                                    <span class="radio-text">نعم - من 15-30 يوم</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="previousBan" value="month+">
+                                    <span class="radio-text">نعم - أكثر من شهر</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="questionnaire-result hidden" id="questionnaireResult">
+                        <div class="result-icon"></div>
+                        <h4 class="result-title"></h4>
+                        <p class="result-description"></p>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeQuestionnaireModal()">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveQuestionnaireBtn"
+                        onclick="saveQuestionnaire()">
+                        💾 حفظ والمتابعة
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toastContainer" class="toast-container"></div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/profiles.js"></script>
+</body>
+
+</html>

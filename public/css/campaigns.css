@@ -1,0 +1,362 @@
+/* ===================================
+   Campaigns CSS - OctoSHOT WhatsApp Platform
+   Styles for campaigns.html, campaign-create.html, campaign-detail.html
+   =================================== */
+
+/* ===================================
+   Campaigns Container
+   =================================== */
+.campaigns-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ===================================
+   Page Header
+   =================================== */
+.campaigns-container .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-title h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===================================
+   Stats Cards
+   =================================== */
+.campaigns-container .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.campaigns-container .stat-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.campaigns-container .stat-card:hover {
+    border-color: var(--brand-primary);
+    transform: translateY(-2px);
+}
+
+.campaigns-container .stat-card .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.campaigns-container .stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.campaigns-container .stat-card .stat-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* ===================================
+   Campaigns Card & Table
+   =================================== */
+.campaigns-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.campaigns-card .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.campaigns-card .card-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+/* Search Box */
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    width: 200px;
+    font-family: inherit;
+}
+
+.search-box input::placeholder {
+    color: var(--text-secondary);
+}
+
+.search-box input:focus {
+    outline: none;
+}
+
+/* Table */
+.campaigns-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.campaigns-table th,
+.campaigns-table td {
+    padding: 16px 20px;
+    text-align: right;
+}
+
+.campaigns-table th {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.campaigns-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s;
+}
+
+.campaigns-table tbody tr:hover {
+    background: var(--hover-bg);
+}
+
+.campaign-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.campaign-device {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.device-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--brand-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+/* ===================================
+   Status Badges
+   =================================== */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-draft {
+    background: rgba(160, 160, 192, 0.2);
+    color: #a0a0c0;
+}
+
+.status-scheduled {
+    background: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+}
+
+.status-running {
+    background: rgba(39, 174, 96, 0.2);
+    color: var(--accent-success);
+}
+
+.status-paused {
+    background: rgba(243, 156, 18, 0.2);
+    color: var(--accent-warning);
+}
+
+.status-completed {
+    background: rgba(52, 152, 219, 0.2);
+    color: var(--accent-info);
+}
+
+.status-cancelled,
+.status-failed {
+    background: rgba(231, 76, 60, 0.2);
+    color: var(--accent-error);
+}
+
+/* ===================================
+   Progress Bar
+   =================================== */
+.progress-cell {
+    min-width: 150px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--brand-primary), var(--accent-success));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* ===================================
+   Action Buttons
+   =================================== */
+.action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btns .btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.action-btns .btn-icon:hover {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+}
+
+.action-btns .btn-icon.play:hover {
+    border-color: var(--accent-success);
+    color: var(--accent-success);
+}
+
+.action-btns .btn-icon.pause:hover {
+    border-color: var(--accent-warning);
+    color: var(--accent-warning);
+}
+
+.action-btns .btn-icon.delete:hover {
+    border-color: var(--accent-error);
+    color: var(--accent-error);
+}
+
+/* ===================================
+   Empty State
+   =================================== */
+.campaigns-container .empty-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.campaigns-container .empty-state .icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.campaigns-container .empty-state h3 {
+    margin: 0 0 8px;
+    color: var(--text-primary);
+}
+
+.campaigns-container .empty-state p {
+    color: var(--text-secondary);
+    margin: 0 0 20px;
+}
+
+/* ===================================
+   Loading State
+   =================================== */
+.campaigns-container .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+}
+
+/* ===================================
+   Filter Group
+   =================================== */
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-select {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 140px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}

@@ -1,0 +1,169 @@
+/* ===================================
+   Sidebar CSS - OctoSHOT WhatsApp Platform
+   Unified Sidebar Styles
+   =================================== */
+
+/* ===================================
+   Sidebar Container
+   =================================== */
+.sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* ===================================
+   Sidebar Header
+   =================================== */
+.sidebar-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.sidebar-header .logo-icon {
+    font-size: 2rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+.sidebar-header .logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===================================
+   Sidebar Navigation
+   =================================== */
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.875rem 1.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-right: 3px solid transparent;
+    font-weight: 500;
+}
+
+.nav-item:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.nav-item.active {
+    background: var(--primary-light);
+    color: var(--brand-primary);
+    border-right-color: var(--brand-primary);
+}
+
+.nav-icon {
+    font-size: 1.25rem;
+    width: 24px;
+    text-align: center;
+}
+
+.nav-text {
+    font-size: 0.9rem;
+}
+
+/* ===================================
+   Sidebar Footer
+   =================================== */
+.sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.theme-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.theme-row>span {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.theme-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.theme-btn:hover {
+    background: var(--hover-bg);
+    transform: rotate(15deg);
+}
+
+/* ===================================
+   Main Content Area
+   =================================== */
+.main-content {
+    flex: 1;
+    margin-right: 240px;
+    padding: 1.5rem 2rem;
+    background: var(--bg-primary);
+    min-height: 100vh;
+}
+
+/* ===================================
+   Responsive
+   =================================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+        min-width: 200px;
+    }
+
+    .main-content {
+        margin-right: 200px;
+        padding: 1rem;
+    }
+}

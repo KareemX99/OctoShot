@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرد التلقائي | اكــتوشــوت واتساب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🐙</span>
+                    <span class="logo-text">اكــتوشــوت</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/profiles" class="nav-item">
+                    <span class="nav-icon">📱</span>
+                    <span class="nav-text">الأجهزة</span>
+                </a>
+                <a href="/api-docs" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">دليل API للمطورين</span>
+                </a>
+                <a href="/api-logs" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">سجل الرسائل</span>
+                </a>
+                <a href="/dashboard" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="/chats" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-text">المحادثات</span>
+                </a>
+                <a href="/contacts" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">جهات الاتصال</span>
+                </a>
+                <a href="/auto-reply" class="nav-item active">
+                    <span class="nav-icon">🤖</span>
+                    <span class="nav-text">الرد التلقائي</span>
+                </a>
+                <a href="/spintax" class="nav-item">
+                    <span class="nav-icon">✨</span>
+                    <span class="nav-text">مولد الرسائل الذكي</span>
+                </a>
+                <a href="/campaigns" class="nav-item">
+                    <span class="nav-icon">📢</span>
+                    <span class="nav-text">الحملات</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>🤖 الرد التلقائي</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="addRuleBtn">
+                        ➕ إضافة قاعدة
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" title="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Info Box -->
+            <section class="info-box">
+                <span class="info-icon">💡</span>
+                <p>الرد التلقائي يعمل عندما يتطابق نص الرسالة الواردة مع الكلمة المفتاحية. اختر نوع التطابق المناسب
+                    لاحتياجاتك.</p>
+            </section>
+
+            <!-- Rules List -->
+            <section class="rules-container" id="rulesContainer">
+                <div class="empty-state">
+                    <span>🤖</span>
+                    <p>لا توجد قواعد رد تلقائي</p>
+                    <button class="btn btn-primary" id="addRuleBtnEmpty">إضافة قاعدة جديدة</button>
+                </div>
+            </section>
+
+            <!-- Add/Edit Rule Modal -->
+            <div class="modal hidden" id="ruleModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalTitle">إضافة قاعدة جديدة</h3>
+                        <button class="btn btn-icon modal-close" id="closeModal">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="ruleId">
+                        <div class="form-group">
+                            <label for="triggerWord">الكلمة المفتاحية</label>
+                            <input type="text" id="triggerWord" placeholder="مثال: مرحبا، سعر، معلومات">
+                        </div>
+                        <div class="form-group">
+                            <label for="matchType">نوع التطابق</label>
+                            <select id="matchType">
+                                <option value="contains">يحتوي على</option>
+                                <option value="exact">تطابق تام</option>
+                                <option value="starts">يبدأ بـ</option>
+                                <option value="ends">ينتهي بـ</option>
+                            </select>
+                            <small class="match-hint" id="matchHint">سيتم الرد إذا احتوت الرسالة على الكلمة
+                                المفتاحية</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="replyMessage">رسالة الرد</label>
+                            <textarea id="replyMessage" rows="4" placeholder="اكتب رسالة الرد هنا..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="isActive" checked>
+                                <span>تفعيل القاعدة</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" id="cancelRule">إلغاء</button>
+                        <button class="btn btn-primary" id="saveRule">حفظ</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/autoReply.js"></script>
+</body>
+
+</html>

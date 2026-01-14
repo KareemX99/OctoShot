@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Session data (sensitive)
+.wwebjs_auth/
+.wwebjs_sessions_backup/
+.wwebjs_cache/
+
+# Environment variables (sensitive)
+.env
+
+# Uploads (user data)
+uploads/
+
+# Logs
+*.log
+LOGS_FILES/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Old/backup files
+*.bak
+*.old
+
+# Profile data exports
+profile_*.zip

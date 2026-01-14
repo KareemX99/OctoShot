@@ -1,0 +1,104 @@
+# whatsapp-web.js 1.34.2 » Class: List
+
+class
+
+# List
+
+Source: [structures/List.js:8](structures_List.js.html#source-line-8)
+
+Message type List
+
+## Properties
+
+[buttonText](List.html#buttonText)
+
+[description](List.html#description)
+
+[footer](List.html#footer)
+
+[sections](List.html#sections)
+
+[title](List.html#title)
+
+## Method
+
+[\_format(sections)](List.html#_format)
+
+## new List(body, buttonText, sections, title, footer)
+
+### Parameters
+
+Name
+
+Type
+
+Optional
+
+Description
+
+body
+
+buttonText
+
+sections
+
+title
+
+Value can be null.
+
+footer
+
+Value can be null.
+
+## Properties
+
+### buttonText  string
+
+List button text
+
+### description  string
+
+Message body
+
+### footer  string
+
+footer of message
+
+### sections  Array of any
+
+sections of message
+
+### title  string
+
+title of message
+
+## Method
+
+### \_format(sections) → Array of any
+
+Creates section array from simple array
+
+#### Example
+
+```
+Input: [{title:'sectionTitle',rows:[{id:'customId', title:'ListItem2', description: 'desc'},{title:'ListItem2'}]}}]
+Returns: [{'title':'sectionTitle','rows':[{'rowId':'customId','title':'ListItem1','description':'desc'},{'rowId':'oGSRoD','title':'ListItem2','description':''}]}]
+```
+
+#### Parameter
+
+Name
+
+Type
+
+Optional
+
+Description
+
+sections
+
+Array of any
+
+Returns
+
+`Array of any`

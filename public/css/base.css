@@ -1,0 +1,116 @@
+/* ===================================
+   Base CSS - OctoSHOT WhatsApp Platform
+   Color Variables, Reset & Typography
+   =================================== */
+
+/* Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===================================
+   Brand Color Variables
+   =================================== */
+:root {
+    /* Brand Colors */
+    --brand-primary: #667eea;
+    --brand-secondary: #764ba2;
+    --brand-gradient: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+
+    /* Accent Colors */
+    --accent-success: #27ae60;
+    --accent-warning: #f39c12;
+    --accent-error: #e74c3c;
+    --accent-info: #3498db;
+
+    /* Light Theme (Default) */
+    --bg-primary: #f5f7fa;
+    --bg-secondary: #ffffff;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --text-muted: #95a5a6;
+
+    --border-color: #e1e8ed;
+    --hover-bg: rgba(102, 126, 234, 0.08);
+    --primary-light: rgba(102, 126, 234, 0.1);
+}
+
+/* ===================================
+   Dark Theme
+   =================================== */
+.dark-theme {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-card: rgba(22, 33, 62, 0.9);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+    --text-primary: #ecf0f1;
+    --text-secondary: #bdc3c7;
+    --text-muted: #7f8c8d;
+
+    --border-color: rgba(255, 255, 255, 0.1);
+    --hover-bg: rgba(102, 126, 234, 0.15);
+    --primary-light: rgba(127, 143, 243, 0.15);
+}
+
+/* ===================================
+   Typography
+   =================================== */
+body {
+    font-family: 'Tajawal', 'Cairo', 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    direction: rtl;
+    min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text-primary);
+}
+
+h1 {
+    font-size: 1.75rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+h4 {
+    font-size: 1.1rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ===================================
+   App Container Layout
+   =================================== */
+.app-container,
+.dashboard-layout,
+.home-layout {
+    display: flex;
+    min-height: 100vh;
+}

@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الحملة - OctoSHOT WhatsApp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/campaigns.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-card: #1a1a3a;
+            --border-color: #2d2d5a;
+            --accent-primary: #00d9ff;
+            --accent-secondary: #667eea;
+            --accent-success: #00ff88;
+            --accent-warning: #ffb300;
+            --accent-error: #ff4757;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0c0;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .detail-container {
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-primary);
+        }
+
+        .campaign-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .campaign-title h1 {
+            margin: 0;
+            font-size: 1.6rem;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-running {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .status-paused {
+            background: rgba(255, 179, 0, 0.2);
+            color: #ffb300;
+        }
+
+        .status-completed {
+            background: rgba(0, 217, 255, 0.2);
+            color: #00d9ff;
+        }
+
+        .status-draft {
+            background: rgba(160, 160, 192, 0.2);
+            color: #a0a0c0;
+        }
+
+        .status-failed {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar-large {
+            height: 24px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-success));
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: attr(data-percent);
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #000;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .stat-value.success {
+            color: var(--accent-success);
+        }
+
+        .stat-value.warning {
+            color: var(--accent-warning);
+        }
+
+        .stat-value.error {
+            color: var(--accent-error);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Info Cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .info-card h3 {
+            margin: 0 0 16px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        /* Messages Timeline */
+        .messages-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .messages-card h3 {
+            margin: 0 0 20px;
+        }
+
+        .step-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .step-timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .timeline-type {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .timeline-delay {
+            color: var(--accent-warning);
+            font-size: 12px;
+        }
+
+        .timeline-content {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Enrollments Table */
+        .enrollments-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .enrollments-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .enrollments-header h3 {
+            margin: 0;
+        }
+
+        .enrollments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .enrollments-table th,
+        .enrollments-table td {
+            padding: 14px 20px;
+            text-align: right;
+        }
+
+        .enrollments-table th {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .enrollments-table tbody tr {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .enrollments-table tbody tr:hover {
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--accent-success);
+            color: #000;
+        }
+
+        .btn-warning {
+            background: var(--accent-warning);
+            color: #000;
+        }
+
+        .btn-danger {
+            background: var(--accent-error);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* ETA */
+        .eta-box {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .eta-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .eta-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Expandable Rows */
+        .enrollments-table tbody tr {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .enrollments-table tbody tr.expanded {
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        .message-preview {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .expand-row {
+            background: var(--bg-secondary) !important;
+            display: none;
+        }
+
+        .expand-row.show {
+            display: table-row;
+        }
+
+        .expand-content {
+            padding: 20px;
+        }
+
+        .message-bubble {
+            background: #dcf8c6;
+            color: #000;
+            padding: 12px 16px;
+            border-radius: 8px 8px 0 8px;
+            margin-bottom: 16px;
+            max-width: 500px;
+            font-size: 14px;
+            line-height: 1.6;
+            direction: rtl;
+        }
+
+        .delivery-timeline {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .timeline-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-step.success {
+            border-color: var(--accent-success);
+        }
+
+        .timeline-step.pending {
+            border-color: var(--accent-warning);
+            opacity: 0.6;
+        }
+
+        .timeline-step .icon {
+            font-size: 18px;
+        }
+
+        .timeline-step .label {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .timeline-step .time {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Schedule Info */
+        .schedule-box {
+            background: rgba(255, 179, 0, 0.1);
+            border: 1px solid var(--accent-warning);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .schedule-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .schedule-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-warning);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🐙</span>
+                <span class="logo-text">اكــتوشــوت</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/profiles" class="nav-item">
+                <span class="nav-icon">📱</span>
+                <span class="nav-text">الأجهزة</span>
+            </a>
+            <a href="/api-docs" class="nav-item">
+                <span class="nav-icon">📚</span>
+                <span class="nav-text">دليل API للمطورين</span>
+            </a>
+            <a href="/api-logs" class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">سجل الرسائل</span>
+            </a>
+            <a href="/dashboard" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">لوحة التحكم</span>
+            </a>
+            <a href="/chats" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span class="nav-text">المحادثات</span>
+            </a>
+            <a href="/spintax" class="nav-item">
+                <span class="nav-icon">✨</span>
+                <span class="nav-text">مولد الرسائل الذكي</span>
+            </a>
+            <a href="/campaigns" class="nav-item active">
+                <span class="nav-icon">📢</span>
+                <span class="nav-text">الحملات</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="theme-row">
+                <span>الوضع</span>
+                <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="detail-container" id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Labels Modal -->
+    <div id="labelsModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content labels-modal">
+            <div class="modal-header">
+                <h3>🏷️ إدارة التصنيفات</h3>
+                <button class="modal-close" onclick="closeLabelsModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="currentLabels" class="current-labels"></div>
+                <div class="add-label-form">
+                    <input type="text" id="newLabelInput" placeholder="أدخل اسم التصنيف الجديد">
+                    <button onclick="submitNewLabel()" class="add-label-btn">+ إضافة</button>
+                </div>
+                <div class="suggested-labels">
+                    <span class="suggested-title">تصنيفات مقترحة:</span>
+                    <div class="suggested-list">
+                        <button onclick="selectSuggestedLabel('عميل VIP')" class="suggested-label">عميل VIP</button>
+                        <button onclick="selectSuggestedLabel('مهتم')" class="suggested-label">مهتم</button>
+                        <button onclick="selectSuggestedLabel('متابعة')" class="suggested-label">متابعة</button>
+                        <button onclick="selectSuggestedLabel('تم الرد')" class="suggested-label">تم الرد</button>
+                        <button onclick="selectSuggestedLabel('غير مهتم')" class="suggested-label">غير مهتم</button>
+                        <button onclick="selectSuggestedLabel('عميل جديد')" class="suggested-label">عميل جديد</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--accent-error);
+        }
+
+        /* Labels Modal */
+        .labels-modal {
+            width: 400px;
+            max-width: 95vw;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .current-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            min-height: 40px;
+        }
+
+        .label-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #000;
+        }
+
+        .label-tag .remove-label {
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .label-tag .remove-label:hover {
+            opacity: 1;
+        }
+
+        .add-label-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        #newLabelInput {
+            flex: 1;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--text-primary);
+        }
+
+        .add-label-btn {
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .suggested-labels {
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .suggested-title {
+            color: var(--text-secondary);
+            font-size: 12px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .suggested-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .suggested-label {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 6px 12px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .suggested-label:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+    </style>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const campaignId = new URLSearchParams(window.location.search).get('id');
+        let campaign = null;
+
+        async function loadCampaign() {
+            try {
+                const response = await fetch(`/api/campaigns/${campaignId}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    document.getElementById('content').innerHTML = `
+                        <div style="text-align: center; padding: 60px;">
+                            <h2>❌ الحملة غير موجودة</h2>
+                            <a href="/campaigns" class="btn btn-primary">العودة للحملات</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                campaign = data.campaign;
+                renderCampaign();
+
+                // Load enrollments and device stats
+                loadEnrollments();
+
+                // Load device stats with delay to ensure DOM is ready
+                setTimeout(() => {
+                    loadDeviceStats();
+
+                    // Fallback: if still loading after 5s, show message
+                    setTimeout(() => {
+                        const container = document.getElementById('deviceStatsContainer');
+                        if (container && container.querySelector('.spinner')) {
+                            container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">تعذر تحميل إحصائيات الأجهزة</div>';
+                        }
+                    }, 5000);
+                }, 100);
+
+            } catch (error) {
+                console.error('Error loading campaign:', error);
+            }
+        }
+
+        function renderCampaign() {
+            // Progress = (sent + failed) / total
+            const completed = (campaign.sent_count || 0) + (campaign.failed_count || 0);
+
+            // For sequential campaigns, total = recipients * steps, not just recipients
+            const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()] : [];
+            const stepsCount = uniqueSteps.length || 1;
+            const isSequential = campaign.type === 'sequential' && stepsCount > 1;
+            const totalMessages = isSequential
+                ? (campaign.total_recipients || 0) * stepsCount
+                : (campaign.total_recipients || 0);
+
+            const percent = totalMessages > 0
+                ? Math.min(100, Math.round((completed / totalMessages) * 100))
+                : 0;
+
+            document.getElementById('content').innerHTML = `
+                <!-- Header -->
+                <a href="/campaigns" class="back-link">◀️ العودة للحملات</a>
+                
+                <div class="page-header">
+                    <div class="campaign-title">
+                        <h1>${escapeHtml(campaign.name)}</h1>
+                        <span class="status-badge status-${campaign.status}">
+                            ${getStatusText(campaign.status)}
+                        </span>
+                    </div>
+                    <div class="action-buttons">
+                        ${renderActionButtons()}
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <h2>📊 تقدم الحملة</h2>
+                        ${campaign.status === 'running' ? `
+                            <div class="eta-box">
+                                <span class="eta-label">الوقت المتبقي:</span>
+                                <span class="eta-value" id="etaValue">${calculateRemainingTime()}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="progress-bar-large">
+                        <div class="progress-fill" style="width: ${percent}%" data-percent="${percent}%"></div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${campaign.total_recipients || 0}</div>
+                            <div class="stat-label">إجمالي المستلمين</div>
+                        </div>
+                        ${isSequential ? `
+                        <div class="stat-item">
+                            <div class="stat-value">${totalMessages}</div>
+                            <div class="stat-label">إجمالي الرسائل</div>
+                        </div>
+                        ` : ''}
+                        <div class="stat-item">
+                            <div class="stat-value success">${campaign.sent_count || 0}</div>
+                            <div class="stat-label">تم الإرسال</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${campaign.delivered_count || 0}</div>
+                            <div class="stat-label">تم التسليم</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value warning">${campaign.read_count || 0}</div>
+                            <div class="stat-label">تمت القراءة</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value error">${campaign.failed_count || 0}</div>
+                            <div class="stat-label">فشل</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Per-Device Stats (shown if multiple devices) -->
+                ${(campaign.device_ids && campaign.device_ids.length > 1) ? `
+                    <div class="per-device-stats" style="margin-top: 24px;">
+                        <h3 style="margin-bottom: 16px;">📊 إحصائيات لكل جهاز</h3>
+                        <div id="deviceStatsContainer">
+                            <div class="loading"><div class="spinner"></div></div>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Enrollments -->
+                <div class="enrollments-card" style="margin-top: 24px;">
+                    <div class="enrollments-header">
+                        <h3>👥 المستلمين</h3>
+                    </div>
+                    <div id="enrollmentsContainer">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Attach action handlers
+            attachActionHandlers();
+        }
+
+        async function loadEnrollments() {
+            try {
+                const response = await fetch(`/api/campaigns/${campaignId}/enrollments`);
+                const data = await response.json();
+
+                if (data.success && data.enrollments.length > 0) {
+                    renderEnrollments(data.enrollments);
+                } else {
+                    document.getElementById('enrollmentsContainer').innerHTML = `
+                        <div style="padding: 40px; text-align: center; color: var(--text-secondary);">
+                            لا يوجد مستلمين
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading enrollments:', error);
+            }
+        }
+
+        function renderEnrollments(enrollments) {
+            // Get first message step for preview
+            const firstStep = campaign.steps?.[0] || {};
+            const messageTemplate = firstStep.content || firstStep.media_url || '';
+
+            document.getElementById('enrollmentsContainer').innerHTML = `
+                <table class="enrollments-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">#</th>
+                            <th style="width: 130px;">الرقم</th>
+                            <th style="width: 100px;">الاسم</th>
+                            <th style="width: 140px;">وقت الإرسال</th>
+                            <th style="width: 100px;">المتبقي</th>
+                            <th style="width: 90px;">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${enrollments.slice(0, 50).map((e, index) => {
+                const statusIcon = getDeliveryStatusIcon(e);
+                // For sequential campaigns: show step progress, otherwise show scheduled time
+                // Deduplicate steps array (SQL join causes duplicates)
+                const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()] : [];
+                const totalSteps = uniqueSteps.length || 1;
+                const currentStep = e.current_step || 0;
+                const isSequential = campaign.type === 'sequential' && totalSteps > 1;
+
+                let scheduledTime, remainingTime;
+                if (isSequential) {
+                    // Show step progress instead of time
+                    // currentStep is the step currently QUEUED, so completed = currentStep - 1
+                    const completedSteps = Math.max(0, currentStep - 1);
+                    if (e.status === 'completed') {
+                        scheduledTime = '✅ تم';
+                        remainingTime = `${totalSteps}/${totalSteps}`;
+                    } else if (e.status === 'pending') {
+                        scheduledTime = '⏳ في الانتظار';
+                        remainingTime = `0/${totalSteps}`;
+                    } else {
+                        scheduledTime = e.sent_at ? formatTime(e.sent_at) : '⏳ جاري';
+                        remainingTime = `${completedSteps}/${totalSteps}`;
+                    }
+                } else {
+                    scheduledTime = formatScheduledTime(e.next_execution_at);
+                    remainingTime = calculateTimeRemaining(e.next_execution_at);
+                }
+
+                return `
+                            <tr onclick="toggleExpandRow(${index})" data-index="${index}">
+                                <td style="color: var(--text-secondary);">${index + 1}</td>
+                                <td>${e.recipient}</td>
+                                <td>${escapeHtml(e.recipient_name) || '-'}</td>
+                                <td style="color: var(--accent-warning);">${scheduledTime}</td>
+                                <td style="color: var(--accent-primary);">${remainingTime}</td>
+                                <td>${statusIcon}</td>
+                            </tr>
+                            <tr class="expand-row" id="expand-${index}">
+                                <td colspan="6">
+                                    <div class="expand-content" style="display: flex; gap: 24px; flex-wrap: wrap;">
+                                        <!-- Left Panel: Recipient Details -->
+                                        <div class="recipient-panel" style="flex: 1; min-width: 280px; background: var(--bg-card); border-radius: 12px; padding: 16px; border: 1px solid var(--border-color);">
+                                            <!-- Device Info -->
+                                            <div style="margin-bottom: 16px;">
+                                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">📱 الجهاز المُرسِل</div>
+                                                <div style="font-weight: 600; color: var(--accent-primary);">${e.device_name || e.assigned_device_phone || 'لم يُعيّن بعد'}</div>
+                                            </div>
+                                            
+                                            <!-- Action Buttons -->
+                                            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+                                                <button onclick="copyNumber('${e.recipient}'); event.stopPropagation();" class="action-btn" style="padding: 8px 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-size: 12px;">
+                                                    📋 نسخ الرقم
+                                                </button>
+                                                ${e.status === 'failed' || e.message_status === 'failed' ? `
+                                                    <button onclick="retryMessage(${e.id}); event.stopPropagation();" class="action-btn" style="padding: 8px 12px; background: var(--accent-warning); border: none; border-radius: 8px; color: #000; cursor: pointer; font-size: 12px;">
+                                                        🔄 إعادة الإرسال
+                                                    </button>
+                                                ` : ''}
+                                            </div>
+                                            
+                                            <!-- Failure Reason -->
+                                            ${e.error_message ? `
+                                                <div style="margin-bottom: 16px; padding: 12px; background: rgba(255, 71, 87, 0.1); border: 1px solid var(--accent-error); border-radius: 8px;">
+                                                    <div style="color: var(--accent-error); font-size: 12px; margin-bottom: 4px;">❌ سبب الفشل</div>
+                                                    <div style="color: var(--text-primary); font-size: 13px;">${escapeHtml(e.error_message)}</div>
+                                                </div>
+                                            ` : ''}
+                                            
+                                            <!-- Response Time -->
+                                            ${e.sent_at && e.delivered_at ? `
+                                                <div style="margin-bottom: 16px;">
+                                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">⏱️ وقت الاستجابة</div>
+                                                    <div style="font-weight: 600; color: var(--accent-success);">${calculateResponseTime(e.sent_at, e.delivered_at)}</div>
+                                                </div>
+                                            ` : ''}
+                                            
+                                            <!-- Labels/Tags -->
+                                            <div>
+                                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">🏷️ التصنيفات</div>
+                                                <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="labels-${e.id}">
+                                                    ${(e.labels || []).map(label => `
+                                                        <span style="padding: 4px 10px; background: ${getLabelColor(label)}; border-radius: 12px; font-size: 11px; color: #000;">${escapeHtml(label)}</span>
+                                                    `).join('') || '<span style="color: var(--text-secondary); font-size: 12px;">لا توجد تصنيفات</span>'}
+                                                </div>
+                                                <button onclick="openLabelsModal(${e.id}, ${JSON.stringify(e.labels || []).replace(/"/g, "&quot;")}); event.stopPropagation();" style="margin-top: 8px; padding: 6px 10px; background: transparent; border: 1px dashed var(--border-color); border-radius: 8px; color: var(--text-secondary); cursor: pointer; font-size: 11px;">
+                                                    + إضافة تصنيف
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Right Panel: Messages & Timeline -->
+                                        <div style="flex: 2; min-width: 300px;">
+                                            ${renderMessagesPanel(e, campaign, messageTemplate)}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        `}).join('')}
+                    </tbody>
+                </table>
+                ${enrollments.length > 50 ? `<div style="padding: 16px; text-align: center; color: var(--text-secondary);">و ${enrollments.length - 50} آخرين...</div>` : ''}
+            `;
+        }
+
+        function formatScheduledTime(dateStr) {
+            if (!dateStr) return 'غير محدد';
+            const date = new Date(dateStr);
+            const now = new Date();
+
+            // If in the past, show "تم"
+            if (date <= now) return '✅ تم';
+
+            return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function calculateTimeRemaining(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = date - now;
+
+            if (diff <= 0) return '✅ الآن';
+
+            const mins = Math.floor(diff / 60000);
+            const hours = Math.floor(mins / 60);
+            const days = Math.floor(hours / 24);
+
+            if (days > 0) return `${days} يوم ${hours % 24} س`;
+            if (hours > 0) return `${hours}س ${mins % 60} د`;
+            return `${mins} دقيقة`;
+        }
+
+        function toggleExpandRow(index) {
+            const expandRow = document.getElementById(`expand-${index}`);
+            const mainRow = document.querySelector(`tr[data-index="${index}"]`);
+
+            // Close all other expanded rows
+            document.querySelectorAll('.expand-row.show').forEach(row => {
+                if (row.id !== `expand-${index}`) {
+                    row.classList.remove('show');
+                }
+            });
+            document.querySelectorAll('tr.expanded').forEach(row => {
+                if (row.dataset.index !== String(index)) {
+                    row.classList.remove('expanded');
+                }
+            });
+
+            // Toggle current row
+            expandRow.classList.toggle('show');
+            mainRow.classList.toggle('expanded');
+        }
+
+        function resolveVariables(template, enrollment) {
+            if (!template) return '';
+            let result = template;
+            const attrs = enrollment.attributes || {};
+
+            result = result.replace(/\{\{name\}\}/g, enrollment.recipient_name || attrs.name || '');
+            result = result.replace(/\{\{phone\}\}/g, enrollment.recipient || attrs.phone || '');
+            result = result.replace(/\{\{company\}\}/g, attrs.company || '');
+
+            for (let i = 1; i <= 20; i++) {
+                result = result.replace(new RegExp(`\\{ \\{var${i} \\ } \\ } `, 'g'), attrs[`var${i} `] || '');
+            }
+
+            // Process spintax for preview (pick first option)
+            result = result.replace(/\{([^{}]*\|[^{}]*)\}/g, (match, options) => {
+                return options.split('|')[0];
+            });
+
+            return result;
+        }
+
+        function renderMessagesPanel(e, campaign, messageTemplate) {
+            // For sequential campaigns, show all messages with their status
+            const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()].sort((a, b) => a.step_order - b.step_order) : [];
+            const isSeqCampaign = campaign.type === 'sequential' && uniqueSteps.length > 1;
+
+            if (isSeqCampaign) {
+                // Show all messages for sequential campaign
+                const isCompleted = e.status === 'completed';
+                return uniqueSteps.map(step => {
+                    const stepNum = step.step_order;
+                    const currentStep = e.current_step || 0;
+                    // When enrollment is COMPLETED, all steps are sent
+                    // Otherwise, use > not >= because current_step is set when step is QUEUED
+                    const isSent = isCompleted || currentStep > stepNum;
+                    const isLastSentStep = isCompleted ? (stepNum === uniqueSteps.length) : (currentStep === stepNum + 1);
+                    const stepContent = step.media_url ? (step.content || '📎 ' + (step.message_type || 'media')) : step.content;
+                    const borderColor = isSent ? 'var(--accent-success)' : 'var(--border-color)';
+
+                    // For sent messages, show delivery timeline
+                    let statusHtml = '';
+                    if (isSent) {
+                        // Only the last sent step has the delivery info (sent_at, delivered_at, read_at)
+                        if (isLastSentStep) {
+                            statusHtml = `
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                    <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,255,136,0.2); color: var(--accent-success);">
+                                        ✅ تم الإرسال ${e.sent_at ? formatTime(e.sent_at) : ''}
+                                    </span>
+                                    ${e.delivered_at ? `
+                                        <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,217,255,0.2); color: var(--accent-primary);">
+                                            ✔️ وصلت ${formatTime(e.delivered_at)}
+                                        </span>
+                                    ` : `
+                                        <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(255,179,0,0.2); color: var(--accent-warning);">
+                                            ⏳ في انتظار التسليم
+                                        </span>
+                                    `}
+                                    ${e.read_at ? `
+                                        <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,217,255,0.3); color: #00d9ff;">
+                                            👁️ قُرأت ${formatTime(e.read_at)}
+                                        </span>
+                                    ` : ''}
+                                </div>
+                            `;
+                        } else {
+                            // Previous steps - already delivered
+                            statusHtml = `
+                                <div style="margin-top: 8px;">
+                                    <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,255,136,0.2); color: var(--accent-success);">
+                                        ✅ تم الإرسال
+                                    </span>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        statusHtml = `
+                            <div style="margin-top: 8px;">
+                                <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(255,179,0,0.2); color: var(--accent-warning);">
+                                    ⏳ في الانتظار
+                                </span>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div style="margin-bottom: 16px; padding: 12px; background: var(--bg-secondary); border-radius: 12px; border-right: 3px solid ${borderColor};">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 12px; color: var(--text-secondary);">رسالة ${stepNum}</span>
+                            </div>
+                            <div class="message-bubble" style="margin: 0;">${escapeHtml(resolveVariables(stepContent || '', e)) || 'محتوى الرسالة'}</div>
+                            ${statusHtml}
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                // Single message campaign - show original timeline
+                return `
+                    <div class="message-bubble">${escapeHtml(resolveVariables(messageTemplate, e)) || 'لم ترسل بعد'}</div>
+                    <div class="delivery-timeline">
+                        <div class="timeline-step ${e.sent_at ? 'success' : 'pending'}">
+                            <span class="icon">${e.sent_at ? '✅' : '⏳'}</span>
+                            <div>
+                                <div class="label">تم الإرسال</div>
+                                <div class="time">${e.sent_at ? formatTime(e.sent_at) : 'قيد الانتظار'}</div>
+                            </div>
+                        </div>
+                        <div class="timeline-step ${e.delivered_at ? 'success' : 'pending'}">
+                            <span class="icon">${e.delivered_at ? '✔️' : '⏳'}</span>
+                            <div>
+                                <div class="label">تم التسليم</div>
+                                <div class="time">${e.delivered_at ? formatTime(e.delivered_at) : 'في انتظار'}</div>
+                            </div>
+                        </div>
+                        <div class="timeline-step ${e.read_at ? 'success' : 'pending'}">
+                            <span class="icon">${e.read_at ? '👁️' : '⏳'}</span>
+                            <div>
+                                <div class="label">تمت القراءة</div>
+                                <div class="time">${e.read_at ? formatTime(e.read_at) : 'في انتظار'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function getDeliveryStatusIcon(enrollment) {
+            if (enrollment.read_at) {
+                return '<span style="color: #00d9ff;" title="قُرأت">👁️ قُرأت</span>';
+            } else if (enrollment.delivered_at) {
+                return '<span style="color: #00ff88;" title="وصلت">✔️ وصلت</span>';
+            } else if (enrollment.sent_at || enrollment.status === 'completed') {
+                return '<span style="color: #ffb300;" title="مرسلة">📤 مرسلة</span>';
+            } else if (enrollment.status === 'failed') {
+                return '<span style="color: #ff4757;" title="فشل">❌ فشل</span>';
+            } else if (enrollment.status === 'active') {
+                return '<span style="color: #a0a0c0;" title="نشط">🔄 نشط</span>';
+            } else {
+                return '<span style="color: #a0a0c0;" title="معلق">⏳ معلق</span>';
+            }
+        }
+
+        function formatTime(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + ' - ' +
+                date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
+        }
+
+        function calculateRemainingTime() {
+            const total = campaign.total_recipients || 0;
+            const sent = campaign.sent_count || 0;
+            const remaining = total - sent;
+
+            if (remaining <= 0) return 'مكتمل';
+
+            // Average 45 seconds per message (including delay and business hours)
+            const avgSecondsPerMsg = 45;
+            const totalSeconds = remaining * avgSecondsPerMsg;
+
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+            if (hours > 0) {
+                return `~${hours} ساعة و ${minutes} دقيقة`;
+            } else if (minutes > 0) {
+                return `~${minutes} دقيقة`;
+            } else {
+                return 'قريباً جداً';
+            }
+        }
+
+        async function loadDeviceStats() {
+            const container = document.getElementById('deviceStatsContainer');
+            console.log('📊 loadDeviceStats called, container:', container);
+            if (!container) return;  // Not shown for single-device campaigns
+
+            try {
+                const response = await fetch(`/ api / campaigns / ${campaignId}/device-stats`);
+                const data = await response.json();
+                console.log('📊 Device stats response:', data);
+
+                if (data.success && data.deviceStats && data.deviceStats.length > 0) {
+                    container.innerHTML = `
+                        <table style="width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden;">
+                            <thead>
+                                <tr style="background: var(--bg-secondary);">
+                                    <th style="padding: 12px; text-align: right; border-bottom: 1px solid var(--border-color);">الجهاز</th>
+                                    <th style="padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color);">مُعين</th>
+                                    <th style="padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); color: var(--accent-success);">مرسل</th>
+                                    <th style="padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); color: #00ff88;">تسليم</th>
+                                    <th style="padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); color: #00d9ff;">قراءة</th>
+                                    <th style="padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); color: var(--accent-error);">فشل</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.deviceStats.map(stat => `
+                                    <tr>
+                                        <td style="padding: 12px; text-align: right;">
+                                            📱 ${stat.device_name || stat.device_phone || 'Device ' + stat.device_id}
+                                        </td>
+                                        <td style="padding: 12px; text-align: center;">${stat.total_assigned || 0}</td>
+                                        <td style="padding: 12px; text-align: center; color: var(--accent-success);">${stat.sent || 0}</td>
+                                        <td style="padding: 12px; text-align: center; color: #00ff88;">${stat.delivered || 0}</td>
+                                        <td style="padding: 12px; text-align: center; color: #00d9ff;">${stat.read || 0}</td>
+                                        <td style="padding: 12px; text-align: center; color: var(--accent-error);">${stat.failed || 0}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">📊 لا توجد إحصائيات مفصلة - الحملة تستخدم جهاز واحد</div>';
+                }
+            } catch (error) {
+                console.error('Error loading device stats:', error);
+                container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">تعذر تحميل الإحصائيات</div>';
+            }
+        }
+
+        function renderActionButtons() {
+            let buttons = '';
+            if (campaign.status === 'draft' || campaign.status === 'paused') {
+                buttons += `<button class="btn btn-success" onclick="startCampaign()">▶️ تشغيل</button>`;
+            }
+            if (campaign.status === 'running') {
+                buttons += `<button class="btn btn-warning" onclick="pauseCampaign()">⏸️ إيقاف مؤقت</button>`;
+            }
+            if (campaign.status !== 'completed' && campaign.status !== 'cancelled') {
+                buttons += `<button class="btn btn-danger" onclick="cancelCampaign()">❌ إلغاء</button>`;
+            }
+            return buttons;
+        }
+
+        function attachActionHandlers() {
+            // Action handlers attached via onclick
+        }
+
+        async function startCampaign() {
+            const response = await fetch(`/api/campaigns/${campaignId}/start`, { method: 'POST' });
+            const data = await response.json();
+            if (data.success) {
+                showToast('تم تشغيل الحملة', 'success');
+                loadCampaign();
+            } else {
+                showToast(data.error, 'error');
+            }
+        }
+
+        async function pauseCampaign() {
+            const response = await fetch(`/api/campaigns/${campaignId}/pause`, { method: 'POST' });
+            const data = await response.json();
+            if (data.success) {
+                showToast('تم إيقاف الحملة مؤقتاً', 'warning');
+                loadCampaign();
+            } else {
+                showToast(data.error, 'error');
+            }
+        }
+
+        async function cancelCampaign() {
+            if (!confirm('هل أنت متأكد من إلغاء الحملة؟')) return;
+            const response = await fetch(`/api/campaigns/${campaignId}/cancel`, { method: 'POST' });
+            const data = await response.json();
+            if (data.success) {
+                showToast('تم إلغاء الحملة', 'error');
+                loadCampaign();
+            } else {
+                showToast(data.error, 'error');
+            }
+        }
+
+        // Socket.IO real-time updates
+        socket.on('campaign:progress', (data) => {
+            if (data.campaignId == campaignId) {
+                campaign.sent_count = data.sent || campaign.sent_count;
+                campaign.failed_count = data.failed || campaign.failed_count;
+                campaign.status = data.status || campaign.status;
+                renderCampaign();
+                loadEnrollments();
+
+                if (data.eta) {
+                    const etaEl = document.getElementById('etaValue');
+                    if (etaEl) {
+                        etaEl.textContent = formatETA(data.eta);
+                    }
+                }
+            }
+        });
+
+        socket.on('campaign:status', (data) => {
+            if (data.campaignId == campaignId) {
+                campaign.status = data.status;
+                renderCampaign();
+            }
+        });
+
+        // Real-time ACK updates (delivered/read)
+        socket.on('campaign:message_ack', (data) => {
+            if (data.campaignId == campaignId) {
+                console.log('📬 ACK received:', data);
+
+                // Update campaign counts based on status
+                if (data.status === 'delivered') {
+                    campaign.delivered_count = (campaign.delivered_count || 0) + 1;
+                } else if (data.status === 'read') {
+                    campaign.read_count = (campaign.read_count || 0) + 1;
+                }
+
+                // Re-render to show updated stats
+                renderCampaign();
+                loadEnrollments();
+            }
+        });
+
+        function formatETA(isoDate) {
+            const eta = new Date(isoDate);
+            const now = new Date();
+            const diff = eta - now;
+            if (diff <= 0) return 'قريباً';
+            const mins = Math.floor(diff / 60000);
+            const hours = Math.floor(mins / 60);
+            if (hours > 0) return `${hours} ساعة ${mins % 60} دقيقة`;
+            return `${mins} دقيقة`;
+        }
+
+        function getStatusText(status) {
+            const texts = { draft: 'مسودة', scheduled: 'مجدول', running: '🟢 نشط', paused: 'متوقف', completed: '✅ مكتمل', cancelled: 'ملغى', failed: 'فشل' };
+            return texts[status] || status;
+        }
+
+        function getEnrollmentStatus(status) {
+            const texts = { pending: '⏳ معلق', active: '🔄 نشط', completed: '✅ مكتمل', paused: '⏸️ متوقف', failed: '❌ فشل', opted_out: '🚫 محظور' };
+            return texts[status] || status;
+        }
+
+        function getTypeLabel(type) {
+            const labels = { text: '📝 نص', image: '🖼️ صورة', video: '🎬 فيديو', audio: '🎵 صوت', voice: '🎤 صوتية', document: '📄 ملف' };
+            return labels[type] || type;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            return new Date(dateStr).toLocaleString('ar-EG');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `position:fixed;bottom:24px;left:24px;padding:16px 24px;background:${type === 'success' ? '#00ff88' : type === 'error' ? '#ff4757' : '#ffb300'};color:#000;border-radius:8px;font-weight:600;z-index:1000;`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Copy phone number to clipboard
+        function copyNumber(phone) {
+            navigator.clipboard.writeText(phone).then(() => {
+                showToast('تم نسخ الرقم: ' + phone, 'success');
+            }).catch(() => {
+                showToast('فشل النسخ', 'error');
+            });
+        }
+
+        // Retry failed message
+        async function retryMessage(enrollmentId) {
+            if (!confirm('هل تريد إعادة إرسال الرسالة؟')) return;
+            try {
+                const response = await fetch(`/api/campaigns/${campaignId}/retry/${enrollmentId}`, { method: 'POST' });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('تم إضافة الرسالة لقائمة الإرسال', 'success');
+                    loadEnrollments();
+                } else {
+                    showToast(data.error || 'فشل إعادة الإرسال', 'error');
+                }
+            } catch (err) {
+                showToast('خطأ في الاتصال', 'error');
+            }
+        }
+
+        // Add label to enrollment
+        async function addLabel(enrollmentId) {
+            const label = prompt('أدخل اسم التصنيف:');
+            if (!label || !label.trim()) return;
+
+            try {
+                const response = await fetch(`/api/campaigns/enrollments/${enrollmentId}/labels`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ label: label.trim() })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('تم إضافة التصنيف', 'success');
+                    loadEnrollments();
+                } else {
+                    showToast(data.error || 'فشل إضافة التصنيف', 'error');
+                }
+            } catch (err) {
+                showToast('خطأ في الاتصال', 'error');
+            }
+        }
+
+        // Calculate response time between sent and delivered
+        function calculateResponseTime(sentAt, deliveredAt) {
+            if (!sentAt || !deliveredAt) return '-';
+            const sent = new Date(sentAt);
+            const delivered = new Date(deliveredAt);
+            const diffMs = delivered - sent;
+
+            if (diffMs < 1000) return 'فوري';
+            if (diffMs < 60000) return Math.round(diffMs / 1000) + ' ثانية';
+            if (diffMs < 3600000) return Math.round(diffMs / 60000) + ' دقيقة';
+            return Math.round(diffMs / 3600000) + ' ساعة';
+        }
+
+        // Get color for label
+        function getLabelColor(label) {
+            const colors = ['#00ff88', '#00d9ff', '#ffb300', '#ff6b81', '#a29bfe', '#fd79a8', '#81ecec', '#ffeaa7'];
+            let hash = 0;
+            for (let i = 0; i < label.length; i++) {
+                hash = label.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        // ==================== CHAT MODAL ====================
+        let currentChatPhone = null;
+        let currentChatDeviceId = null;
+        let currentChatName = null;
+
+        async function openChatModal(phone, name, deviceId) {
+            currentChatPhone = phone;
+            currentChatDeviceId = deviceId;
+            currentChatName = name;
+
+            document.getElementById('chatModalName').textContent = name || phone;
+            document.getElementById('chatModalPhone').textContent = phone;
+            document.getElementById('chatModal').style.display = 'flex';
+            document.getElementById('chatMessageInput').value = '';
+
+            await loadChatMessages();
+        }
+
+        function closeChatModal() {
+            document.getElementById('chatModal').style.display = 'none';
+            currentChatPhone = null;
+            currentChatDeviceId = null;
+        }
+
+        async function loadChatMessages() {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                // Build chat ID format for WhatsApp
+                const chatId = currentChatPhone.includes('@') ? currentChatPhone : `${currentChatPhone}@c.us`;
+
+                // Try WhatsApp real-time API first (like chats.js) - pass deviceId for correct profile
+                let response = await fetch(`/api/whatsapp/chat/${encodeURIComponent(chatId)}/messages?limit=50&deviceId=${currentChatDeviceId}`);
+                let data = await response.json();
+
+                // Fallback to database if WhatsApp API fails
+                if (!data.success) {
+                    response = await fetch(`/api/messages/chat/${encodeURIComponent(chatId)}?limit=50`);
+                    data = await response.json();
+                }
+
+                if (data.success && data.data && data.data.length > 0) {
+                    // Messages come newest first, reverse for display
+                    const messages = [...data.data].reverse();
+                    container.innerHTML = messages.map(msg => `
+                        <div class="message-item ${msg.fromMe || msg.from_me || msg.is_from_me ? 'sent' : 'received'}">
+                            <div class="message-content">${renderMessageContent(msg)}</div>
+                            <div class="message-time">${formatTime(msg.timestamp || msg.created_at)}</div>
+                        </div>
+                    `).join('');
+                    container.scrollTop = container.scrollHeight;
+                } else {
+                    container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد رسائل سابقة</div>';
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                container.innerHTML = '<div style="text-align:center;color:var(--accent-error);padding:40px;">تعذر تحميل الرسائل</div>';
+            }
+        }
+
+        // Helper to render message content with media support
+        function renderMessageContent(msg) {
+            const type = msg.type || msg.message_type || 'chat';
+            const body = msg.body || msg.content || '';
+            const mediaUrl = msg.mediaUrl || msg.media_url || '';
+            const hasMedia = msg.hasMedia || false;
+
+            // Text message
+            if (type === 'chat' || type === 'text') {
+                return escapeHtml(body) || '';
+            }
+
+            // If has media URL, show the actual media
+            if (mediaUrl) {
+                // Image
+                if (type === 'image' || type === 'sticker') {
+                    return `<img src="${mediaUrl}" alt="صورة" style="max-width:100%;max-height:200px;border-radius:8px;cursor:pointer;" onclick="window.open('${mediaUrl}','_blank')">
+                            ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
+                }
+                // Video
+                if (type === 'video') {
+                    return `<video controls style="max-width:100%;max-height:200px;border-radius:8px;">
+                                <source src="${mediaUrl}" type="video/mp4">
+                            </video>
+                            ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
+                }
+                // Audio/Voice  
+                if (type === 'audio' || type === 'ptt' || type === 'voice') {
+                    return `<audio controls style="width:100%;">
+                                <source src="${mediaUrl}" type="audio/ogg">
+                            </audio>
+                            ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
+                }
+                // Document
+                if (type === 'document') {
+                    const filename = msg.filename || 'ملف';
+                    return `<a href="${mediaUrl}" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px;background:rgba(255,255,255,0.1);border-radius:8px;text-decoration:none;color:inherit;">
+                                <span style="font-size:24px;">📄</span>
+                                <span>${escapeHtml(filename)}</span>
+                            </a>
+                            ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
+                }
+            }
+
+            // If hasMedia but no URL, show styled placeholder with type icon
+            if (hasMedia || ['image', 'sticker', 'video', 'audio', 'ptt', 'voice', 'document'].includes(type)) {
+                const icons = {
+                    'image': '🖼️', 'sticker': '🎨', 'video': '🎬', 'audio': '🎵',
+                    'ptt': '🎤', 'voice': '🎤', 'document': '📄'
+                };
+                const labels = {
+                    'image': 'صورة', 'sticker': 'ملصق', 'video': 'فيديو', 'audio': 'مقطع صوتي',
+                    'ptt': 'رسالة صوتية', 'voice': 'رسالة صوتية', 'document': 'مستند'
+                };
+                const icon = icons[type] || '📎';
+                const label = labels[type] || 'ملف مرفق';
+                return `<div style="display:flex;align-items:center;gap:8px;padding:12px;background:rgba(255,255,255,0.05);border-radius:8px;border:1px dashed rgba(255,255,255,0.2);">
+                            <span style="font-size:28px;">${icon}</span>
+                            <span style="color:var(--text-secondary);">${label}</span>
+                        </div>
+                        ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
+            }
+
+            // Location
+            if (type === 'location') {
+                return `<a href="https://maps.google.com/?q=${msg.latitude},${msg.longitude}" target="_blank" style="color:var(--accent-primary);">📍 موقع</a>`;
+            }
+
+            // Default - show body text
+            return escapeHtml(body) || '';
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatMessageInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            try {
+                const response = await fetch(`/api/client/${currentChatDeviceId}/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        to: currentChatPhone,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    input.value = '';
+                    // Add message to UI immediately
+                    const container = document.getElementById('chatMessages');
+                    container.innerHTML += `
+                        <div class="message-item sent">
+                            <div class="message-content">${escapeHtml(message)}</div>
+                            <div class="message-time">الآن</div>
+                        </div>
+                    `;
+                    container.scrollTop = container.scrollHeight;
+                    showToast('تم الإرسال', 'success');
+                } else {
+                    showToast(data.error || 'فشل الإرسال', 'error');
+                }
+            } catch (error) {
+                showToast('خطأ في الاتصال', 'error');
+            }
+        }
+
+        async function handleChatAttachment(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('to', currentChatPhone);
+            formData.append('caption', '');
+
+            try {
+                const response = await fetch(`/api/client/${currentChatDeviceId}/send-media`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showToast('تم إرسال الملف', 'success');
+                    await loadChatMessages();
+                } else {
+                    showToast(data.error || 'فشل إرسال الملف', 'error');
+                }
+            } catch (error) {
+                showToast('خطأ في رفع الملف', 'error');
+            }
+            event.target.value = '';
+        }
+
+        // ==================== LABELS MODAL ====================
+        let currentLabelsEnrollmentId = null;
+        let currentLabels = [];
+
+        function openLabelsModal(enrollmentId, labels) {
+            currentLabelsEnrollmentId = enrollmentId;
+            currentLabels = labels || [];
+
+            renderCurrentLabels();
+            document.getElementById('labelsModal').style.display = 'flex';
+            document.getElementById('newLabelInput').value = '';
+            document.getElementById('newLabelInput').focus();
+        }
+
+        function closeLabelsModal() {
+            document.getElementById('labelsModal').style.display = 'none';
+            currentLabelsEnrollmentId = null;
+            loadEnrollments(); // Refresh to show new labels
+        }
+
+        function renderCurrentLabels() {
+            const container = document.getElementById('currentLabels');
+            if (currentLabels.length === 0) {
+                container.innerHTML = '<span style="color: var(--text-secondary);">لا توجد تصنيفات</span>';
+            } else {
+                container.innerHTML = currentLabels.map(label => `
+                    <span class="label-tag" style="background: ${getLabelColor(label)};">
+                        ${escapeHtml(label)}
+                        <span class="remove-label" onclick="removeLabel('${escapeHtml(label)}')">✕</span>
+                    </span>
+                `).join('');
+            }
+        }
+
+        async function submitNewLabel() {
+            const input = document.getElementById('newLabelInput');
+            const label = input.value.trim();
+            if (!label) return;
+            await addLabelToEnrollment(label);
+            input.value = '';
+        }
+
+        function selectSuggestedLabel(label) {
+            addLabelToEnrollment(label);
+        }
+
+        async function addLabelToEnrollment(label) {
+            try {
+                const response = await fetch(`/api/campaigns/enrollments/${currentLabelsEnrollmentId}/labels`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ label })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    currentLabels.push(label);
+                    renderCurrentLabels();
+                    showToast('تم إضافة التصنيف', 'success');
+                } else {
+                    showToast(data.error || 'فشل إضافة التصنيف', 'error');
+                }
+            } catch (err) {
+                showToast('خطأ في الاتصال', 'error');
+            }
+        }
+
+        async function removeLabel(label) {
+            try {
+                const response = await fetch(`/api/campaigns/enrollments/${currentLabelsEnrollmentId}/labels/${encodeURIComponent(label)}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    currentLabels = currentLabels.filter(l => l !== label);
+                    renderCurrentLabels();
+                    showToast('تم حذف التصنيف', 'success');
+                } else {
+                    showToast(data.error || 'فشل حذف التصنيف', 'error');
+                }
+            } catch (err) {
+                showToast('خطأ في الاتصال', 'error');
+            }
+        }
+
+        // Handle Enter key in inputs
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('chatMessageInput')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChatMessage();
+                }
+            });
+            document.getElementById('newLabelInput')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    submitNewLabel();
+                }
+            });
+        });
+
+        // Close modals on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeChatModal();
+                closeLabelsModal();
+            }
+        });
+
+        loadCampaign();
+    </script>
+</body>
+
+</html>
