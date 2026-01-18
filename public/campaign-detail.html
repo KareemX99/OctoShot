@@ -1,39 +1,50 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل الحملة - OctoSHOT WhatsApp</title>
+    <title>تفاصيل الحملة | اكــتوشــوت واتساب</title>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/premium.css">
+    <link rel="stylesheet" href="/css/icons.css">
     <link rel="stylesheet" href="/css/campaigns.css">
     <style>
+        /* Campaign Detail Styles - Premium Design */
         :root {
-            --bg-primary: #0a0a1a;
-            --bg-secondary: #12122a;
-            --bg-card: #1a1a3a;
-            --border-color: #2d2d5a;
-            --accent-primary: #00d9ff;
-            --accent-secondary: #667eea;
-            --accent-success: #00ff88;
-            --accent-warning: #ffb300;
-            --accent-error: #ff4757;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0c0;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: rgba(139, 92, 246, 0.1);
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #06b6d4;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-error: #ef4444;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
         }
 
         body {
-            background: var(--bg-primary);
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 50%, #f0f9ff 100%);
             color: var(--text-primary);
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
         }
 
         .detail-container {
-            padding: 24px;
+            padding: 32px;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -73,103 +84,143 @@
         }
 
         .status-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid transparent;
         }
 
         .status-running {
-            background: rgba(0, 255, 136, 0.2);
-            color: #00ff88;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.25));
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.3);
         }
 
         .status-paused {
-            background: rgba(255, 179, 0, 0.2);
-            color: #ffb300;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.25));
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.3);
         }
 
         .status-completed {
-            background: rgba(0, 217, 255, 0.2);
-            color: #00d9ff;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.15));
+            color: #06b6d4;
+            border-color: rgba(6, 182, 212, 0.3);
         }
 
         .status-draft {
-            background: rgba(160, 160, 192, 0.2);
-            color: #a0a0c0;
+            background: linear-gradient(135deg, rgba(100, 116, 139, 0.15), rgba(100, 116, 139, 0.25));
+            color: #64748b;
+            border-color: rgba(100, 116, 139, 0.3);
         }
 
-        .status-failed {
-            background: rgba(255, 71, 87, 0.2);
-            color: #ff4757;
+        .status-failed,
+        .status-cancelled {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.25));
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
         }
 
         /* Progress Section */
         .progress-section {
             background: var(--bg-card);
-            border-radius: 16px;
+            border-radius: 20px;
             border: 1px solid var(--border-color);
-            padding: 24px;
+            padding: 28px;
             margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
         }
 
         .progress-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .progress-header h2 {
             margin: 0;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
         }
 
         .progress-bar-large {
-            height: 24px;
-            background: var(--bg-secondary);
-            border-radius: 12px;
+            height: 28px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.08));
+            border-radius: 14px;
             overflow: hidden;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-success));
-            border-radius: 12px;
-            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4, #10b981);
+            border-radius: 14px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.9;
+            }
         }
 
         .progress-fill::after {
             content: attr(data-percent);
             position: absolute;
-            right: 12px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: #000;
+            color: #fff;
             font-weight: 700;
             font-size: 13px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 16px;
         }
 
         .stat-item {
             text-align: center;
-            padding: 16px;
-            background: var(--bg-secondary);
-            border-radius: 12px;
+            padding: 20px 16px;
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(255, 255, 255, 0.9));
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.12);
         }
 
         .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            font-weight: 800;
             color: var(--accent-primary);
+            line-height: 1.2;
         }
 
         .stat-value.success {
@@ -186,8 +237,11 @@
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 13px;
-            margin-top: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         /* Info Cards */
@@ -303,21 +357,29 @@
         /* Enrollments Table */
         .enrollments-card {
             background: var(--bg-card);
-            border-radius: 16px;
+            border-radius: 20px;
             border: 1px solid var(--border-color);
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
         }
 
         .enrollments-header {
-            padding: 20px 24px;
+            padding: 24px 28px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.03), rgba(6, 182, 212, 0.03));
         }
 
         .enrollments-header h3 {
             margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
         }
 
         .enrollments-table {
@@ -327,64 +389,248 @@
 
         .enrollments-table th,
         .enrollments-table td {
-            padding: 14px 20px;
+            padding: 16px 24px;
             text-align: right;
         }
 
         .enrollments-table th {
-            background: var(--bg-secondary);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(6, 182, 212, 0.05));
             color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 12px;
+            font-weight: 700;
+            font-size: 11px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
         }
 
         .enrollments-table tbody tr {
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.06);
+            transition: all 0.2s ease;
         }
 
         .enrollments-table tbody tr:hover {
-            background: rgba(0, 217, 255, 0.05);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.04), rgba(6, 182, 212, 0.04));
+            transform: translateX(-2px);
+        }
+
+        .enrollments-table tbody tr.expanded {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.08));
+        }
+
+        .enrollments-table td {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .enrollments-table td:first-child {
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        /* Row Number Badge */
+        .row-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--accent-primary);
+        }
+
+        /* Phone Number */
+        .phone-number {
+            font-family: 'Plus Jakarta Sans', monospace;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+
+        /* Recipient Name */
+        .recipient-name {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* Status Pill Badges */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-pill.read {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.15));
+            color: #06b6d4;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .status-pill.delivered {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.25));
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-pill.sent {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.25));
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-pill.failed {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.25));
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-pill.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.25));
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .status-pill.pending {
+            background: linear-gradient(135deg, rgba(100, 116, 139, 0.1), rgba(100, 116, 139, 0.2));
+            color: #64748b;
+            border: 1px solid rgba(100, 116, 139, 0.25);
+        }
+
+        /* Time Badge */
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .time-badge.completed {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.2));
+            color: #10b981;
+        }
+
+        .time-badge.sent {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.2));
+            color: #10b981;
+        }
+
+        .time-badge.pending {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.2));
+            color: #f59e0b;
+        }
+
+        .time-badge.in-progress {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(139, 92, 246, 0.2));
+            color: #8b5cf6;
+        }
+
+        /* Progress Badge */
+        .progress-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .progress-badge.full {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.2));
+            color: #10b981;
+        }
+
+        .progress-badge.partial {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(139, 92, 246, 0.12));
+            color: #8b5cf6;
+        }
+
+        .progress-badge.empty {
+            background: linear-gradient(135deg, rgba(100, 116, 139, 0.1), rgba(100, 116, 139, 0.15));
+            color: #64748b;
         }
 
         /* Buttons */
         .btn {
             padding: 12px 24px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             border: none;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-family: inherit;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
         }
 
         .btn-success {
-            background: var(--accent-success);
-            color: #000;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
         }
 
         .btn-warning {
-            background: var(--accent-warning);
-            color: #000;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+        }
+
+        .btn-warning:hover {
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);
         }
 
         .btn-danger {
-            background: var(--accent-error);
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.35);
         }
 
         .btn-secondary {
-            background: var(--bg-secondary);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
             color: var(--text-primary);
             border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
         }
 
         .action-buttons {
@@ -546,301 +792,397 @@
 </head>
 
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <span class="logo-icon">🐙</span>
-                <span class="logo-text">اكــتوشــوت</span>
-            </div>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="/profiles" class="nav-item">
-                <span class="nav-icon">📱</span>
-                <span class="nav-text">الأجهزة</span>
-            </a>
-            <a href="/api-docs" class="nav-item">
-                <span class="nav-icon">📚</span>
-                <span class="nav-text">دليل API للمطورين</span>
-            </a>
-            <a href="/api-logs" class="nav-item">
-                <span class="nav-icon">📋</span>
-                <span class="nav-text">سجل الرسائل</span>
-            </a>
-            <a href="/dashboard" class="nav-item">
-                <span class="nav-icon">📊</span>
-                <span class="nav-text">لوحة التحكم</span>
-            </a>
-            <a href="/chats" class="nav-item">
-                <span class="nav-icon">💬</span>
-                <span class="nav-text">المحادثات</span>
-            </a>
-            <a href="/spintax" class="nav-item">
-                <span class="nav-icon">✨</span>
-                <span class="nav-text">مولد الرسائل الذكي</span>
-            </a>
-            <a href="/campaigns" class="nav-item active">
-                <span class="nav-icon">📢</span>
-                <span class="nav-text">الحملات</span>
-            </a>
-        </nav>
-        <div class="sidebar-footer">
-            <div class="theme-row">
-                <span>الوضع</span>
-                <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
-                    <span class="theme-icon">🌙</span>
-                </button>
-            </div>
-        </div>
-    </aside>
+    <!-- Aurora Background -->
+    <div class="aurora-bg"></div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="detail-container" id="content">
-            <div class="loading">
-                <div class="spinner"></div>
+    <div class="layout-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="logo">
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 12a4 4 0 1 0 8 0 4 4 0 1 0-8 0" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                        </svg>
+                    </span>
+                    <span class="logo-text">OctoSHOT</span>
+                </a>
             </div>
-        </div>
-    </div>
 
-    <!-- Labels Modal -->
-    <div id="labelsModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content labels-modal">
-            <div class="modal-header">
-                <h3>🏷️ إدارة التصنيفات</h3>
-                <button class="modal-close" onclick="closeLabelsModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <div id="currentLabels" class="current-labels"></div>
-                <div class="add-label-form">
-                    <input type="text" id="newLabelInput" placeholder="أدخل اسم التصنيف الجديد">
-                    <button onclick="submitNewLabel()" class="add-label-btn">+ إضافة</button>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">الرئيسية</div>
+                    <a href="/dashboard" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="7" height="9" x="3" y="3" rx="1" />
+                                <rect width="7" height="5" x="14" y="3" rx="1" />
+                                <rect width="7" height="9" x="14" y="12" rx="1" />
+                                <rect width="7" height="5" x="3" y="16" rx="1" />
+                            </svg></span>
+                        <span class="nav-text">لوحة التحكم</span>
+                    </a>
                 </div>
-                <div class="suggested-labels">
-                    <span class="suggested-title">تصنيفات مقترحة:</span>
-                    <div class="suggested-list">
-                        <button onclick="selectSuggestedLabel('عميل VIP')" class="suggested-label">عميل VIP</button>
-                        <button onclick="selectSuggestedLabel('مهتم')" class="suggested-label">مهتم</button>
-                        <button onclick="selectSuggestedLabel('متابعة')" class="suggested-label">متابعة</button>
-                        <button onclick="selectSuggestedLabel('تم الرد')" class="suggested-label">تم الرد</button>
-                        <button onclick="selectSuggestedLabel('غير مهتم')" class="suggested-label">غير مهتم</button>
-                        <button onclick="selectSuggestedLabel('عميل جديد')" class="suggested-label">عميل جديد</button>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">واتساب</div>
+                    <a href="/profiles" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                                <path d="M12 18h.01" />
+                            </svg></span>
+                        <span class="nav-text">الأجهزة</span>
+                    </a>
+                    <a href="/chats" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
+                            </svg></span>
+                        <span class="nav-text">المحادثات</span>
+                    </a>
+                    <a href="/campaigns" class="nav-item active">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 11 18-5v12L3 13v-2z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                            </svg></span>
+                        <span class="nav-text">الحملات</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">الأدوات</div>
+                    <a href="/contacts" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg></span>
+                        <span class="nav-text">جهات الاتصال</span>
+                    </a>
+                    <a href="/spintax" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg></span>
+                        <span class="nav-text">مولد الرسائل</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">للمطورين</div>
+                    <a href="/api-docs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                <path d="m9 9.5 2 2-2 2" />
+                                <path d="M13 13.5h3" />
+                            </svg></span>
+                        <span class="nav-text">دليل API</span>
+                    </a>
+                    <a href="/api-logs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                            </svg></span>
+                        <span class="nav-text">سجل الرسائل</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع المظلم</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <svg class="theme-icon" viewBox="0 0 24 24">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="detail-container" id="content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Labels Modal -->
+        <div id="labelsModal" class="modal-overlay" style="display: none;">
+            <div class="modal-content labels-modal glass-panel">
+                <div class="modal-header">
+                    <h3 style="display:flex;align-items:center;gap:8px">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+                            <path d="M7 7h.01" />
+                        </svg>
+                        إدارة التصنيفات
+                    </h3>
+                    <button class="modal-close" onclick="closeLabelsModal()">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" x2="6" y1="6" y2="18" />
+                            <line x1="6" x2="18" y1="6" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="currentLabels" class="current-labels"></div>
+                    <div class="add-label-form">
+                        <input type="text" id="newLabelInput" placeholder="أدخل اسم التصنيف الجديد">
+                        <button onclick="submitNewLabel()" class="add-label-btn">+ إضافة</button>
+                    </div>
+                    <div class="suggested-labels">
+                        <span class="suggested-title">تصنيفات مقترحة:</span>
+                        <div class="suggested-list">
+                            <button onclick="selectSuggestedLabel('عميل VIP')" class="suggested-label">عميل VIP</button>
+                            <button onclick="selectSuggestedLabel('مهتم')" class="suggested-label">مهتم</button>
+                            <button onclick="selectSuggestedLabel('متابعة')" class="suggested-label">متابعة</button>
+                            <button onclick="selectSuggestedLabel('تم الرد')" class="suggested-label">تم الرد</button>
+                            <button onclick="selectSuggestedLabel('غير مهتم')" class="suggested-label">غير مهتم</button>
+                            <button onclick="selectSuggestedLabel('عميل جديد')" class="suggested-label">عميل
+                                جديد</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <style>
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        <style>
+            /* Modal Styles */
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(15, 23, 42, 0.6);
+                backdrop-filter: blur(8px);
+                z-index: 1000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                animation: fadeIn 0.2s ease-out;
+            }
 
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            max-height: 90vh;
-            overflow: hidden;
-        }
+            .modal-content {
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 20px;
+                border: 1px solid rgba(139, 92, 246, 0.1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                max-height: 90vh;
+                overflow: hidden;
+                width: 95%;
+            }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-        }
+            .labels-modal.glass-panel {
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
 
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 20px;
-            cursor: pointer;
-        }
+            .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 20px;
+                border-bottom: 1px solid var(--border-color);
+                background: var(--bg-secondary);
+            }
 
-        .modal-close:hover {
-            color: var(--accent-error);
-        }
+            .modal-close {
+                background: none;
+                border: none;
+                color: var(--text-secondary);
+                font-size: 20px;
+                cursor: pointer;
+            }
 
-        /* Labels Modal */
-        .labels-modal {
-            width: 400px;
-            max-width: 95vw;
-        }
+            .modal-close:hover {
+                color: var(--accent-error);
+            }
 
-        .modal-body {
-            padding: 20px;
-        }
+            /* Labels Modal */
+            .labels-modal {
+                width: 400px;
+                max-width: 95vw;
+            }
 
-        .current-labels {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-            min-height: 40px;
-        }
+            .modal-body {
+                padding: 20px;
+            }
 
-        .label-tag {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 13px;
-            color: #000;
-        }
+            .current-labels {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 16px;
+                min-height: 40px;
+            }
 
-        .label-tag .remove-label {
-            cursor: pointer;
-            opacity: 0.7;
-        }
+            .label-tag {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                border-radius: 16px;
+                font-size: 13px;
+                color: #000;
+            }
 
-        .label-tag .remove-label:hover {
-            opacity: 1;
-        }
+            .label-tag .remove-label {
+                cursor: pointer;
+                opacity: 0.7;
+            }
 
-        .add-label-form {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
+            .label-tag .remove-label:hover {
+                opacity: 1;
+            }
 
-        #newLabelInput {
-            flex: 1;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px;
-            color: var(--text-primary);
-        }
+            .add-label-form {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 16px;
+            }
 
-        .add-label-btn {
-            background: var(--accent-primary);
-            border: none;
-            border-radius: 8px;
-            padding: 10px 16px;
-            color: #000;
-            font-weight: 600;
-            cursor: pointer;
-        }
+            #newLabelInput {
+                flex: 1;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 10px;
+                color: var(--text-primary);
+            }
 
-        .suggested-labels {
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
-        }
+            .add-label-btn {
+                background: var(--accent-primary);
+                border: none;
+                border-radius: 8px;
+                padding: 10px 16px;
+                color: #000;
+                font-weight: 600;
+                cursor: pointer;
+            }
 
-        .suggested-title {
-            color: var(--text-secondary);
-            font-size: 12px;
-            display: block;
-            margin-bottom: 8px;
-        }
+            .suggested-labels {
+                padding-top: 16px;
+                border-top: 1px solid var(--border-color);
+            }
 
-        .suggested-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
+            .suggested-title {
+                color: var(--text-secondary);
+                font-size: 12px;
+                display: block;
+                margin-bottom: 8px;
+            }
 
-        .suggested-label {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 6px 12px;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-        }
+            .suggested-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
 
-        .suggested-label:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-        }
-    </style>
+            .suggested-label {
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 6px 12px;
+                color: var(--text-secondary);
+                font-size: 12px;
+                cursor: pointer;
+            }
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script>
-        const socket = io();
-        const campaignId = new URLSearchParams(window.location.search).get('id');
-        let campaign = null;
+            .suggested-label:hover {
+                border-color: var(--accent-primary);
+                color: var(--accent-primary);
+            }
+        </style>
 
-        async function loadCampaign() {
-            try {
-                const response = await fetch(`/api/campaigns/${campaignId}`);
-                const data = await response.json();
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+        <script>
+            const socket = io();
+            const campaignId = new URLSearchParams(window.location.search).get('id');
+            let campaign = null;
 
-                if (!data.success) {
-                    document.getElementById('content').innerHTML = `
+            async function loadCampaign() {
+                try {
+                    const response = await fetch(`/api/campaigns/${campaignId}`);
+                    const data = await response.json();
+
+                    if (!data.success) {
+                        document.getElementById('content').innerHTML = `
                         <div style="text-align: center; padding: 60px;">
-                            <h2>❌ الحملة غير موجودة</h2>
+                            <h2><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" style="color: #ef4444;"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg> الحملة غير موجودة</h2>
                             <a href="/campaigns" class="btn btn-primary">العودة للحملات</a>
                         </div>
                     `;
-                    return;
+                        return;
+                    }
+
+                    campaign = data.campaign;
+                    renderCampaign();
+
+                    // Load enrollments and device stats
+                    loadEnrollments();
+
+                    // Load device stats with delay to ensure DOM is ready
+                    setTimeout(() => {
+                        loadDeviceStats();
+
+                        // Fallback: if still loading after 5s, show message
+                        setTimeout(() => {
+                            const container = document.getElementById('deviceStatsContainer');
+                            if (container && container.querySelector('.spinner')) {
+                                container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">تعذر تحميل إحصائيات الأجهزة</div>';
+                            }
+                        }, 5000);
+                    }, 100);
+
+                } catch (error) {
+                    console.error('Error loading campaign:', error);
+                }
+            }
+
+            function renderCampaign() {
+                // Progress = (sent + failed) / total
+                const completedCount = (campaign.sent_count || 0) + (campaign.failed_count || 0);
+
+                // For sequential campaigns, total = recipients * steps, not just recipients
+                const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()] : [];
+                const stepsCount = uniqueSteps.length || 1;
+                const isSequential = campaign.type === 'sequential' && stepsCount > 1;
+                const totalMessages = isSequential
+                    ? (campaign.total_recipients || 0) * stepsCount
+                    : (campaign.total_recipients || 0);
+
+                const percent = totalMessages > 0
+                    ? Math.min(100, Math.round((completedCount / totalMessages) * 100))
+                    : 0;
+
+                // Determine the actual display status - if 100% complete, show as completed
+                let displayStatus = campaign.status;
+                if (percent >= 100 && campaign.status !== 'cancelled' && campaign.status !== 'failed') {
+                    displayStatus = 'completed';
                 }
 
-                campaign = data.campaign;
-                renderCampaign();
-
-                // Load enrollments and device stats
-                loadEnrollments();
-
-                // Load device stats with delay to ensure DOM is ready
-                setTimeout(() => {
-                    loadDeviceStats();
-
-                    // Fallback: if still loading after 5s, show message
-                    setTimeout(() => {
-                        const container = document.getElementById('deviceStatsContainer');
-                        if (container && container.querySelector('.spinner')) {
-                            container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">تعذر تحميل إحصائيات الأجهزة</div>';
-                        }
-                    }, 5000);
-                }, 100);
-
-            } catch (error) {
-                console.error('Error loading campaign:', error);
-            }
-        }
-
-        function renderCampaign() {
-            // Progress = (sent + failed) / total
-            const completed = (campaign.sent_count || 0) + (campaign.failed_count || 0);
-
-            // For sequential campaigns, total = recipients * steps, not just recipients
-            const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()] : [];
-            const stepsCount = uniqueSteps.length || 1;
-            const isSequential = campaign.type === 'sequential' && stepsCount > 1;
-            const totalMessages = isSequential
-                ? (campaign.total_recipients || 0) * stepsCount
-                : (campaign.total_recipients || 0);
-
-            const percent = totalMessages > 0
-                ? Math.min(100, Math.round((completed / totalMessages) * 100))
-                : 0;
-
-            document.getElementById('content').innerHTML = `
+                document.getElementById('content').innerHTML = `
                 <!-- Header -->
-                <a href="/campaigns" class="back-link">◀️ العودة للحملات</a>
+                <a href="/campaigns" class="back-link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg> العودة للحملات</a>
                 
                 <div class="page-header">
                     <div class="campaign-title">
                         <h1>${escapeHtml(campaign.name)}</h1>
-                        <span class="status-badge status-${campaign.status}">
-                            ${getStatusText(campaign.status)}
+                        <span class="status-badge status-${displayStatus}">
+                            ${getStatusText(displayStatus)}
                         </span>
                     </div>
                     <div class="action-buttons">
@@ -851,7 +1193,7 @@
                 <!-- Progress -->
                 <div class="progress-section">
                     <div class="progress-header">
-                        <h2>📊 تقدم الحملة</h2>
+                        <h2><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> تقدم الحملة</h2>
                         ${campaign.status === 'running' ? `
                             <div class="eta-box">
                                 <span class="eta-label">الوقت المتبقي:</span>
@@ -895,7 +1237,7 @@
                 <!-- Per-Device Stats (shown if multiple devices) -->
                 ${(campaign.device_ids && campaign.device_ids.length > 1) ? `
                     <div class="per-device-stats" style="margin-top: 24px;">
-                        <h3 style="margin-bottom: 16px;">📊 إحصائيات لكل جهاز</h3>
+                        <h3 style="margin-bottom: 16px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> إحصائيات لكل جهاز</h3>
                         <div id="deviceStatsContainer">
                             <div class="loading"><div class="spinner"></div></div>
                         </div>
@@ -905,7 +1247,7 @@
                 <!-- Enrollments -->
                 <div class="enrollments-card" style="margin-top: 24px;">
                     <div class="enrollments-header">
-                        <h3>👥 المستلمين</h3>
+                        <h3><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> المستلمين</h3>
                     </div>
                     <div id="enrollmentsContainer">
                         <div class="loading">
@@ -915,35 +1257,35 @@
                 </div>
             `;
 
-            // Attach action handlers
-            attachActionHandlers();
-        }
+                // Attach action handlers
+                attachActionHandlers();
+            }
 
-        async function loadEnrollments() {
-            try {
-                const response = await fetch(`/api/campaigns/${campaignId}/enrollments`);
-                const data = await response.json();
+            async function loadEnrollments() {
+                try {
+                    const response = await fetch(`/api/campaigns/${campaignId}/enrollments`);
+                    const data = await response.json();
 
-                if (data.success && data.enrollments.length > 0) {
-                    renderEnrollments(data.enrollments);
-                } else {
-                    document.getElementById('enrollmentsContainer').innerHTML = `
+                    if (data.success && data.enrollments.length > 0) {
+                        renderEnrollments(data.enrollments);
+                    } else {
+                        document.getElementById('enrollmentsContainer').innerHTML = `
                         <div style="padding: 40px; text-align: center; color: var(--text-secondary);">
                             لا يوجد مستلمين
                         </div>
                     `;
+                    }
+                } catch (error) {
+                    console.error('Error loading enrollments:', error);
                 }
-            } catch (error) {
-                console.error('Error loading enrollments:', error);
             }
-        }
 
-        function renderEnrollments(enrollments) {
-            // Get first message step for preview
-            const firstStep = campaign.steps?.[0] || {};
-            const messageTemplate = firstStep.content || firstStep.media_url || '';
+            function renderEnrollments(enrollments) {
+                // Get first message step for preview
+                const firstStep = campaign.steps?.[0] || {};
+                const messageTemplate = firstStep.content || firstStep.media_url || '';
 
-            document.getElementById('enrollmentsContainer').innerHTML = `
+                document.getElementById('enrollmentsContainer').innerHTML = `
                 <table class="enrollments-table">
                     <thead>
                         <tr>
@@ -957,41 +1299,48 @@
                     </thead>
                     <tbody>
                         ${enrollments.slice(0, 50).map((e, index) => {
-                const statusIcon = getDeliveryStatusIcon(e);
-                // For sequential campaigns: show step progress, otherwise show scheduled time
-                // Deduplicate steps array (SQL join causes duplicates)
-                const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()] : [];
-                const totalSteps = uniqueSteps.length || 1;
-                const currentStep = e.current_step || 0;
-                const isSequential = campaign.type === 'sequential' && totalSteps > 1;
+                    const statusIcon = getDeliveryStatusIcon(e);
+                    // For sequential campaigns: show step progress, otherwise show scheduled time
+                    // Deduplicate steps array (SQL join causes duplicates)
+                    const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()] : [];
+                    const totalSteps = uniqueSteps.length || 1;
+                    const currentStep = e.current_step || 0;
+                    const isSequential = campaign.type === 'sequential' && totalSteps > 1;
 
-                let scheduledTime, remainingTime;
-                if (isSequential) {
-                    // Show step progress instead of time
-                    // currentStep is the step currently QUEUED, so completed = currentStep - 1
-                    const completedSteps = Math.max(0, currentStep - 1);
-                    if (e.status === 'completed') {
-                        scheduledTime = '✅ تم';
-                        remainingTime = `${totalSteps}/${totalSteps}`;
-                    } else if (e.status === 'pending') {
-                        scheduledTime = '⏳ في الانتظار';
-                        remainingTime = `0/${totalSteps}`;
+                    let scheduledTime, remainingTime;
+                    if (isSequential) {
+                        // Show step progress instead of time
+                        // currentStep is the step currently QUEUED, so completed = currentStep - 1
+                        const completedSteps = Math.max(0, currentStep - 1);
+                        if (e.status === 'completed') {
+                            scheduledTime = `<span class="time-badge completed"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> تم</span>`;
+                            remainingTime = `<span class="progress-badge full">${totalSteps}/${totalSteps}</span>`;
+                        } else if (e.status === 'pending') {
+                            scheduledTime = `<span class="time-badge pending"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> انتظار</span>`;
+                            remainingTime = `<span class="progress-badge empty">0/${totalSteps}</span>`;
+                        } else {
+                            scheduledTime = e.sent_at ? `<span class="time-badge sent"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> تم</span>` : `<span class="time-badge in-progress"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg> جاري</span>`;
+                            remainingTime = `<span class="progress-badge partial">${completedSteps}/${totalSteps}</span>`;
+                        }
                     } else {
-                        scheduledTime = e.sent_at ? formatTime(e.sent_at) : '⏳ جاري';
-                        remainingTime = `${completedSteps}/${totalSteps}`;
+                        const fmtTime = formatScheduledTime(e.next_execution_at);
+                        const calcRemaining = calculateTimeRemaining(e.next_execution_at);
+                        if (fmtTime.includes('تم') || calcRemaining.includes('الآن')) {
+                            scheduledTime = `<span class="time-badge completed"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> تم</span>`;
+                            remainingTime = `<span class="progress-badge full"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> الآن</span>`;
+                        } else {
+                            scheduledTime = `<span class="time-badge pending"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${fmtTime}</span>`;
+                            remainingTime = `<span class="progress-badge partial"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${calcRemaining}</span>`;
+                        }
                     }
-                } else {
-                    scheduledTime = formatScheduledTime(e.next_execution_at);
-                    remainingTime = calculateTimeRemaining(e.next_execution_at);
-                }
 
-                return `
+                    return `
                             <tr onclick="toggleExpandRow(${index})" data-index="${index}">
-                                <td style="color: var(--text-secondary);">${index + 1}</td>
-                                <td>${e.recipient}</td>
-                                <td>${escapeHtml(e.recipient_name) || '-'}</td>
-                                <td style="color: var(--accent-warning);">${scheduledTime}</td>
-                                <td style="color: var(--accent-primary);">${remainingTime}</td>
+                                <td><span class="row-number">${index + 1}</span></td>
+                                <td><span class="phone-number">${e.recipient}</span></td>
+                                <td><span class="recipient-name">${escapeHtml(e.recipient_name) || '-'}</span></td>
+                                <td>${scheduledTime}</td>
+                                <td>${remainingTime}</td>
                                 <td>${statusIcon}</td>
                             </tr>
                             <tr class="expand-row" id="expand-${index}">
@@ -1001,18 +1350,18 @@
                                         <div class="recipient-panel" style="flex: 1; min-width: 280px; background: var(--bg-card); border-radius: 12px; padding: 16px; border: 1px solid var(--border-color);">
                                             <!-- Device Info -->
                                             <div style="margin-bottom: 16px;">
-                                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">📱 الجهاز المُرسِل</div>
-                                                <div style="font-weight: 600; color: var(--accent-primary);">${e.device_name || e.assigned_device_phone || 'لم يُعيّن بعد'}</div>
+                                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 4px;"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> الجهاز المُرسِل</div>
+                                                <div style="font-weight: 600; color: var(--accent-primary);">جهاز #${campaign.device_id}</div>
                                             </div>
                                             
                                             <!-- Action Buttons -->
                                             <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
                                                 <button onclick="copyNumber('${e.recipient}'); event.stopPropagation();" class="action-btn" style="padding: 8px 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-size: 12px;">
-                                                    📋 نسخ الرقم
+                                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> نسخ الرقم
                                                 </button>
                                                 ${e.status === 'failed' || e.message_status === 'failed' ? `
                                                     <button onclick="retryMessage(${e.id}); event.stopPropagation();" class="action-btn" style="padding: 8px 12px; background: var(--accent-warning); border: none; border-radius: 8px; color: #000; cursor: pointer; font-size: 12px;">
-                                                        🔄 إعادة الإرسال
+                                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg> إعادة الإرسال
                                                     </button>
                                                 ` : ''}
                                             </div>
@@ -1020,7 +1369,7 @@
                                             <!-- Failure Reason -->
                                             ${e.error_message ? `
                                                 <div style="margin-bottom: 16px; padding: 12px; background: rgba(255, 71, 87, 0.1); border: 1px solid var(--accent-error); border-radius: 8px;">
-                                                    <div style="color: var(--accent-error); font-size: 12px; margin-bottom: 4px;">❌ سبب الفشل</div>
+                                                    <div style="color: var(--accent-error); font-size: 12px; margin-bottom: 4px;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 4px;"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg> سبب الفشل</div>
                                                     <div style="color: var(--text-primary); font-size: 13px;">${escapeHtml(e.error_message)}</div>
                                                 </div>
                                             ` : ''}
@@ -1028,14 +1377,14 @@
                                             <!-- Response Time -->
                                             ${e.sent_at && e.delivered_at ? `
                                                 <div style="margin-bottom: 16px;">
-                                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">⏱️ وقت الاستجابة</div>
+                                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> وقت الاستجابة</div>
                                                     <div style="font-weight: 600; color: var(--accent-success);">${calculateResponseTime(e.sent_at, e.delivered_at)}</div>
                                                 </div>
                                             ` : ''}
                                             
                                             <!-- Labels/Tags -->
                                             <div>
-                                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">🏷️ التصنيفات</div>
+                                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 4px;"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> التصنيفات</div>
                                                 <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="labels-${e.id}">
                                                     ${(e.labels || []).map(label => `
                                                         <span style="padding: 4px 10px; background: ${getLabelColor(label)}; border-radius: 12px; font-size: 11px; color: #000;">${escapeHtml(label)}</span>
@@ -1059,102 +1408,102 @@
                 </table>
                 ${enrollments.length > 50 ? `<div style="padding: 16px; text-align: center; color: var(--text-secondary);">و ${enrollments.length - 50} آخرين...</div>` : ''}
             `;
-        }
-
-        function formatScheduledTime(dateStr) {
-            if (!dateStr) return 'غير محدد';
-            const date = new Date(dateStr);
-            const now = new Date();
-
-            // If in the past, show "تم"
-            if (date <= now) return '✅ تم';
-
-            return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function calculateTimeRemaining(dateStr) {
-            if (!dateStr) return '-';
-            const date = new Date(dateStr);
-            const now = new Date();
-            const diff = date - now;
-
-            if (diff <= 0) return '✅ الآن';
-
-            const mins = Math.floor(diff / 60000);
-            const hours = Math.floor(mins / 60);
-            const days = Math.floor(hours / 24);
-
-            if (days > 0) return `${days} يوم ${hours % 24} س`;
-            if (hours > 0) return `${hours}س ${mins % 60} د`;
-            return `${mins} دقيقة`;
-        }
-
-        function toggleExpandRow(index) {
-            const expandRow = document.getElementById(`expand-${index}`);
-            const mainRow = document.querySelector(`tr[data-index="${index}"]`);
-
-            // Close all other expanded rows
-            document.querySelectorAll('.expand-row.show').forEach(row => {
-                if (row.id !== `expand-${index}`) {
-                    row.classList.remove('show');
-                }
-            });
-            document.querySelectorAll('tr.expanded').forEach(row => {
-                if (row.dataset.index !== String(index)) {
-                    row.classList.remove('expanded');
-                }
-            });
-
-            // Toggle current row
-            expandRow.classList.toggle('show');
-            mainRow.classList.toggle('expanded');
-        }
-
-        function resolveVariables(template, enrollment) {
-            if (!template) return '';
-            let result = template;
-            const attrs = enrollment.attributes || {};
-
-            result = result.replace(/\{\{name\}\}/g, enrollment.recipient_name || attrs.name || '');
-            result = result.replace(/\{\{phone\}\}/g, enrollment.recipient || attrs.phone || '');
-            result = result.replace(/\{\{company\}\}/g, attrs.company || '');
-
-            for (let i = 1; i <= 20; i++) {
-                result = result.replace(new RegExp(`\\{ \\{var${i} \\ } \\ } `, 'g'), attrs[`var${i} `] || '');
             }
 
-            // Process spintax for preview (pick first option)
-            result = result.replace(/\{([^{}]*\|[^{}]*)\}/g, (match, options) => {
-                return options.split('|')[0];
-            });
+            function formatScheduledTime(dateStr) {
+                if (!dateStr) return 'غير محدد';
+                const date = new Date(dateStr);
+                const now = new Date();
 
-            return result;
-        }
+                // If in the past, show "تم"
+                if (date <= now) return '✅ تم';
 
-        function renderMessagesPanel(e, campaign, messageTemplate) {
-            // For sequential campaigns, show all messages with their status
-            const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()].sort((a, b) => a.step_order - b.step_order) : [];
-            const isSeqCampaign = campaign.type === 'sequential' && uniqueSteps.length > 1;
+                return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            }
 
-            if (isSeqCampaign) {
-                // Show all messages for sequential campaign
-                const isCompleted = e.status === 'completed';
-                return uniqueSteps.map(step => {
-                    const stepNum = step.step_order;
-                    const currentStep = e.current_step || 0;
-                    // When enrollment is COMPLETED, all steps are sent
-                    // Otherwise, use > not >= because current_step is set when step is QUEUED
-                    const isSent = isCompleted || currentStep > stepNum;
-                    const isLastSentStep = isCompleted ? (stepNum === uniqueSteps.length) : (currentStep === stepNum + 1);
-                    const stepContent = step.media_url ? (step.content || '📎 ' + (step.message_type || 'media')) : step.content;
-                    const borderColor = isSent ? 'var(--accent-success)' : 'var(--border-color)';
+            function calculateTimeRemaining(dateStr) {
+                if (!dateStr) return '-';
+                const date = new Date(dateStr);
+                const now = new Date();
+                const diff = date - now;
 
-                    // For sent messages, show delivery timeline
-                    let statusHtml = '';
-                    if (isSent) {
-                        // Only the last sent step has the delivery info (sent_at, delivered_at, read_at)
-                        if (isLastSentStep) {
-                            statusHtml = `
+                if (diff <= 0) return '✅ الآن';
+
+                const mins = Math.floor(diff / 60000);
+                const hours = Math.floor(mins / 60);
+                const days = Math.floor(hours / 24);
+
+                if (days > 0) return `${days} يوم ${hours % 24} س`;
+                if (hours > 0) return `${hours}س ${mins % 60} د`;
+                return `${mins} دقيقة`;
+            }
+
+            function toggleExpandRow(index) {
+                const expandRow = document.getElementById(`expand-${index}`);
+                const mainRow = document.querySelector(`tr[data-index="${index}"]`);
+
+                // Close all other expanded rows
+                document.querySelectorAll('.expand-row.show').forEach(row => {
+                    if (row.id !== `expand-${index}`) {
+                        row.classList.remove('show');
+                    }
+                });
+                document.querySelectorAll('tr.expanded').forEach(row => {
+                    if (row.dataset.index !== String(index)) {
+                        row.classList.remove('expanded');
+                    }
+                });
+
+                // Toggle current row
+                expandRow.classList.toggle('show');
+                mainRow.classList.toggle('expanded');
+            }
+
+            function resolveVariables(template, enrollment) {
+                if (!template) return '';
+                let result = template;
+                const attrs = enrollment.attributes || {};
+
+                result = result.replace(/\{\{name\}\}/g, enrollment.recipient_name || attrs.name || '');
+                result = result.replace(/\{\{phone\}\}/g, enrollment.recipient || attrs.phone || '');
+                result = result.replace(/\{\{company\}\}/g, attrs.company || '');
+
+                for (let i = 1; i <= 20; i++) {
+                    result = result.replace(new RegExp(`\\{ \\{var${i} \\ } \\ } `, 'g'), attrs[`var${i} `] || '');
+                }
+
+                // Process spintax for preview (pick first option)
+                result = result.replace(/\{([^{}]*\|[^{}]*)\}/g, (match, options) => {
+                    return options.split('|')[0];
+                });
+
+                return result;
+            }
+
+            function renderMessagesPanel(e, campaign, messageTemplate) {
+                // For sequential campaigns, show all messages with their status
+                const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()].sort((a, b) => a.step_order - b.step_order) : [];
+                const isSeqCampaign = campaign.type === 'sequential' && uniqueSteps.length > 1;
+
+                if (isSeqCampaign) {
+                    // Show all messages for sequential campaign
+                    const isCompleted = e.status === 'completed';
+                    return uniqueSteps.map(step => {
+                        const stepNum = step.step_order;
+                        const currentStep = e.current_step || 0;
+                        // When enrollment is COMPLETED, all steps are sent
+                        // Otherwise, use > not >= because current_step is set when step is QUEUED
+                        const isSent = isCompleted || currentStep > stepNum;
+                        const isLastSentStep = isCompleted ? (stepNum === uniqueSteps.length) : (currentStep === stepNum + 1);
+                        const stepContent = step.media_url ? (step.content || '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> ' + (step.message_type || 'ملف')) : step.content;
+                        const borderColor = isSent ? 'var(--accent-success)' : 'var(--border-color)';
+
+                        // For sent messages, show delivery timeline
+                        let statusHtml = '';
+                        if (isSent) {
+                            // Only the last sent step has the delivery info (sent_at, delivered_at, read_at)
+                            if (isLastSentStep) {
+                                statusHtml = `
                                 <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
                                     <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,255,136,0.2); color: var(--accent-success);">
                                         ✅ تم الإرسال ${e.sent_at ? formatTime(e.sent_at) : ''}
@@ -1164,38 +1513,38 @@
                                             ✔️ وصلت ${formatTime(e.delivered_at)}
                                         </span>
                                     ` : `
-                                        <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(255,179,0,0.2); color: var(--accent-warning);">
-                                            ⏳ في انتظار التسليم
+                                        <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(255,179,0,0.2); color: var(--accent-warning); display: inline-flex; align-items: center; gap: 4px;">
+                                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> في انتظار التسليم
                                         </span>
                                     `}
                                     ${e.read_at ? `
-                                        <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,217,255,0.3); color: #00d9ff;">
-                                            👁️ قُرأت ${formatTime(e.read_at)}
+                                        <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,217,255,0.3); color: #00d9ff; display: inline-flex; align-items: center; gap: 4px;">
+                                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg> قُرأت ${formatTime(e.read_at)}
                                         </span>
                                     ` : ''}
                                 </div>
                             `;
-                        } else {
-                            // Previous steps - already delivered
-                            statusHtml = `
+                            } else {
+                                // Previous steps - already delivered
+                                statusHtml = `
                                 <div style="margin-top: 8px;">
-                                    <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,255,136,0.2); color: var(--accent-success);">
-                                        ✅ تم الإرسال
+                                    <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(0,255,136,0.2); color: var(--accent-success); display: inline-flex; align-items: center; gap: 4px;">
+                                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> تم الإرسال
                                     </span>
                                 </div>
                             `;
-                        }
-                    } else {
-                        statusHtml = `
+                            }
+                        } else {
+                            statusHtml = `
                             <div style="margin-top: 8px;">
-                                <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(255,179,0,0.2); color: var(--accent-warning);">
-                                    ⏳ في الانتظار
+                                <span style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: rgba(255,179,0,0.2); color: var(--accent-warning); display: inline-flex; align-items: center; gap: 4px;">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> في الانتظار
                                 </span>
                             </div>
                         `;
-                    }
+                        }
 
-                    return `
+                        return `
                         <div style="margin-bottom: 16px; padding: 12px; background: var(--bg-secondary); border-radius: 12px; border-right: 3px solid ${borderColor};">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                 <span style="font-size: 12px; color: var(--text-secondary);">رسالة ${stepNum}</span>
@@ -1204,28 +1553,28 @@
                             ${statusHtml}
                         </div>
                     `;
-                }).join('');
-            } else {
-                // Single message campaign - show original timeline
-                return `
+                    }).join('');
+                } else {
+                    // Single message campaign - show original timeline
+                    return `
                     <div class="message-bubble">${escapeHtml(resolveVariables(messageTemplate, e)) || 'لم ترسل بعد'}</div>
                     <div class="delivery-timeline">
                         <div class="timeline-step ${e.sent_at ? 'success' : 'pending'}">
-                            <span class="icon">${e.sent_at ? '✅' : '⏳'}</span>
+                            <span class="icon">${e.sent_at ? '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'}</span>
                             <div>
                                 <div class="label">تم الإرسال</div>
                                 <div class="time">${e.sent_at ? formatTime(e.sent_at) : 'قيد الانتظار'}</div>
                             </div>
                         </div>
                         <div class="timeline-step ${e.delivered_at ? 'success' : 'pending'}">
-                            <span class="icon">${e.delivered_at ? '✔️' : '⏳'}</span>
+                            <span class="icon">${e.delivered_at ? '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg>' : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'}</span>
                             <div>
                                 <div class="label">تم التسليم</div>
                                 <div class="time">${e.delivered_at ? formatTime(e.delivered_at) : 'في انتظار'}</div>
                             </div>
                         </div>
                         <div class="timeline-step ${e.read_at ? 'success' : 'pending'}">
-                            <span class="icon">${e.read_at ? '👁️' : '⏳'}</span>
+                            <span class="icon">${e.read_at ? '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>' : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'}</span>
                             <div>
                                 <div class="label">تمت القراءة</div>
                                 <div class="time">${e.read_at ? formatTime(e.read_at) : 'في انتظار'}</div>
@@ -1233,67 +1582,85 @@
                         </div>
                     </div>
                 `;
+                }
             }
-        }
 
-        function getDeliveryStatusIcon(enrollment) {
-            if (enrollment.read_at) {
-                return '<span style="color: #00d9ff;" title="قُرأت">👁️ قُرأت</span>';
-            } else if (enrollment.delivered_at) {
-                return '<span style="color: #00ff88;" title="وصلت">✔️ وصلت</span>';
-            } else if (enrollment.sent_at || enrollment.status === 'completed') {
-                return '<span style="color: #ffb300;" title="مرسلة">📤 مرسلة</span>';
-            } else if (enrollment.status === 'failed') {
-                return '<span style="color: #ff4757;" title="فشل">❌ فشل</span>';
-            } else if (enrollment.status === 'active') {
-                return '<span style="color: #a0a0c0;" title="نشط">🔄 نشط</span>';
-            } else {
-                return '<span style="color: #a0a0c0;" title="معلق">⏳ معلق</span>';
+            function getDeliveryStatusIcon(enrollment) {
+                if (enrollment.read_at) {
+                    return `<span class="status-pill read">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        قُرأت
+                    </span>`;
+                } else if (enrollment.delivered_at) {
+                    return `<span class="status-pill delivered">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg>
+                        وصلت
+                    </span>`;
+                } else if (enrollment.sent_at || enrollment.status === 'completed') {
+                    return `<span class="status-pill sent">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        مرسلة
+                    </span>`;
+                } else if (enrollment.status === 'failed') {
+                    return `<span class="status-pill failed">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
+                        فشل
+                    </span>`;
+                } else if (enrollment.status === 'active') {
+                    return `<span class="status-pill active">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                        نشط
+                    </span>`;
+                } else {
+                    return `<span class="status-pill pending">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        معلق
+                    </span>`;
+                }
             }
-        }
 
-        function formatTime(dateStr) {
-            if (!dateStr) return '-';
-            const date = new Date(dateStr);
-            return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + ' - ' +
-                date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
-        }
-
-        function calculateRemainingTime() {
-            const total = campaign.total_recipients || 0;
-            const sent = campaign.sent_count || 0;
-            const remaining = total - sent;
-
-            if (remaining <= 0) return 'مكتمل';
-
-            // Average 45 seconds per message (including delay and business hours)
-            const avgSecondsPerMsg = 45;
-            const totalSeconds = remaining * avgSecondsPerMsg;
-
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-
-            if (hours > 0) {
-                return `~${hours} ساعة و ${minutes} دقيقة`;
-            } else if (minutes > 0) {
-                return `~${minutes} دقيقة`;
-            } else {
-                return 'قريباً جداً';
+            function formatTime(dateStr) {
+                if (!dateStr) return '-';
+                const date = new Date(dateStr);
+                return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + ' - ' +
+                    date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
             }
-        }
 
-        async function loadDeviceStats() {
-            const container = document.getElementById('deviceStatsContainer');
-            console.log('📊 loadDeviceStats called, container:', container);
-            if (!container) return;  // Not shown for single-device campaigns
+            function calculateRemainingTime() {
+                const total = campaign.total_recipients || 0;
+                const sent = campaign.sent_count || 0;
+                const remaining = total - sent;
 
-            try {
-                const response = await fetch(`/ api / campaigns / ${campaignId}/device-stats`);
-                const data = await response.json();
-                console.log('📊 Device stats response:', data);
+                if (remaining <= 0) return 'مكتمل';
 
-                if (data.success && data.deviceStats && data.deviceStats.length > 0) {
-                    container.innerHTML = `
+                // Average 45 seconds per message (including delay and business hours)
+                const avgSecondsPerMsg = 45;
+                const totalSeconds = remaining * avgSecondsPerMsg;
+
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+                if (hours > 0) {
+                    return `~${hours} ساعة و ${minutes} دقيقة`;
+                } else if (minutes > 0) {
+                    return `~${minutes} دقيقة`;
+                } else {
+                    return 'قريباً جداً';
+                }
+            }
+
+            async function loadDeviceStats() {
+                const container = document.getElementById('deviceStatsContainer');
+                console.log('📊 loadDeviceStats called, container:', container);
+                if (!container) return;  // Not shown for single-device campaigns
+
+                try {
+                    const response = await fetch(`/ api / campaigns / ${campaignId}/device-stats`);
+                    const data = await response.json();
+                    console.log('📊 Device stats response:', data);
+
+                    if (data.success && data.deviceStats && data.deviceStats.length > 0) {
+                        container.innerHTML = `
                         <table style="width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden;">
                             <thead>
                                 <tr style="background: var(--bg-secondary);">
@@ -1321,536 +1688,622 @@
                             </tbody>
                         </table>
                     `;
-                } else {
-                    container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">📊 لا توجد إحصائيات مفصلة - الحملة تستخدم جهاز واحد</div>';
+                    } else {
+                        container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">📊 لا توجد إحصائيات مفصلة - الحملة تستخدم جهاز واحد</div>';
+                    }
+                } catch (error) {
+                    console.error('Error loading device stats:', error);
+                    container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">تعذر تحميل الإحصائيات</div>';
                 }
-            } catch (error) {
-                console.error('Error loading device stats:', error);
-                container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 20px;">تعذر تحميل الإحصائيات</div>';
             }
-        }
 
-        function renderActionButtons() {
-            let buttons = '';
-            if (campaign.status === 'draft' || campaign.status === 'paused') {
-                buttons += `<button class="btn btn-success" onclick="startCampaign()">▶️ تشغيل</button>`;
+            function renderActionButtons() {
+                // Calculate if campaign is actually completed based on progress
+                const completedCount = (campaign.sent_count || 0) + (campaign.failed_count || 0);
+                const uniqueSteps = campaign.steps ? [...new Map(campaign.steps.map(s => [s.step_order, s])).values()] : [];
+                const stepsCount = uniqueSteps.length || 1;
+                const isSequential = campaign.type === 'sequential' && stepsCount > 1;
+                const totalMessages = isSequential
+                    ? (campaign.total_recipients || 0) * stepsCount
+                    : (campaign.total_recipients || 0);
+                const percent = totalMessages > 0 ? Math.min(100, Math.round((completedCount / totalMessages) * 100)) : 0;
+
+                // Determine actual status - if 100% complete, treat as completed
+                let actualStatus = campaign.status;
+                if (percent >= 100 && campaign.status !== 'cancelled' && campaign.status !== 'failed') {
+                    actualStatus = 'completed';
+                }
+
+                let buttons = '';
+                if (actualStatus === 'draft' || actualStatus === 'paused') {
+                    buttons += `<button class="btn btn-success" onclick="startCampaign()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> تشغيل</button>`;
+                }
+                if (actualStatus === 'running') {
+                    buttons += `<button class="btn btn-warning" onclick="pauseCampaign()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> إيقاف مؤقت</button>`;
+                }
+                if (actualStatus !== 'completed' && actualStatus !== 'cancelled') {
+                    buttons += `<button class="btn btn-danger" onclick="cancelCampaign()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg> إلغاء</button>`;
+                }
+                return buttons;
             }
-            if (campaign.status === 'running') {
-                buttons += `<button class="btn btn-warning" onclick="pauseCampaign()">⏸️ إيقاف مؤقت</button>`;
+
+            function attachActionHandlers() {
+                // Action handlers attached via onclick
             }
-            if (campaign.status !== 'completed' && campaign.status !== 'cancelled') {
-                buttons += `<button class="btn btn-danger" onclick="cancelCampaign()">❌ إلغاء</button>`;
+
+            async function startCampaign() {
+                const response = await fetch(`/api/campaigns/${campaignId}/start`, { method: 'POST' });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('تم تشغيل الحملة', 'success');
+                    loadCampaign();
+                } else {
+                    showToast(data.error, 'error');
+                }
             }
-            return buttons;
-        }
 
-        function attachActionHandlers() {
-            // Action handlers attached via onclick
-        }
-
-        async function startCampaign() {
-            const response = await fetch(`/api/campaigns/${campaignId}/start`, { method: 'POST' });
-            const data = await response.json();
-            if (data.success) {
-                showToast('تم تشغيل الحملة', 'success');
-                loadCampaign();
-            } else {
-                showToast(data.error, 'error');
+            async function pauseCampaign() {
+                const response = await fetch(`/api/campaigns/${campaignId}/pause`, { method: 'POST' });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('تم إيقاف الحملة مؤقتاً', 'warning');
+                    loadCampaign();
+                } else {
+                    showToast(data.error, 'error');
+                }
             }
-        }
 
-        async function pauseCampaign() {
-            const response = await fetch(`/api/campaigns/${campaignId}/pause`, { method: 'POST' });
-            const data = await response.json();
-            if (data.success) {
-                showToast('تم إيقاف الحملة مؤقتاً', 'warning');
-                loadCampaign();
-            } else {
-                showToast(data.error, 'error');
+            async function cancelCampaign() {
+                if (!confirm('هل أنت متأكد من إلغاء الحملة؟')) return;
+                const response = await fetch(`/api/campaigns/${campaignId}/cancel`, { method: 'POST' });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('تم إلغاء الحملة', 'error');
+                    loadCampaign();
+                } else {
+                    showToast(data.error, 'error');
+                }
             }
-        }
 
-        async function cancelCampaign() {
-            if (!confirm('هل أنت متأكد من إلغاء الحملة؟')) return;
-            const response = await fetch(`/api/campaigns/${campaignId}/cancel`, { method: 'POST' });
-            const data = await response.json();
-            if (data.success) {
-                showToast('تم إلغاء الحملة', 'error');
-                loadCampaign();
-            } else {
-                showToast(data.error, 'error');
-            }
-        }
+            // Socket.IO real-time updates
+            socket.on('campaign:progress', (data) => {
+                if (data.campaignId == campaignId) {
+                    campaign.sent_count = data.sent || campaign.sent_count;
+                    campaign.failed_count = data.failed || campaign.failed_count;
+                    campaign.status = data.status || campaign.status;
+                    renderCampaign();
+                    loadEnrollments();
 
-        // Socket.IO real-time updates
-        socket.on('campaign:progress', (data) => {
-            if (data.campaignId == campaignId) {
-                campaign.sent_count = data.sent || campaign.sent_count;
-                campaign.failed_count = data.failed || campaign.failed_count;
-                campaign.status = data.status || campaign.status;
-                renderCampaign();
-                loadEnrollments();
-
-                if (data.eta) {
-                    const etaEl = document.getElementById('etaValue');
-                    if (etaEl) {
-                        etaEl.textContent = formatETA(data.eta);
+                    if (data.eta) {
+                        const etaEl = document.getElementById('etaValue');
+                        if (etaEl) {
+                            etaEl.textContent = formatETA(data.eta);
+                        }
                     }
                 }
-            }
-        });
-
-        socket.on('campaign:status', (data) => {
-            if (data.campaignId == campaignId) {
-                campaign.status = data.status;
-                renderCampaign();
-            }
-        });
-
-        // Real-time ACK updates (delivered/read)
-        socket.on('campaign:message_ack', (data) => {
-            if (data.campaignId == campaignId) {
-                console.log('📬 ACK received:', data);
-
-                // Update campaign counts based on status
-                if (data.status === 'delivered') {
-                    campaign.delivered_count = (campaign.delivered_count || 0) + 1;
-                } else if (data.status === 'read') {
-                    campaign.read_count = (campaign.read_count || 0) + 1;
-                }
-
-                // Re-render to show updated stats
-                renderCampaign();
-                loadEnrollments();
-            }
-        });
-
-        function formatETA(isoDate) {
-            const eta = new Date(isoDate);
-            const now = new Date();
-            const diff = eta - now;
-            if (diff <= 0) return 'قريباً';
-            const mins = Math.floor(diff / 60000);
-            const hours = Math.floor(mins / 60);
-            if (hours > 0) return `${hours} ساعة ${mins % 60} دقيقة`;
-            return `${mins} دقيقة`;
-        }
-
-        function getStatusText(status) {
-            const texts = { draft: 'مسودة', scheduled: 'مجدول', running: '🟢 نشط', paused: 'متوقف', completed: '✅ مكتمل', cancelled: 'ملغى', failed: 'فشل' };
-            return texts[status] || status;
-        }
-
-        function getEnrollmentStatus(status) {
-            const texts = { pending: '⏳ معلق', active: '🔄 نشط', completed: '✅ مكتمل', paused: '⏸️ متوقف', failed: '❌ فشل', opted_out: '🚫 محظور' };
-            return texts[status] || status;
-        }
-
-        function getTypeLabel(type) {
-            const labels = { text: '📝 نص', image: '🖼️ صورة', video: '🎬 فيديو', audio: '🎵 صوت', voice: '🎤 صوتية', document: '📄 ملف' };
-            return labels[type] || type;
-        }
-
-        function formatDate(dateStr) {
-            if (!dateStr) return '-';
-            return new Date(dateStr).toLocaleString('ar-EG');
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function showToast(message, type) {
-            const toast = document.createElement('div');
-            toast.style.cssText = `position:fixed;bottom:24px;left:24px;padding:16px 24px;background:${type === 'success' ? '#00ff88' : type === 'error' ? '#ff4757' : '#ffb300'};color:#000;border-radius:8px;font-weight:600;z-index:1000;`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        // Copy phone number to clipboard
-        function copyNumber(phone) {
-            navigator.clipboard.writeText(phone).then(() => {
-                showToast('تم نسخ الرقم: ' + phone, 'success');
-            }).catch(() => {
-                showToast('فشل النسخ', 'error');
             });
-        }
 
-        // Retry failed message
-        async function retryMessage(enrollmentId) {
-            if (!confirm('هل تريد إعادة إرسال الرسالة؟')) return;
-            try {
-                const response = await fetch(`/api/campaigns/${campaignId}/retry/${enrollmentId}`, { method: 'POST' });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('تم إضافة الرسالة لقائمة الإرسال', 'success');
-                    loadEnrollments();
-                } else {
-                    showToast(data.error || 'فشل إعادة الإرسال', 'error');
+            socket.on('campaign:status', (data) => {
+                if (data.campaignId == campaignId) {
+                    campaign.status = data.status;
+                    renderCampaign();
                 }
-            } catch (err) {
-                showToast('خطأ في الاتصال', 'error');
+            });
+
+            // Real-time ACK updates (delivered/read)
+            socket.on('campaign:message_ack', (data) => {
+                if (data.campaignId == campaignId) {
+                    console.log('📬 ACK received:', data);
+
+                    // Update campaign counts based on status
+                    if (data.status === 'delivered') {
+                        campaign.delivered_count = (campaign.delivered_count || 0) + 1;
+                    } else if (data.status === 'read') {
+                        campaign.read_count = (campaign.read_count || 0) + 1;
+                    }
+
+                    // Re-render to show updated stats
+                    renderCampaign();
+                    loadEnrollments();
+                }
+            });
+
+            function formatETA(isoDate) {
+                const eta = new Date(isoDate);
+                const now = new Date();
+                const diff = eta - now;
+                if (diff <= 0) return 'قريباً';
+                const mins = Math.floor(diff / 60000);
+                const hours = Math.floor(mins / 60);
+                if (hours > 0) return `${hours} ساعة ${mins % 60} دقيقة`;
+                return `${mins} دقيقة`;
             }
-        }
 
-        // Add label to enrollment
-        async function addLabel(enrollmentId) {
-            const label = prompt('أدخل اسم التصنيف:');
-            if (!label || !label.trim()) return;
+            function getStatusText(status) {
+                const texts = {
+                    draft: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg> مسودة',
+                    scheduled: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> مجدول',
+                    running: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg> نشط',
+                    paused: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg> متوقف',
+                    completed: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> مكتمل',
+                    cancelled: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg> ملغى',
+                    failed: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg> فشل'
+                };
+                return texts[status] || status;
+            }
 
-            try {
-                const response = await fetch(`/api/campaigns/enrollments/${enrollmentId}/labels`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ label: label.trim() })
+            function getEnrollmentStatus(status) {
+                const texts = {
+                    pending: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> معلق</span>',
+                    active: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg> نشط</span>',
+                    completed: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> مكتمل</span>',
+                    paused: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> متوقف</span>',
+                    failed: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg> فشل</span>',
+                    opted_out: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" x2="19.07" y1="4.93" y2="19.07"/></svg> محظور</span>'
+                };
+                return texts[status] || status;
+            }
+
+            function getTypeLabel(type) {
+                const labels = {
+                    text: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg> نص</span>',
+                    image: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg> صورة</span>',
+                    video: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="12" x="2" y="7" rx="2.18"/><line x1="12" x2="12" y1="17" y2="12"/><line x1="12" x2="12" y1="7" y2="12"/><path d="M7 12h10"/></svg> فيديو</span>',
+                    audio: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> صوت</span>',
+                    voice: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg> صوتية</span>',
+                    document: '<span style="display:inline-flex;align-items:center;vertical-align:middle;gap:4px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg> ملف</span>'
+                };
+                return labels[type] || type;
+            }
+
+            function formatDate(dateStr) {
+                if (!dateStr) return '-';
+                return new Date(dateStr).toLocaleString('ar-EG');
+            }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = 'glass-panel';
+
+                let icon = '';
+                let borderColor = '';
+
+                if (type === 'success') {
+                    icon = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+                    borderColor = 'rgba(16, 185, 129, 0.4)';
+                } else if (type === 'error') {
+                    icon = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                    borderColor = 'rgba(239, 68, 68, 0.4)';
+                } else {
+                    icon = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12" y1="17" y2="17.01"/></svg>';
+                    borderColor = 'rgba(245, 158, 11, 0.4)';
+                }
+
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    left: 24px;
+                    padding: 16px 24px;
+                    background: rgba(255, 255, 255, 0.95);
+                    border: 1px solid ${borderColor};
+                    color: var(--text-primary);
+                    border-radius: 12px;
+                    font-weight: 500;
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                    min-width: 300px;
+                    transform: translateY(100px);
+                    opacity: 0;
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                `;
+
+                toast.innerHTML = `${icon} <span>${message}</span>`;
+                document.body.appendChild(toast);
+
+                // Animate in
+                requestAnimationFrame(() => {
+                    toast.style.transform = 'translateY(0)';
+                    toast.style.opacity = '1';
                 });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('تم إضافة التصنيف', 'success');
-                    loadEnrollments();
-                } else {
-                    showToast(data.error || 'فشل إضافة التصنيف', 'error');
-                }
-            } catch (err) {
-                showToast('خطأ في الاتصال', 'error');
+
+                // Remove after delay
+                setTimeout(() => {
+                    toast.style.transform = 'translateY(20px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 400);
+                }, 3000);
             }
-        }
 
-        // Calculate response time between sent and delivered
-        function calculateResponseTime(sentAt, deliveredAt) {
-            if (!sentAt || !deliveredAt) return '-';
-            const sent = new Date(sentAt);
-            const delivered = new Date(deliveredAt);
-            const diffMs = delivered - sent;
-
-            if (diffMs < 1000) return 'فوري';
-            if (diffMs < 60000) return Math.round(diffMs / 1000) + ' ثانية';
-            if (diffMs < 3600000) return Math.round(diffMs / 60000) + ' دقيقة';
-            return Math.round(diffMs / 3600000) + ' ساعة';
-        }
-
-        // Get color for label
-        function getLabelColor(label) {
-            const colors = ['#00ff88', '#00d9ff', '#ffb300', '#ff6b81', '#a29bfe', '#fd79a8', '#81ecec', '#ffeaa7'];
-            let hash = 0;
-            for (let i = 0; i < label.length; i++) {
-                hash = label.charCodeAt(i) + ((hash << 5) - hash);
+            // Copy phone number to clipboard
+            function copyNumber(phone) {
+                navigator.clipboard.writeText(phone).then(() => {
+                    showToast('تم نسخ الرقم: ' + phone, 'success');
+                }).catch(() => {
+                    showToast('فشل النسخ', 'error');
+                });
             }
-            return colors[Math.abs(hash) % colors.length];
-        }
 
-        // ==================== CHAT MODAL ====================
-        let currentChatPhone = null;
-        let currentChatDeviceId = null;
-        let currentChatName = null;
-
-        async function openChatModal(phone, name, deviceId) {
-            currentChatPhone = phone;
-            currentChatDeviceId = deviceId;
-            currentChatName = name;
-
-            document.getElementById('chatModalName').textContent = name || phone;
-            document.getElementById('chatModalPhone').textContent = phone;
-            document.getElementById('chatModal').style.display = 'flex';
-            document.getElementById('chatMessageInput').value = '';
-
-            await loadChatMessages();
-        }
-
-        function closeChatModal() {
-            document.getElementById('chatModal').style.display = 'none';
-            currentChatPhone = null;
-            currentChatDeviceId = null;
-        }
-
-        async function loadChatMessages() {
-            const container = document.getElementById('chatMessages');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-
-            try {
-                // Build chat ID format for WhatsApp
-                const chatId = currentChatPhone.includes('@') ? currentChatPhone : `${currentChatPhone}@c.us`;
-
-                // Try WhatsApp real-time API first (like chats.js) - pass deviceId for correct profile
-                let response = await fetch(`/api/whatsapp/chat/${encodeURIComponent(chatId)}/messages?limit=50&deviceId=${currentChatDeviceId}`);
-                let data = await response.json();
-
-                // Fallback to database if WhatsApp API fails
-                if (!data.success) {
-                    response = await fetch(`/api/messages/chat/${encodeURIComponent(chatId)}?limit=50`);
-                    data = await response.json();
+            // Retry failed message
+            async function retryMessage(enrollmentId) {
+                if (!confirm('هل تريد إعادة إرسال الرسالة؟')) return;
+                try {
+                    const response = await fetch(`/api/campaigns/${campaignId}/retry/${enrollmentId}`, { method: 'POST' });
+                    const data = await response.json();
+                    if (data.success) {
+                        showToast('تم إضافة الرسالة لقائمة الإرسال', 'success');
+                        loadEnrollments();
+                    } else {
+                        showToast(data.error || 'فشل إعادة الإرسال', 'error');
+                    }
+                } catch (err) {
+                    showToast('خطأ في الاتصال', 'error');
                 }
+            }
 
-                if (data.success && data.data && data.data.length > 0) {
-                    // Messages come newest first, reverse for display
-                    const messages = [...data.data].reverse();
-                    container.innerHTML = messages.map(msg => `
+            // Add label to enrollment
+            async function addLabel(enrollmentId) {
+                const label = prompt('أدخل اسم التصنيف:');
+                if (!label || !label.trim()) return;
+
+                try {
+                    const response = await fetch(`/api/campaigns/enrollments/${enrollmentId}/labels`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ label: label.trim() })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        showToast('تم إضافة التصنيف', 'success');
+                        loadEnrollments();
+                    } else {
+                        showToast(data.error || 'فشل إضافة التصنيف', 'error');
+                    }
+                } catch (err) {
+                    showToast('خطأ في الاتصال', 'error');
+                }
+            }
+
+            // Calculate response time between sent and delivered
+            function calculateResponseTime(sentAt, deliveredAt) {
+                if (!sentAt || !deliveredAt) return '-';
+                const sent = new Date(sentAt);
+                const delivered = new Date(deliveredAt);
+                const diffMs = delivered - sent;
+
+                if (diffMs < 1000) return 'فوري';
+                if (diffMs < 60000) return Math.round(diffMs / 1000) + ' ثانية';
+                if (diffMs < 3600000) return Math.round(diffMs / 60000) + ' دقيقة';
+                return Math.round(diffMs / 3600000) + ' ساعة';
+            }
+
+            // Get color for label
+            function getLabelColor(label) {
+                const colors = ['#00ff88', '#00d9ff', '#ffb300', '#ff6b81', '#a29bfe', '#fd79a8', '#81ecec', '#ffeaa7'];
+                let hash = 0;
+                for (let i = 0; i < label.length; i++) {
+                    hash = label.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                return colors[Math.abs(hash) % colors.length];
+            }
+
+            // ==================== CHAT MODAL ====================
+            let currentChatPhone = null;
+            let currentChatDeviceId = null;
+            let currentChatName = null;
+
+            async function openChatModal(phone, name, deviceId) {
+                currentChatPhone = phone;
+                currentChatDeviceId = deviceId;
+                currentChatName = name;
+
+                document.getElementById('chatModalName').textContent = name || phone;
+                document.getElementById('chatModalPhone').textContent = phone;
+                document.getElementById('chatModal').style.display = 'flex';
+                document.getElementById('chatMessageInput').value = '';
+
+                await loadChatMessages();
+            }
+
+            function closeChatModal() {
+                document.getElementById('chatModal').style.display = 'none';
+                currentChatPhone = null;
+                currentChatDeviceId = null;
+            }
+
+            async function loadChatMessages() {
+                const container = document.getElementById('chatMessages');
+                container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+                try {
+                    // Build chat ID format for WhatsApp
+                    const chatId = currentChatPhone.includes('@') ? currentChatPhone : `${currentChatPhone}@c.us`;
+
+                    // Try WhatsApp real-time API first (like chats.js) - pass deviceId for correct profile
+                    let response = await fetch(`/api/whatsapp/chat/${encodeURIComponent(chatId)}/messages?limit=50&deviceId=${currentChatDeviceId}`);
+                    let data = await response.json();
+
+                    // Fallback to database if WhatsApp API fails
+                    if (!data.success) {
+                        response = await fetch(`/api/messages/chat/${encodeURIComponent(chatId)}?limit=50`);
+                        data = await response.json();
+                    }
+
+                    if (data.success && data.data && data.data.length > 0) {
+                        // Messages come newest first, reverse for display
+                        const messages = [...data.data].reverse();
+                        container.innerHTML = messages.map(msg => `
                         <div class="message-item ${msg.fromMe || msg.from_me || msg.is_from_me ? 'sent' : 'received'}">
                             <div class="message-content">${renderMessageContent(msg)}</div>
                             <div class="message-time">${formatTime(msg.timestamp || msg.created_at)}</div>
                         </div>
                     `).join('');
-                    container.scrollTop = container.scrollHeight;
-                } else {
-                    container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد رسائل سابقة</div>';
+                        container.scrollTop = container.scrollHeight;
+                    } else {
+                        container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد رسائل سابقة</div>';
+                    }
+                } catch (error) {
+                    console.error('Error loading messages:', error);
+                    container.innerHTML = '<div style="text-align:center;color:var(--accent-error);padding:40px;">تعذر تحميل الرسائل</div>';
                 }
-            } catch (error) {
-                console.error('Error loading messages:', error);
-                container.innerHTML = '<div style="text-align:center;color:var(--accent-error);padding:40px;">تعذر تحميل الرسائل</div>';
-            }
-        }
-
-        // Helper to render message content with media support
-        function renderMessageContent(msg) {
-            const type = msg.type || msg.message_type || 'chat';
-            const body = msg.body || msg.content || '';
-            const mediaUrl = msg.mediaUrl || msg.media_url || '';
-            const hasMedia = msg.hasMedia || false;
-
-            // Text message
-            if (type === 'chat' || type === 'text') {
-                return escapeHtml(body) || '';
             }
 
-            // If has media URL, show the actual media
-            if (mediaUrl) {
-                // Image
-                if (type === 'image' || type === 'sticker') {
-                    return `<img src="${mediaUrl}" alt="صورة" style="max-width:100%;max-height:200px;border-radius:8px;cursor:pointer;" onclick="window.open('${mediaUrl}','_blank')">
+            // Helper to render message content with media support
+            function renderMessageContent(msg) {
+                const type = msg.type || msg.message_type || 'chat';
+                const body = msg.body || msg.content || '';
+                const mediaUrl = msg.mediaUrl || msg.media_url || '';
+                const hasMedia = msg.hasMedia || false;
+
+                // Text message
+                if (type === 'chat' || type === 'text') {
+                    return escapeHtml(body) || '';
+                }
+
+                // If has media URL, show the actual media
+                if (mediaUrl) {
+                    // Image
+                    if (type === 'image' || type === 'sticker') {
+                        return `<img src="${mediaUrl}" alt="صورة" style="max-width:100%;max-height:200px;border-radius:8px;cursor:pointer;" onclick="window.open('${mediaUrl}','_blank')">
                             ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
-                }
-                // Video
-                if (type === 'video') {
-                    return `<video controls style="max-width:100%;max-height:200px;border-radius:8px;">
+                    }
+                    // Video
+                    if (type === 'video') {
+                        return `<video controls style="max-width:100%;max-height:200px;border-radius:8px;">
                                 <source src="${mediaUrl}" type="video/mp4">
                             </video>
                             ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
-                }
-                // Audio/Voice  
-                if (type === 'audio' || type === 'ptt' || type === 'voice') {
-                    return `<audio controls style="width:100%;">
+                    }
+                    // Audio/Voice  
+                    if (type === 'audio' || type === 'ptt' || type === 'voice') {
+                        return `<audio controls style="width:100%;">
                                 <source src="${mediaUrl}" type="audio/ogg">
                             </audio>
                             ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
-                }
-                // Document
-                if (type === 'document') {
-                    const filename = msg.filename || 'ملف';
-                    return `<a href="${mediaUrl}" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px;background:rgba(255,255,255,0.1);border-radius:8px;text-decoration:none;color:inherit;">
+                    }
+                    // Document
+                    if (type === 'document') {
+                        const filename = msg.filename || 'ملف';
+                        return `<a href="${mediaUrl}" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px;background:rgba(255,255,255,0.1);border-radius:8px;text-decoration:none;color:inherit;">
                                 <span style="font-size:24px;">📄</span>
                                 <span>${escapeHtml(filename)}</span>
                             </a>
                             ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
+                    }
                 }
-            }
 
-            // If hasMedia but no URL, show styled placeholder with type icon
-            if (hasMedia || ['image', 'sticker', 'video', 'audio', 'ptt', 'voice', 'document'].includes(type)) {
-                const icons = {
-                    'image': '🖼️', 'sticker': '🎨', 'video': '🎬', 'audio': '🎵',
-                    'ptt': '🎤', 'voice': '🎤', 'document': '📄'
-                };
-                const labels = {
-                    'image': 'صورة', 'sticker': 'ملصق', 'video': 'فيديو', 'audio': 'مقطع صوتي',
-                    'ptt': 'رسالة صوتية', 'voice': 'رسالة صوتية', 'document': 'مستند'
-                };
-                const icon = icons[type] || '📎';
-                const label = labels[type] || 'ملف مرفق';
-                return `<div style="display:flex;align-items:center;gap:8px;padding:12px;background:rgba(255,255,255,0.05);border-radius:8px;border:1px dashed rgba(255,255,255,0.2);">
+                // If hasMedia but no URL, show styled placeholder with type icon
+                if (hasMedia || ['image', 'sticker', 'video', 'audio', 'ptt', 'voice', 'document'].includes(type)) {
+                    const icons = {
+                        'image': '🖼️', 'sticker': '🎨', 'video': '🎬', 'audio': '🎵',
+                        'ptt': '🎤', 'voice': '🎤', 'document': '📄'
+                    };
+                    const labels = {
+                        'image': 'صورة', 'sticker': 'ملصق', 'video': 'فيديو', 'audio': 'مقطع صوتي',
+                        'ptt': 'رسالة صوتية', 'voice': 'رسالة صوتية', 'document': 'مستند'
+                    };
+                    const icon = icons[type] || '📎';
+                    const label = labels[type] || 'ملف مرفق';
+                    return `<div style="display:flex;align-items:center;gap:8px;padding:12px;background:rgba(255,255,255,0.05);border-radius:8px;border:1px dashed rgba(255,255,255,0.2);">
                             <span style="font-size:28px;">${icon}</span>
                             <span style="color:var(--text-secondary);">${label}</span>
                         </div>
                         ${body ? '<div style="margin-top:8px;">' + escapeHtml(body) + '</div>' : ''}`;
+                }
+
+                // Location
+                if (type === 'location') {
+                    return `<a href="https://maps.google.com/?q=${msg.latitude},${msg.longitude}" target="_blank" style="color:var(--accent-primary);">📍 موقع</a>`;
+                }
+
+                // Default - show body text
+                return escapeHtml(body) || '';
             }
 
-            // Location
-            if (type === 'location') {
-                return `<a href="https://maps.google.com/?q=${msg.latitude},${msg.longitude}" target="_blank" style="color:var(--accent-primary);">📍 موقع</a>`;
-            }
+            async function sendChatMessage() {
+                const input = document.getElementById('chatMessageInput');
+                const message = input.value.trim();
 
-            // Default - show body text
-            return escapeHtml(body) || '';
-        }
+                if (!message) return;
 
-        async function sendChatMessage() {
-            const input = document.getElementById('chatMessageInput');
-            const message = input.value.trim();
+                try {
+                    const response = await fetch(`/api/client/${currentChatDeviceId}/send`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            to: currentChatPhone,
+                            message: message
+                        })
+                    });
 
-            if (!message) return;
-
-            try {
-                const response = await fetch(`/api/client/${currentChatDeviceId}/send`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        to: currentChatPhone,
-                        message: message
-                    })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    input.value = '';
-                    // Add message to UI immediately
-                    const container = document.getElementById('chatMessages');
-                    container.innerHTML += `
+                    const data = await response.json();
+                    if (data.success) {
+                        input.value = '';
+                        // Add message to UI immediately
+                        const container = document.getElementById('chatMessages');
+                        container.innerHTML += `
                         <div class="message-item sent">
                             <div class="message-content">${escapeHtml(message)}</div>
                             <div class="message-time">الآن</div>
                         </div>
                     `;
-                    container.scrollTop = container.scrollHeight;
-                    showToast('تم الإرسال', 'success');
-                } else {
-                    showToast(data.error || 'فشل الإرسال', 'error');
+                        container.scrollTop = container.scrollHeight;
+                        showToast('تم الإرسال', 'success');
+                    } else {
+                        showToast(data.error || 'فشل الإرسال', 'error');
+                    }
+                } catch (error) {
+                    showToast('خطأ في الاتصال', 'error');
                 }
-            } catch (error) {
-                showToast('خطأ في الاتصال', 'error');
             }
-        }
 
-        async function handleChatAttachment(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            async function handleChatAttachment(event) {
+                const file = event.target.files[0];
+                if (!file) return;
 
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('to', currentChatPhone);
-            formData.append('caption', '');
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('to', currentChatPhone);
+                formData.append('caption', '');
 
-            try {
-                const response = await fetch(`/api/client/${currentChatDeviceId}/send-media`, {
-                    method: 'POST',
-                    body: formData
-                });
+                try {
+                    const response = await fetch(`/api/client/${currentChatDeviceId}/send-media`, {
+                        method: 'POST',
+                        body: formData
+                    });
 
-                const data = await response.json();
-                if (data.success) {
-                    showToast('تم إرسال الملف', 'success');
-                    await loadChatMessages();
-                } else {
-                    showToast(data.error || 'فشل إرسال الملف', 'error');
+                    const data = await response.json();
+                    if (data.success) {
+                        showToast('تم إرسال الملف', 'success');
+                        await loadChatMessages();
+                    } else {
+                        showToast(data.error || 'فشل إرسال الملف', 'error');
+                    }
+                } catch (error) {
+                    showToast('خطأ في رفع الملف', 'error');
                 }
-            } catch (error) {
-                showToast('خطأ في رفع الملف', 'error');
+                event.target.value = '';
             }
-            event.target.value = '';
-        }
 
-        // ==================== LABELS MODAL ====================
-        let currentLabelsEnrollmentId = null;
-        let currentLabels = [];
+            // ==================== LABELS MODAL ====================
+            let currentLabelsEnrollmentId = null;
+            let currentLabels = [];
 
-        function openLabelsModal(enrollmentId, labels) {
-            currentLabelsEnrollmentId = enrollmentId;
-            currentLabels = labels || [];
+            function openLabelsModal(enrollmentId, labels) {
+                currentLabelsEnrollmentId = enrollmentId;
+                currentLabels = labels || [];
 
-            renderCurrentLabels();
-            document.getElementById('labelsModal').style.display = 'flex';
-            document.getElementById('newLabelInput').value = '';
-            document.getElementById('newLabelInput').focus();
-        }
+                renderCurrentLabels();
+                document.getElementById('labelsModal').style.display = 'flex';
+                document.getElementById('newLabelInput').value = '';
+                document.getElementById('newLabelInput').focus();
+            }
 
-        function closeLabelsModal() {
-            document.getElementById('labelsModal').style.display = 'none';
-            currentLabelsEnrollmentId = null;
-            loadEnrollments(); // Refresh to show new labels
-        }
+            function closeLabelsModal() {
+                document.getElementById('labelsModal').style.display = 'none';
+                currentLabelsEnrollmentId = null;
+                loadEnrollments(); // Refresh to show new labels
+            }
 
-        function renderCurrentLabels() {
-            const container = document.getElementById('currentLabels');
-            if (currentLabels.length === 0) {
-                container.innerHTML = '<span style="color: var(--text-secondary);">لا توجد تصنيفات</span>';
-            } else {
-                container.innerHTML = currentLabels.map(label => `
+            function renderCurrentLabels() {
+                const container = document.getElementById('currentLabels');
+                if (currentLabels.length === 0) {
+                    container.innerHTML = '<span style="color: var(--text-secondary);">لا توجد تصنيفات</span>';
+                } else {
+                    container.innerHTML = currentLabels.map(label => `
                     <span class="label-tag" style="background: ${getLabelColor(label)};">
                         ${escapeHtml(label)}
                         <span class="remove-label" onclick="removeLabel('${escapeHtml(label)}')">✕</span>
                     </span>
                 `).join('');
-            }
-        }
-
-        async function submitNewLabel() {
-            const input = document.getElementById('newLabelInput');
-            const label = input.value.trim();
-            if (!label) return;
-            await addLabelToEnrollment(label);
-            input.value = '';
-        }
-
-        function selectSuggestedLabel(label) {
-            addLabelToEnrollment(label);
-        }
-
-        async function addLabelToEnrollment(label) {
-            try {
-                const response = await fetch(`/api/campaigns/enrollments/${currentLabelsEnrollmentId}/labels`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ label })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    currentLabels.push(label);
-                    renderCurrentLabels();
-                    showToast('تم إضافة التصنيف', 'success');
-                } else {
-                    showToast(data.error || 'فشل إضافة التصنيف', 'error');
                 }
-            } catch (err) {
-                showToast('خطأ في الاتصال', 'error');
             }
-        }
 
-        async function removeLabel(label) {
-            try {
-                const response = await fetch(`/api/campaigns/enrollments/${currentLabelsEnrollmentId}/labels/${encodeURIComponent(label)}`, {
-                    method: 'DELETE'
-                });
-                const data = await response.json();
-                if (data.success) {
-                    currentLabels = currentLabels.filter(l => l !== label);
-                    renderCurrentLabels();
-                    showToast('تم حذف التصنيف', 'success');
-                } else {
-                    showToast(data.error || 'فشل حذف التصنيف', 'error');
+            async function submitNewLabel() {
+                const input = document.getElementById('newLabelInput');
+                const label = input.value.trim();
+                if (!label) return;
+                await addLabelToEnrollment(label);
+                input.value = '';
+            }
+
+            function selectSuggestedLabel(label) {
+                addLabelToEnrollment(label);
+            }
+
+            async function addLabelToEnrollment(label) {
+                try {
+                    const response = await fetch(`/api/campaigns/enrollments/${currentLabelsEnrollmentId}/labels`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ label })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        currentLabels.push(label);
+                        renderCurrentLabels();
+                        showToast('تم إضافة التصنيف', 'success');
+                    } else {
+                        showToast(data.error || 'فشل إضافة التصنيف', 'error');
+                    }
+                } catch (err) {
+                    showToast('خطأ في الاتصال', 'error');
                 }
-            } catch (err) {
-                showToast('خطأ في الاتصال', 'error');
             }
-        }
 
-        // Handle Enter key in inputs
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('chatMessageInput')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendChatMessage();
+            async function removeLabel(label) {
+                try {
+                    const response = await fetch(`/api/campaigns/enrollments/${currentLabelsEnrollmentId}/labels/${encodeURIComponent(label)}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        currentLabels = currentLabels.filter(l => l !== label);
+                        renderCurrentLabels();
+                        showToast('تم حذف التصنيف', 'success');
+                    } else {
+                        showToast(data.error || 'فشل حذف التصنيف', 'error');
+                    }
+                } catch (err) {
+                    showToast('خطأ في الاتصال', 'error');
+                }
+            }
+
+            // Handle Enter key in inputs
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('chatMessageInput')?.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendChatMessage();
+                    }
+                });
+                document.getElementById('newLabelInput')?.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        submitNewLabel();
+                    }
+                });
+            });
+
+            // Close modals on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeChatModal();
+                    closeLabelsModal();
                 }
             });
-            document.getElementById('newLabelInput')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    submitNewLabel();
-                }
-            });
-        });
 
-        // Close modals on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeChatModal();
-                closeLabelsModal();
-            }
-        });
-
-        loadCampaign();
-    </script>
+            loadCampaign();
+        </script>
 </body>
 
 </html>

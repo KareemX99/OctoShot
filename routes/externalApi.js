@@ -120,14 +120,29 @@ async function simulateTyping(client, chatId, messageContent) {
     try {
         const chat = await client.getChatById(chatId);
         if (chat) {
-            await chat.sendSeen();
-            await chat.sendStateTyping();
-            console.log(`⌨️ API: Simulating typing for ${typingDuration}ms (${(messageContent || '').length} chars)`);
-            await new Promise(resolve => setTimeout(resolve, typingDuration));
-            await chat.clearState();
+            // Mark as seen (safely - may fail for new chats)
+            try {
+                if (typeof chat.sendSeen === 'function') {
+                    await chat.sendSeen();
+                }
+            } catch (seenError) {
+                console.log(`⚠️ sendSeen skipped: ${seenError.message?.substring(0, 50) || 'unknown error'}`);
+            }
+
+            // Start typing (safely)
+            try {
+                await chat.sendStateTyping();
+                console.log(`⌨️ API: Simulating typing for ${typingDuration}ms (${(messageContent || '').length} chars)`);
+                await new Promise(resolve => setTimeout(resolve, typingDuration));
+                await chat.clearState();
+            } catch (typingError) {
+                console.log(`⚠️ Typing state skipped: ${typingError.message?.substring(0, 50) || 'unknown error'}`);
+            }
+        } else {
+            console.log(`📝 Skipping typing simulation - chat not found for ${chatId}`);
         }
     } catch (error) {
-        console.log(`⚠️ Typing simulation error: ${error.message}`);
+        console.log(`📝 Typing simulation error (continuing anyway): ${error.message?.substring(0, 50) || 'unknown error'}`);
     }
     return typingDuration;
 }
@@ -307,6 +322,22 @@ router.post('/messages/send-image', authenticateDevice, async (req, res) => {
 
         const result = await client.sendMessage(chatId, media, { caption });
 
+        // Save to message queue for logging
+        await ApiMessageQueue.create({
+            batch_id: null,
+            device_id: req.device.id,
+            recipient: to,
+            message_type: 'image',
+            original_content: caption || '[Image]',
+            resolved_content: caption || '[Image]',
+            media_url: imageUrl || '[Base64]',
+            caption: caption,
+            scheduled_at: new Date(),
+            status: 'sent',
+            whatsapp_message_id: result.id._serialized,
+            sent_at: new Date()
+        });
+
         res.json({
             success: true,
             messageId: result.id._serialized,
@@ -361,6 +392,22 @@ router.post('/messages/send-document', authenticateDevice, async (req, res) => {
             sendMediaAsDocument: true
         });
 
+        // Save to message queue for logging
+        await ApiMessageQueue.create({
+            batch_id: null,
+            device_id: req.device.id,
+            recipient: to,
+            message_type: 'document',
+            original_content: filename || '[Document]',
+            resolved_content: filename || '[Document]',
+            media_url: documentUrl || '[Base64]',
+            caption: caption,
+            scheduled_at: new Date(),
+            status: 'sent',
+            whatsapp_message_id: result.id._serialized,
+            sent_at: new Date()
+        });
+
         res.json({
             success: true,
             messageId: result.id._serialized,
@@ -410,6 +457,21 @@ router.post('/messages/send-audio', authenticateDevice, async (req, res) => {
             sendAudioAsVoice: ptt === true
         });
 
+        // Save to message queue for logging
+        await ApiMessageQueue.create({
+            batch_id: null,
+            device_id: req.device.id,
+            recipient: to,
+            message_type: ptt ? 'ptt' : 'audio',
+            original_content: '[Audio]',
+            resolved_content: '[Audio]',
+            media_url: audioUrl || '[Base64]',
+            scheduled_at: new Date(),
+            status: 'sent',
+            whatsapp_message_id: result.id._serialized,
+            sent_at: new Date()
+        });
+
         res.json({
             success: true,
             messageId: result.id._serialized,
@@ -457,6 +519,22 @@ router.post('/messages/send-video', authenticateDevice, async (req, res) => {
 
         const result = await client.sendMessage(chatId, media, { caption });
 
+        // Save to message queue for logging
+        await ApiMessageQueue.create({
+            batch_id: null,
+            device_id: req.device.id,
+            recipient: to,
+            message_type: 'video',
+            original_content: caption || '[Video]',
+            resolved_content: caption || '[Video]',
+            media_url: videoUrl || '[Base64]',
+            caption: caption,
+            scheduled_at: new Date(),
+            status: 'sent',
+            whatsapp_message_id: result.id._serialized,
+            sent_at: new Date()
+        });
+
         res.json({
             success: true,
             messageId: result.id._serialized,
@@ -498,6 +576,20 @@ router.post('/messages/send-location', authenticateDevice, async (req, res) => {
         await simulateTyping(client, chatId, 0);
 
         const result = await client.sendMessage(chatId, location);
+
+        // Save to message queue for logging
+        await ApiMessageQueue.create({
+            batch_id: null,
+            device_id: req.device.id,
+            recipient: to,
+            message_type: 'location',
+            original_content: `📍 ${latitude}, ${longitude}`,
+            resolved_content: description || `📍 ${latitude}, ${longitude}`,
+            scheduled_at: new Date(),
+            status: 'sent',
+            whatsapp_message_id: result.id._serialized,
+            sent_at: new Date()
+        });
 
         res.json({
             success: true,
@@ -545,6 +637,20 @@ END:VCARD`;
         await simulateTyping(client, chatId, 0);
 
         const result = await client.sendMessage(chatId, vcard);
+
+        // Save to message queue for logging
+        await ApiMessageQueue.create({
+            batch_id: null,
+            device_id: req.device.id,
+            recipient: to,
+            message_type: 'contact',
+            original_content: `👤 ${contactName}: ${contactNumber}`,
+            resolved_content: `👤 ${contactName}: ${contactNumber}`,
+            scheduled_at: new Date(),
+            status: 'sent',
+            whatsapp_message_id: result.id._serialized,
+            sent_at: new Date()
+        });
 
         res.json({
             success: true,

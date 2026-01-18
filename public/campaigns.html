@@ -276,6 +276,8 @@
     <!-- Toast Container -->
     <div id="toastContainer" class="toast-container"></div>
 
+    <!-- Socket.IO for real-time updates -->
+    <script src="/socket.io/socket.io.js"></script>
     <script>
         // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
@@ -400,6 +402,33 @@
         }
 
         loadCampaigns();
+
+        // Real-time updates via Socket.IO
+        const socket = io();
+
+        // Auto-refresh when campaign progress changes
+        socket.on('campaign:progress', (data) => {
+            console.log('📊 Campaign progress update:', data);
+            loadCampaigns();
+        });
+
+        // Auto-refresh when campaign completes
+        socket.on('campaign:completed', (data) => {
+            console.log('🎊 Campaign completed:', data);
+            loadCampaigns();
+        });
+
+        // Auto-refresh when campaign status changes
+        socket.on('campaign:status_updated', (data) => {
+            console.log('📋 Campaign status updated:', data);
+            loadCampaigns();
+        });
+
+        // Auto-refresh on campaign message ACK (delivered/read)
+        socket.on('campaign:message_ack', (data) => {
+            console.log('📬 Campaign message ACK:', data);
+            loadCampaigns();
+        });
     </script>
 
     <style>

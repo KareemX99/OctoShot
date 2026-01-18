@@ -418,6 +418,13 @@ class WhatsAppManager {
                         }
                     }
 
+                    // 2. Update messages table (for dashboard)
+                    await pool.query(`
+                        UPDATE messages 
+                        SET ack = $1
+                        WHERE message_id = $2 AND ack < $1
+                    `, [ack, messageId]);
+
                     // 2. Update campaign messages too
                     try {
                         const Campaign = require('./models/Campaign');
@@ -466,6 +473,31 @@ class WhatsAppManager {
                     from: msg?.from,
                     messageId: msg?.id?._serialized
                 }, 'message_handler_critical');
+            }
+        });
+
+        // Message sent event - track all outgoing messages for dashboard
+        client.on('message_create', async (msg) => {
+            if (msg.fromMe) {
+                try {
+                    await Message.create({
+                        client_id: profileId,
+                        message_id: msg.id._serialized,
+                        chat_id: msg.to,
+                        from_number: msg.from?.replace('@c.us', '').replace('@g.us', ''),
+                        to_number: msg.to?.replace('@c.us', '').replace('@g.us', ''),
+                        body: msg.body || '',
+                        type: msg.type || 'chat',
+                        is_from_me: true,
+                        is_forwarded: msg.isForwarded || false,
+                        has_media: msg.hasMedia || false,
+                        timestamp: new Date(msg.timestamp * 1000),
+                        ack: msg.ack || 0
+                    });
+                    console.log(`📤 Sent message saved to database for profile ${profileId}`);
+                } catch (error) {
+                    console.error(`Error saving sent message for profile ${profileId}:`, error.message);
+                }
             }
         });
     }

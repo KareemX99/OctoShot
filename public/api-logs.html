@@ -4,204 +4,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سجل الرسائل - OctoSHOT</title>
+    <title>سجل الرسائل | اكــتوشــوت واتساب</title>
+
+    <!-- Fonts - Modern -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/premium.css">
+    <link rel="stylesheet" href="/css/icons.css">
     <link rel="stylesheet" href="/css/api-logs.css">
 </head>
 
 <body>
-    <div class="app-container">
+    <!-- Aurora Background -->
+    <div class="aurora-bg"></div>
+
+    <div class="layout-wrapper">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">🐙</span>
-                    <span class="logo-text">اكــتوشــوت</span>
-                </div>
+                <a href="/" class="logo">
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 12a4 4 0 1 0 8 0 4 4 0 1 0-8 0" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                        </svg>
+                    </span>
+                    <span class="logo-text">OctoSHOT</span>
+                </a>
             </div>
+
             <nav class="sidebar-nav">
-                <a href="/profiles" class="nav-item">
-                    <span class="nav-icon">📱</span>
-                    <span class="nav-text">الأجهزة</span>
-                </a>
-                <a href="/api-docs" class="nav-item">
-                    <span class="nav-icon">📚</span>
-                    <span class="nav-text">دليل API للمطورين</span>
-                </a>
-                <a href="/api-logs" class="nav-item active">
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-text">سجل الرسائل</span>
-                </a>
-                <a href="/dashboard" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">لوحة التحكم</span>
-                </a>
-                <a href="/chats" class="nav-item">
-                    <span class="nav-icon">💬</span>
-                    <span class="nav-text">المحادثات</span>
-                </a>
-                <a href="/spintax" class="nav-item">
-                    <span class="nav-icon">✨</span>
-                    <span class="nav-text">مولد الرسائل الذكي</span>
-                </a>
-                <a href="/campaigns" class="nav-item">
-                    <span class="nav-icon">📣</span>
-                    <span class="nav-text">الحملات</span>
-                </a>
+                <div class="nav-section">
+                    <div class="nav-section-title">الرئيسية</div>
+                    <a href="/dashboard" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="7" height="9" x="3" y="3" rx="1" />
+                                <rect width="7" height="5" x="14" y="3" rx="1" />
+                                <rect width="7" height="9" x="14" y="12" rx="1" />
+                                <rect width="7" height="5" x="3" y="16" rx="1" />
+                            </svg></span>
+                        <span class="nav-text">لوحة التحكم</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">واتساب</div>
+                    <a href="/profiles" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                                <path d="M12 18h.01" />
+                            </svg></span>
+                        <span class="nav-text">الأجهزة</span>
+                    </a>
+                    <a href="/chats" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
+                            </svg></span>
+                        <span class="nav-text">المحادثات</span>
+                    </a>
+                    <a href="/campaigns" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 11 18-5v12L3 13v-2z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                            </svg></span>
+                        <span class="nav-text">الحملات</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">الأدوات</div>
+                    <a href="/contacts" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg></span>
+                        <span class="nav-text">جهات الاتصال</span>
+                    </a>
+                    <a href="/spintax" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg></span>
+                        <span class="nav-text">مولد الرسائل</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">للمطورين</div>
+                    <a href="/api-docs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                <path d="m9 9.5 2 2-2 2" />
+                                <path d="M13 13.5h3" />
+                            </svg></span>
+                        <span class="nav-text">دليل API</span>
+                    </a>
+                    <a href="/api-logs" class="nav-item active">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                            </svg></span>
+                        <span class="nav-text">سجل الرسائل</span>
+                    </a>
+                </div>
             </nav>
+
             <div class="sidebar-footer">
                 <div class="theme-row">
-                    <span>الوضع</span>
+                    <span>الوضع المظلم</span>
                     <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
-                        <span class="theme-icon">🌙</span>
+                        <svg class="theme-icon" viewBox="0 0 24 24">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
                     </button>
                 </div>
             </div>
         </aside>
 
-
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
-            <header class="logs-header">
-                <div class="header-info">
-                    <h1>📋 API Message Log</h1>
-                    <p class="subtitle">Track your bulk messages and their delivery status</p>
-                </div>
-                <div class="header-actions">
-                    <button class="btn btn-outline" onclick="refreshLogs()">
-                        🔄 Refresh
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-row">
+                    <div>
+                        <h1>
+                            <span class="icon"><svg viewBox="0 0 24 24">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <line x1="16" x2="8" y1="13" y2="13" />
+                                    <line x1="16" x2="8" y1="17" y2="17" />
+                                </svg></span>
+                            سجل الرسائل
+                        </h1>
+                        <p>تتبع رسائلك المُجمعة وحالة التوصيل</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="refreshLogs()">
+                        <span class="icon"><svg viewBox="0 0 24 24">
+                                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                                <path d="M21 3v5h-5" />
+                            </svg></span>
+                        تحديث
                     </button>
                 </div>
-            </header>
-
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon queued">🕐</div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="statQueued">0</span>
-                        <span class="stat-label">Queued</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon sent">✓</div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="statSent">0</span>
-                        <span class="stat-label">Sent</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon delivered">✓✓</div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="statDelivered">0</span>
-                        <span class="stat-label">Delivered</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon read">✓✓</div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="statRead">0</span>
-                        <span class="stat-label">Read</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon failed">❌</div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="statFailed">0</span>
-                        <span class="stat-label">Failed</span>
-                    </div>
-                </div>
             </div>
 
-            <!-- Batches Management -->
-            <div class="batches-section">
-                <div class="section-header">
-                    <h2>📦 Batches</h2>
-                    <button class="btn btn-outline btn-sm" onclick="loadBatches()">🔄 Refresh</button>
+            <!-- Stats Grid -->
+            <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr);">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">قيد الانتظار</span>
+                        <div class="stat-card-icon orange">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="statQueued">0</div>
                 </div>
-                <div class="batches-container" id="batchesContainer">
-                    <!-- Batches will be loaded here -->
-                </div>
-            </div>
 
-            <!-- Filters -->
-            <div class="filters-bar">
-                <select id="filterStatus" onchange="applyFilters()">
-                    <option value="">All Status</option>
-                    <option value="queued">🕐 Queued</option>
-                    <option value="sending">⏳ Sending</option>
-                    <option value="sent">✓ Sent</option>
-                    <option value="delivered">✓✓ Delivered</option>
-                    <option value="read">✓✓ Read</option>
-                    <option value="failed">❌ Failed</option>
-                </select>
-                <input type="text" id="filterBatch" placeholder="Filter by Batch ID..." onkeyup="applyFilters()">
-                <select id="rowsPerPage" onchange="changePageSize()">
-                    <option value="20">20 rows</option>
-                    <option value="50" selected>50 rows</option>
-                    <option value="100">100 rows</option>
-                    <option value="500">500 rows</option>
-                    <option value="1000">1000 rows</option>
-                    <option value="all">All</option>
-                </select>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">مُرسلة</span>
+                        <div class="stat-card-icon blue">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="statSent">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">مُستلمة</span>
+                        <div class="stat-card-icon purple">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18 6 7 17l-5-5" />
+                                <path d="m22 10-7.5 7.5L13 16" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="statDelivered">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">مقروءة</span>
+                        <div class="stat-card-icon green">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="statRead">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">فاشلة</span>
+                        <div class="stat-card-icon red">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="statFailed">0</div>
+                </div>
             </div>
 
             <!-- Messages Table -->
-            <div class="table-container">
-                <table class="logs-table resizable-table">
-                    <thead>
-                        <tr>
-                            <th class="resizable">ID</th>
-                            <th class="resizable">Batch ID</th>
-                            <th class="resizable">Recipient</th>
-                            <th class="resizable">Message</th>
-                            <th class="resizable">Status</th>
-                            <th class="resizable">Scheduled</th>
-                            <th class="resizable">Sent At</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logsTableBody">
-                        <!-- Logs will be loaded here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Empty State -->
-            <div id="emptyState" class="empty-state hidden">
-                <span class="empty-icon">📭</span>
-                <h3>No messages in queue</h3>
-                <p>Send bulk messages via the API to see them here</p>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="icon"><svg viewBox="0 0 24 24">
+                                <rect width="18" height="18" x="3" y="3" rx="2" />
+                                <path d="M3 9h18" />
+                                <path d="M9 21V9" />
+                            </svg></span>
+                        سجل الرسائل
+                    </h2>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <select class="form-control" id="filterStatus" style="width: auto; padding: 0.5rem 1rem;"
+                            onchange="applyFilters()">
+                            <option value="">كل الحالات</option>
+                            <option value="sent">مُرسل</option>
+                            <option value="received">مُستلم</option>
+                            <option value="failed">فاشل</option>
+                        </select>
+                        <input type="text" class="form-control" placeholder="بحث..."
+                            style="width: 200px; padding: 0.5rem 1rem;" id="filterBatch" onkeyup="applyFilters()">
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Batch ID</th>
+                                <th>المستلم</th>
+                                <th>الرسالة</th>
+                                <th>الحالة</th>
+                                <th>الموعد</th>
+                                <th>تاريخ الإرسال</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state" style="padding: 2rem;">
+                                        <svg viewBox="0 0 24 24"
+                                            style="width: 60px; height: 60px; stroke: var(--text-muted); fill: none;">
+                                            <path
+                                                d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                            <polyline points="14 2 14 8 20 8" />
+                                        </svg>
+                                        <h3>لا توجد رسائل</h3>
+                                        <p>أرسل رسائل عبر API لتظهر هنا</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Pagination -->
-            <div class="pagination">
-                <button class="btn btn-secondary" id="prevBtn" onclick="prevPage()" disabled>← Previous</button>
-                <span id="pageInfo">Page 1</span>
-                <button class="btn btn-secondary" id="nextBtn" onclick="nextPage()">Next →</button>
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevPage()" disabled>السابق</button>
+                <span id="pageInfo" style="padding: 0.5rem 1rem; color: var(--text-secondary);">صفحة 1</span>
+                <button class="btn btn-secondary" id="nextBtn" onclick="nextPage()">التالي</button>
             </div>
         </main>
+    </div>
 
-        <!-- Batches Modal -->
-        <div id="batchesModal" class="modal hidden">
-            <div class="modal-overlay" onclick="closeBatchesModal()"></div>
-            <div class="modal-content batches-modal">
-                <div class="modal-header">
-                    <h3>📦 All Pending Batches</h3>
-                    <button class="modal-close" onclick="closeBatchesModal()">×</button>
-                </div>
-                <div class="modal-body" id="batchesModalBody">
-                    <!-- Batches will be loaded here -->
-                </div>
-            </div>
-        </div>
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
 
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/api-logs.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+
+        if (isDarkTheme) {
+            document.body.classList.add('dark-theme');
+            themeToggle.innerHTML = '<svg class="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            themeToggle.innerHTML = isDarkTheme
+                ? '<svg class="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>'
+                : '<svg class="theme-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        });
+
+        let allLogs = [];
+        let currentPage = 1;
+        let pageSize = 50;
+
+        async function refreshLogs() {
+            try {
+                const response = await fetch('/api/dashboard/recent-messages?limit=500');
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    // Map the data to match expected format
+                    allLogs = data.data.map(msg => ({
+                        id: msg.id,
+                        batch_id: msg.source || '-',
+                        phone_number: msg.phone_number,
+                        message: msg.device_name || msg.phone_number,
+                        status: msg.status,
+                        scheduled_at: msg.created_at,
+                        sent_at: msg.created_at
+                    }));
+                    updateStats();
+                    renderLogs();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateStats() {
+            const stats = { queued: 0, sent: 0, delivered: 0, read: 0, failed: 0, received: 0 };
+            allLogs.forEach(log => {
+                const status = log.status?.toLowerCase() || 'queued';
+                if (status === 'received') stats.delivered++;
+                else if (stats.hasOwnProperty(status)) stats[status]++;
+            });
+
+            document.getElementById('statQueued').textContent = stats.queued;
+            document.getElementById('statSent').textContent = stats.sent;
+            document.getElementById('statDelivered').textContent = stats.delivered;
+            document.getElementById('statRead').textContent = stats.read;
+            document.getElementById('statFailed').textContent = stats.failed;
+        }
+
+        function renderLogs() {
+            const statusFilter = document.getElementById('filterStatus').value;
+            const batchFilter = document.getElementById('filterBatch').value.toLowerCase();
+
+            let filtered = allLogs.filter(log => {
+                if (statusFilter && log.status?.toLowerCase() !== statusFilter) return false;
+                if (batchFilter && !log.phone_number?.toLowerCase().includes(batchFilter)) return false;
+                return true;
+            });
+
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const paged = filtered.slice(start, end);
+
+            const tbody = document.getElementById('logsTableBody');
+
+            if (paged.length === 0) {
+                tbody.innerHTML = `
+                    <tr><td colspan="7">
+                        <div class="empty-state" style="padding: 2rem;">
+                            <svg viewBox="0 0 24 24" style="width: 60px; height: 60px; stroke: var(--text-muted); fill: none;"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <h3>لا توجد نتائج</h3>
+                        </div>
+                    </td></tr>`;
+            } else {
+                tbody.innerHTML = paged.map((log, i) => `
+                    <tr>
+                        <td>${start + i + 1}</td>
+                        <td style="font-family: monospace; font-size: 0.75rem;">#${log.id || '-'}</td>
+                        <td dir="ltr" style="font-family: monospace; font-size: 0.85rem; text-align: center;">${log.phone_number || '-'}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${log.message || '-'}</td>
+                        <td>
+                            <span class="badge badge-${getStatusClass(log.status)}">
+                                ${getStatusText(log.status)}
+                            </span>
+                        </td>
+                        <td style="font-size: 0.85rem; color: var(--text-muted);">${formatDate(log.scheduled_at)}</td>
+                        <td style="font-size: 0.85rem; color: var(--text-muted);">${formatDate(log.sent_at)}</td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('pageInfo').textContent = `صفحة ${currentPage} من ${Math.ceil(filtered.length / pageSize) || 1}`;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = end >= filtered.length;
+        }
+
+        function getStatusClass(status) {
+            const map = { queued: 'pending', sent: 'success', delivered: 'info', read: 'purple', failed: 'error', received: 'info' };
+            return map[status?.toLowerCase()] || 'pending';
+        }
+
+        function getStatusText(status) {
+            const map = { queued: 'قيد الانتظار', sent: 'مُرسل', delivered: 'مُستلم', read: 'مقروء', failed: 'فاشل', received: 'مُستلم' };
+            return map[status?.toLowerCase()] || status || 'غير معروف';
+        }
+
+        function formatDate(date) {
+            if (!date) return '-';
+            const d = new Date(date);
+            const day = d.getDate().toString().padStart(2, '0');
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            const year = d.getFullYear();
+            const hours = d.getHours().toString().padStart(2, '0');
+            const minutes = d.getMinutes().toString().padStart(2, '0');
+            const seconds = d.getSeconds().toString().padStart(2, '0');
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        }
+        function applyFilters() { currentPage = 1; renderLogs(); }
+        function prevPage() { if (currentPage > 1) { currentPage--; renderLogs(); } }
+        function nextPage() { currentPage++; renderLogs(); }
+
+        refreshLogs();
+        setInterval(refreshLogs, 30000);
+    </script>
+
+    <style>
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+    </style>
 </body>
 
 </html>

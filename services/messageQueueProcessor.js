@@ -41,23 +41,36 @@ async function simulateTyping(deviceId, chatId, messageContent) {
         if (!client) return;
 
         const chat = await client.getChatById(chatId);
-        if (!chat) return;
+        if (!chat) {
+            console.log(`📝 Skipping typing simulation - chat not found for ${chatId}`);
+            return;
+        }
 
-        // Mark as seen
-        await chat.sendSeen();
+        // Mark as seen (safely - may fail for new chats)
+        try {
+            if (typeof chat.sendSeen === 'function') {
+                await chat.sendSeen();
+            }
+        } catch (seenError) {
+            console.log(`⚠️ sendSeen skipped: ${seenError.message?.substring(0, 50) || 'unknown error'}`);
+        }
 
-        // Start typing
-        await chat.sendStateTyping();
+        // Start typing (safely)
+        try {
+            await chat.sendStateTyping();
 
-        // Wait based on message content (realistic human typing speed)
-        const typingDuration = trustLevelConfig.getTypingDuration(messageContent || '');
-        console.log(`⌨️ Bulk: Simulating typing for ${typingDuration}ms (${(messageContent || '').length} chars)`);
-        await new Promise(resolve => setTimeout(resolve, typingDuration));
+            // Wait based on message content (realistic human typing speed)
+            const typingDuration = trustLevelConfig.getTypingDuration(messageContent || '');
+            console.log(`⌨️ Bulk: Simulating typing for ${typingDuration}ms (${(messageContent || '').length} chars)`);
+            await new Promise(resolve => setTimeout(resolve, typingDuration));
 
-        // Clear typing state
-        await chat.clearState();
+            // Clear typing state
+            await chat.clearState();
+        } catch (typingError) {
+            console.log(`⚠️ Typing simulation skipped: ${typingError.message?.substring(0, 50) || 'unknown error'}`);
+        }
     } catch (error) {
-        console.error('Typing simulation error:', error.message);
+        console.log(`📝 Typing simulation error (continuing anyway): ${error.message?.substring(0, 50) || 'unknown error'}`);
     }
 }
 
@@ -110,13 +123,13 @@ async function processMessage(queueItem) {
         const messageContent = queueItem.resolved_content || queueItem.original_content;
         await simulateTyping(queueItem.device_id, chatId, messageContent);
 
-        // Send the message
+        // Send the message - IMPORTANT: sendSeen: false prevents markedUnread error
         let result;
         if (queueItem.message_type === 'text') {
-            result = await client.sendMessage(chatId, messageContent);
+            result = await client.sendMessage(chatId, messageContent, { sendSeen: false });
         } else {
             // Handle media types (future extension)
-            result = await client.sendMessage(chatId, messageContent);
+            result = await client.sendMessage(chatId, messageContent, { sendSeen: false });
         }
 
         // Update with success

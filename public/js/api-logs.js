@@ -329,6 +329,33 @@ function setupSocketListeners() {
     socket.on('message_ack', (data) => {
         console.log('Message ACK:', data);
         loadStats();
+        loadLogs(); // Also refresh logs to show updated status
+    });
+
+    // Campaign message events - for campaign messages to appear in logs
+    socket.on('campaign:message_ack', (data) => {
+        console.log('Campaign message ACK:', data);
+        loadLogs();
+        loadStats();
+    });
+
+    socket.on('campaign:progress', (data) => {
+        console.log('Campaign progress:', data);
+        loadLogs();
+        loadStats();
+    });
+
+    // New message sent - refresh to show new entries
+    socket.on('message', (data) => {
+        console.log('New message:', data);
+        loadLogs();
+        loadStats();
+    });
+
+    socket.on('message_sent', (data) => {
+        console.log('Message sent:', data);
+        loadLogs();
+        loadStats();
     });
 }
 

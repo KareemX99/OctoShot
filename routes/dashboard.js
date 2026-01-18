@@ -123,16 +123,14 @@ router.get('/recent-messages', async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10;
 
-        // Get recent SENT messages from both api_message_queue and messages tables
+        // Get recent SENT messages from api_message_queue, messages, AND campaign_messages
         // Join with clients to get device_name
         // Only show messages sent FROM the device (is_from_me = true)
-        // Use ack column to determine status: 0-1=sent, 2=delivered, 3+=read
-        // Clean phone numbers by removing WhatsApp suffixes
         const result = await pool.query(`
             (
                 SELECT 
                     q.id,
-                    REGEXP_REPLACE(q.recipient, '@(c\.us|g\.us|s\.whatsapp\.net|lid)$', '') as phone_number,
+                    REGEXP_REPLACE(q.recipient, '@(c\\.us|g\\.us|s\\.whatsapp\\.net|lid)$', '') as phone_number,
                     q.recipient LIKE '%@g.us' as is_group,
                     c.device_name,
                     COALESCE(q.message_type, 'text') as type,
@@ -148,7 +146,7 @@ router.get('/recent-messages', async (req, res) => {
             (
                 SELECT 
                     m.id,
-                    REGEXP_REPLACE(m.to_number, '@(c\.us|g\.us|s\.whatsapp\.net|lid)$', '') as phone_number,
+                    REGEXP_REPLACE(m.to_number, '@(c\\.us|g\\.us|s\\.whatsapp\\.net|lid)$', '') as phone_number,
                     m.to_number LIKE '%@g.us' as is_group,
                     c.device_name,
                     COALESCE(m.type, 'chat') as type,

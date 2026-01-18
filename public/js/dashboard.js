@@ -69,6 +69,19 @@ function initSocketListeners() {
         // Refresh data when new message arrives
         loadDashboardData();
     });
+
+    // Campaign events - refresh when campaign status changes
+    socket.on('campaign:completed', () => {
+        loadDashboardData();
+    });
+
+    socket.on('campaign:status_updated', () => {
+        loadDashboardData();
+    });
+
+    socket.on('campaign:progress', () => {
+        loadDashboardData();
+    });
 }
 
 function updateConnectionStatus(status) {

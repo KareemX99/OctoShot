@@ -46,24 +46,26 @@ router.post('/', async (req, res) => {
 
 /**
  * GET /api/campaigns
- * Get all campaigns for a device
+ * Get all campaigns (optionally filter by device)
  */
 router.get('/', async (req, res) => {
     try {
         const { device_id, status, type, limit, offset } = req.query;
 
-        if (!device_id) {
-            return res.status(400).json({
-                success: false,
-                error: 'device_id is required'
-            });
-        }
+        let campaigns;
 
-        const campaigns = await Campaign.getAll(device_id, { status, type, limit, offset });
+        if (device_id) {
+            // Get campaigns for specific device
+            campaigns = await Campaign.getAll(device_id, { status, type, limit, offset });
+        } else {
+            // Get all campaigns globally
+            campaigns = await Campaign.getAllGlobal({ status, type, limit, offset });
+        }
 
         res.json({
             success: true,
-            campaigns,
+            data: campaigns,
+            campaigns, // Keep for backwards compatibility
             count: campaigns.length
         });
     } catch (error) {

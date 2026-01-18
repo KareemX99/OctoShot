@@ -127,6 +127,49 @@ class Campaign {
     }
 
     /**
+     * Get all campaigns globally (without device filter)
+     */
+    static async getAllGlobal(filters = {}) {
+        let query = `
+            SELECT c.*,
+                   (SELECT COUNT(*) FROM campaign_enrollments WHERE campaign_id = c.id) as enrollment_count,
+                   (SELECT COUNT(*) FROM campaign_steps WHERE campaign_id = c.id) as step_count,
+                   cl.device_name,
+                   cl.phone_number as device_phone
+            FROM campaigns c
+            LEFT JOIN clients cl ON c.device_id = cl.id
+            WHERE 1=1
+        `;
+        const values = [];
+        let paramIndex = 1;
+
+        if (filters.status) {
+            query += ` AND c.status = $${paramIndex++}`;
+            values.push(filters.status);
+        }
+
+        if (filters.type) {
+            query += ` AND c.type = $${paramIndex++}`;
+            values.push(filters.type);
+        }
+
+        query += ` ORDER BY c.created_at DESC`;
+
+        if (filters.limit) {
+            query += ` LIMIT $${paramIndex++}`;
+            values.push(filters.limit);
+        }
+
+        if (filters.offset) {
+            query += ` OFFSET $${paramIndex++}`;
+            values.push(filters.offset);
+        }
+
+        const result = await pool.query(query, values);
+        return result.rows;
+    }
+
+    /**
      * Update campaign
      */
     static async update(id, data) {
@@ -168,6 +211,22 @@ class Campaign {
         const result = await pool.query(
             'DELETE FROM campaigns WHERE id = $1 RETURNING *',
             [id]
+        );
+        return result.rows[0];
+    }
+
+    /**
+     * Update campaign status directly
+     */
+    static async updateStatus(id, status) {
+        const validStatuses = ['draft', 'scheduled', 'running', 'paused', 'completed', 'cancelled', 'failed'];
+        if (!validStatuses.includes(status)) {
+            throw new Error(`Invalid status: ${status}`);
+        }
+
+        const result = await pool.query(
+            'UPDATE campaigns SET status = $1 WHERE id = $2 RETURNING *',
+            [status, id]
         );
         return result.rows[0];
     }

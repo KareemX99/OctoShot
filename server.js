@@ -129,6 +129,8 @@ readNoReplyProcessor.start();
 // Initialize ProfileLogger with Socket.IO
 ProfileLogger.setSocketIO(io);
 
+// NOTE: CampaignQueue is initialized AFTER database connection in startServer()
+
 // Initialize WhatsApp Manager with Socket.IO
 whatsappManager.setSocketIO(io);
 
@@ -507,14 +509,21 @@ async function startServer() {
 ╚═══════════════════════════════════════════════════════════╝
         `);
 
-        // Start Campaign Queue (pg-boss)
+        // Start Campaign Queue (pg-boss) - Only initialize once here
         if (dbConnected) {
             try {
+                // Use the same pattern as routes - wait for full initialization
+                console.log('🔄 Initializing Campaign Queue (pg-boss)...');
                 await CampaignQueue.start(io);
                 console.log('📬 Campaign Queue started successfully');
+
+                // Auto-fix any stuck campaigns from previous runs
+                await CampaignQueue.fixStuckCampaigns();
             } catch (error) {
                 console.error('⚠️ Failed to start Campaign Queue:', error.message);
             }
+        } else {
+            console.log('⚠️ Skipping Campaign Queue initialization - no database connection');
         }
     });
 }

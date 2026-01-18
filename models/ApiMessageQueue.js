@@ -233,27 +233,93 @@ class ApiMessageQueue {
      * Get recent messages for logs page
      */
     static async getRecent(limit = 100, offset = 0, filters = {}) {
-        let query = 'SELECT * FROM api_message_queue WHERE 1=1';
         const values = [];
         let paramIndex = 1;
 
+        // Base filter conditions
+        let apiWhere = '1=1';
+        let campWhere = '1=1';
+
         if (filters.device_id) {
-            query += ` AND device_id = $${paramIndex++}`;
+            apiWhere += ` AND device_id = $${paramIndex}`;
+            campWhere += ` AND c.device_id = $${paramIndex}`;
             values.push(filters.device_id);
+            paramIndex++;
         }
 
         if (filters.status) {
-            query += ` AND status = $${paramIndex++}`;
+            apiWhere += ` AND status = $${paramIndex}`;
+            // Map status for campaign if needed, or just simplistic match
+            if (filters.status === 'queued') {
+                campWhere += ` AND (ce.status = 'pending' OR ce.status = 'active')`;
+            } else {
+                campWhere += ` AND ce.status = $${paramIndex}`; // rough approx
+            }
             values.push(filters.status);
+            paramIndex++;
         }
 
         if (filters.batch_id) {
-            query += ` AND batch_id = $${paramIndex++}`;
+            apiWhere += ` AND batch_id = $${paramIndex}`;
+            campWhere += ` AND ce.campaign_id = $${paramIndex}`;
             values.push(filters.batch_id);
+            paramIndex++;
         }
 
-        query += ` ORDER BY created_at DESC LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
-        values.push(limit, offset);
+        // Limit and Offset at the end
+        const limitVal = limit;
+        const offsetVal = offset;
+
+        const query = `
+            (
+                SELECT 
+                    id, 
+                    batch_id::text, 
+                    device_id, 
+                    recipient, 
+                    message_type, 
+                    status, 
+                    created_at, 
+                    scheduled_at, 
+                    sent_at, 
+                    ack_level,
+                    'api' as source
+                FROM api_message_queue 
+                WHERE ${apiWhere}
+            )
+            UNION ALL
+            (
+                SELECT 
+                    ce.id, 
+                    ce.campaign_id::text as batch_id, 
+                    c.device_id, 
+                    ce.recipient, 
+                    'campaign' as message_type, 
+                    CASE 
+                        WHEN m.ack >= 3 THEN 'read'
+                        WHEN m.ack = 2 THEN 'delivered'
+                        WHEN m.ack >= 1 OR cml.status = 'sent' THEN 'sent'
+                        WHEN cml.status = 'failed' THEN 'failed'
+                        WHEN ce.status = 'active' THEN 'sending'
+                        WHEN ce.status = 'completed' THEN 'sent'
+                        ELSE 'queued'
+                    END as status,
+                    ce.created_at, 
+                    c.scheduled_at,
+                    COALESCE(cml.sent_at, ce.created_at) as sent_at,
+                    COALESCE(m.ack, 0) as ack_level,
+                    'campaign' as source
+                FROM campaign_enrollments ce
+                JOIN campaigns c ON ce.campaign_id = c.id
+                LEFT JOIN campaign_message_log cml ON cml.enrollment_id = ce.id
+                LEFT JOIN messages m ON m.message_id = cml.whatsapp_message_id
+                WHERE ${campWhere}
+            )
+            ORDER BY created_at DESC
+            LIMIT $${paramIndex++} OFFSET $${paramIndex}
+        `;
+
+        values.push(limitVal, offsetVal);
 
         const result = await pool.query(query, values);
         return result.rows;
@@ -264,6 +330,28 @@ class ApiMessageQueue {
      */
     static async getStats(deviceId = null) {
         let query = `
+            WITH combined_stats AS (
+                SELECT status FROM api_message_queue 
+                WHERE ($1::int IS NULL OR device_id = $1::int)
+                
+                UNION ALL
+                
+                SELECT 
+                    CASE 
+                        WHEN m.ack >= 3 THEN 'read'
+                        WHEN m.ack = 2 THEN 'delivered'
+                        WHEN m.ack >= 1 OR cml.status = 'sent' THEN 'sent'
+                        WHEN cml.status = 'failed' THEN 'failed'
+                        WHEN ce.status = 'active' THEN 'sending'
+                        WHEN ce.status = 'completed' THEN 'sent'
+                        ELSE 'queued'
+                    END as status
+                FROM campaign_enrollments ce
+                JOIN campaigns c ON ce.campaign_id = c.id
+                LEFT JOIN campaign_message_log cml ON cml.enrollment_id = ce.id
+                LEFT JOIN messages m ON m.message_id = cml.whatsapp_message_id
+                WHERE ($1::int IS NULL OR c.device_id = $1::int)
+            )
             SELECT 
                 COUNT(*) as total,
                 COUNT(*) FILTER (WHERE status = 'queued') as queued,
@@ -272,14 +360,10 @@ class ApiMessageQueue {
                 COUNT(*) FILTER (WHERE status = 'delivered') as delivered,
                 COUNT(*) FILTER (WHERE status = 'read') as read,
                 COUNT(*) FILTER (WHERE status = 'failed') as failed
-            FROM api_message_queue
+            FROM combined_stats
         `;
 
-        if (deviceId) {
-            query += ` WHERE device_id = $1`;
-        }
-
-        const result = await pool.query(query, deviceId ? [deviceId] : []);
+        const result = await pool.query(query, [deviceId]);
         return result.rows[0];
     }
 

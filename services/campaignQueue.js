@@ -17,24 +17,47 @@ const WHATSAPP_SEND_QUEUE = 'whatsapp-campaign-send';
 
 let boss = null;
 let io = null;
+let isReady = false;
+let startPromise = null;
 
 class CampaignQueue {
     /**
      * Initialize pg-boss with existing database connection
      */
     static async start(socketIO = null) {
+        // Prevent duplicate initialization
+        if (isReady) {
+            console.log('📬 Campaign Queue already initialized');
+            return boss;
+        }
+        if (startPromise) {
+            console.log('📬 Campaign Queue initialization in progress, waiting...');
+            return startPromise;
+        }
+
+        // Store the promise so ensureReady can wait for it
+        startPromise = this._doStart(socketIO);
+        return startPromise;
+    }
+
+    /**
+     * Internal start method
+     */
+    static async _doStart(socketIO) {
         io = socketIO;
 
-        // Use same database config as existing pool with SSL disabled for certificate
+        // Use same database config as existing pool - match SSL settings exactly
+        const sslConfig = process.env.DATABASE_SSL === 'true'
+            ? { rejectUnauthorized: false }
+            : false;
+
         boss = new PgBoss({
             host: process.env.DATABASE_HOST,
             port: parseInt(process.env.DATABASE_PORT) || 5432,
             database: process.env.DATABASE_NAME,
             user: process.env.DATABASE_USER,
             password: process.env.DATABASE_PASSWORD,
-            ssl: {
-                rejectUnauthorized: false
-            },
+            ssl: sslConfig,
             retryLimit: 3,
             retryDelay: 30,
             retryBackoff: true,
@@ -53,6 +76,8 @@ class CampaignQueue {
         // Register workers
         await this.registerWorkers();
 
+        isReady = true;
+        console.log('✅ Campaign Queue fully initialized and ready');
         return boss;
     }
 
@@ -102,6 +127,9 @@ class CampaignQueue {
      * Queue a campaign step for processing
      */
     static async queueStep(enrollmentId, stepNumber, campaignId, deviceId, startAfter = null) {
+        // Ensure queue is ready before sending
+        await this.ensureReady();
+
         const options = {
             retryLimit: 3,
             // SINGLETON KEY: Prevents duplicate jobs for same enrollment + step
@@ -351,28 +379,41 @@ class CampaignQueue {
             let sentMessage;
 
             // Simulate typing before sending (realistic human behavior)
+            // Note: We skip sendSeen due to WhatsApp API compatibility issues
+            const trustLevelConfig = require('./trustLevelConfig');
+            const typingDuration = trustLevelConfig.getTypingDuration(content || '');
+
             try {
                 const chat = await client.getChatById(chatId);
                 if (chat) {
-                    await chat.sendSeen();
-                    await chat.sendStateTyping();
-                    const typingDuration = trustLevelConfig.getTypingDuration(content);
-                    console.log(`⌨️ Campaign: Simulating typing for ${typingDuration}ms (${(content || '').length} chars)`);
+                    // Only simulate typing state - skip sendSeen which causes markedUnread error
+                    try {
+                        await chat.sendStateTyping();
+                        console.log(`⌨️ Campaign: Simulating typing for ${typingDuration}ms (${(content || '').length} chars)`);
+                        await new Promise(resolve => setTimeout(resolve, typingDuration));
+                        await chat.clearState();
+                    } catch (typingError) {
+                        console.log(`⚠️ Typing simulation skipped: ${typingError.message?.substring(0, 50) || 'unknown'}`);
+                        // Still wait even if typing failed
+                        await new Promise(resolve => setTimeout(resolve, typingDuration));
+                    }
+                } else {
+                    console.log(`📝 New chat - waiting ${typingDuration}ms before sending to ${recipient}`);
                     await new Promise(resolve => setTimeout(resolve, typingDuration));
-                    await chat.clearState();
                 }
-            } catch (typingError) {
-                console.log(`⚠️ Could not simulate typing: ${typingError.message}`);
+            } catch (chatError) {
+                console.log(`📝 Skipping typing (${chatError.message?.substring(0, 30) || 'error'}) - waiting ${typingDuration}ms`);
+                await new Promise(resolve => setTimeout(resolve, typingDuration));
             }
 
-            // Send based on message type
+            // Send based on message type - IMPORTANT: sendSeen: false prevents the markedUnread error
             if (messageType === 'text' || !mediaUrl) {
-                sentMessage = await client.sendMessage(chatId, content);
+                sentMessage = await client.sendMessage(chatId, content, { sendSeen: false });
             } else {
                 // Media message
                 const { MessageMedia } = require('whatsapp-web.js');
                 const media = await MessageMedia.fromUrl(mediaUrl);
-                sentMessage = await client.sendMessage(chatId, media, { caption: content });
+                sentMessage = await client.sendMessage(chatId, media, { caption: content, sendSeen: false });
             }
 
             // Log success
@@ -401,6 +442,9 @@ class CampaignQueue {
                 // Campaign completed for this recipient
                 await Campaign.updateEnrollmentStatus(enrollmentId, 'completed');
                 console.log(`🎉 Campaign completed for ${recipient}`);
+
+                // Check if ALL enrollments are done (completed or failed) → auto-complete campaign
+                await this.checkAndCompleteCampaign(campaignId);
 
                 // FOR SEQUENTIAL CAMPAIGNS: Queue next customer after current one finishes all steps
                 if (campaign.type === 'sequential' && steps.length > 1) {
@@ -443,6 +487,9 @@ class CampaignQueue {
      * Each device has its OWN daily limit (not shared)
      */
     static async startCampaign(campaignId) {
+        // Ensure queue is ready before starting campaign
+        await this.ensureReady();
+
         const campaign = await Campaign.getById(campaignId);
         if (!campaign) throw new Error('Campaign not found');
 
@@ -829,12 +876,121 @@ class CampaignQueue {
     }
 
     /**
+     * Ensure queue is ready before operations
+     */
+    static async ensureReady() {
+        if (isReady) return true;
+
+        // If start is in progress, wait for it
+        if (startPromise) {
+            await startPromise;
+            return isReady;
+        }
+
+        throw new Error('Campaign Queue is not initialized. Please wait for the server to fully start.');
+    }
+
+    /**
+     * Check if queue is ready (non-blocking)
+     */
+    static isInitialized() {
+        return isReady;
+    }
+
+    /**
      * Stop pg-boss
      */
     static async stop() {
         if (boss) {
             await boss.stop();
+            isReady = false;
             console.log('📬 Campaign Queue stopped');
+        }
+    }
+
+    /**
+     * Check if all enrollments are done and mark campaign as completed
+     */
+    static async checkAndCompleteCampaign(campaignId) {
+        try {
+            // Check if any enrollment is still pending or active
+            const result = await pool.query(`
+                SELECT 
+                    COUNT(*) FILTER (WHERE status IN ('pending', 'active')) as pending_count,
+                    COUNT(*) FILTER (WHERE status = 'completed') as completed_count,
+                    COUNT(*) FILTER (WHERE status = 'failed') as failed_count,
+                    COUNT(*) as total_count
+                FROM campaign_enrollments
+                WHERE campaign_id = $1
+            `, [campaignId]);
+
+            const stats = result.rows[0] || { pending_count: 0, completed_count: 0, failed_count: 0, total_count: 0 };
+            const pending = parseInt(stats.pending_count) || 0;
+            const completed = parseInt(stats.completed_count) || 0;
+            const failed = parseInt(stats.failed_count) || 0;
+            const total = parseInt(stats.total_count) || 0;
+
+            console.log(`📊 Campaign ${campaignId} status: ${pending} pending, ${completed} completed, ${failed} failed, ${total} total`);
+
+            // If no pending enrollments, all are done - mark campaign as completed
+            if (pending === 0 && total > 0) {
+                await Campaign.updateStatus(campaignId, 'completed');
+                console.log(`🎊 Campaign ${campaignId} marked as COMPLETED!`);
+
+                // Emit socket update for real-time UI refresh
+                if (io) {
+                    io.emit('campaign:completed', { campaignId });
+                }
+            }
+        } catch (error) {
+            console.error(`Error checking campaign completion:`, error.message);
+        }
+    }
+
+    /**
+     * Fix all stuck campaigns on server startup
+     * Campaigns that are 'running' but have no pending enrollments should be 'completed'
+     */
+    static async fixStuckCampaigns() {
+        try {
+            console.log('🔍 Checking for stuck campaigns...');
+
+            // Find all campaigns that are 'running' but have no pending/active enrollments
+            const result = await pool.query(`
+                SELECT c.id, c.name, c.status,
+                       COUNT(ce.id) FILTER (WHERE ce.status IN ('pending', 'active')) as pending_count,
+                       COUNT(ce.id) as total_count
+                FROM campaigns c
+                LEFT JOIN campaign_enrollments ce ON c.id = ce.campaign_id
+                WHERE c.status = 'running'
+                GROUP BY c.id
+                HAVING COUNT(ce.id) FILTER (WHERE ce.status IN ('pending', 'active')) = 0
+                   AND COUNT(ce.id) > 0
+            `);
+
+            if (result.rows.length === 0) {
+                console.log('✅ No stuck campaigns found');
+                return;
+            }
+
+            console.log(`📋 Found ${result.rows.length} stuck campaign(s) to fix`);
+
+            for (const campaign of result.rows) {
+                await Campaign.updateStatus(campaign.id, 'completed');
+                console.log(`🎊 Fixed campaign ${campaign.id}: "${campaign.name}" → completed`);
+
+                // Emit socket update for real-time UI refresh
+                if (io) {
+                    io.emit('campaign:status_updated', {
+                        campaignId: campaign.id,
+                        status: 'completed'
+                    });
+                }
+            }
+
+            console.log(`✅ Fixed ${result.rows.length} stuck campaign(s)`);
+        } catch (error) {
+            console.error('Error fixing stuck campaigns:', error.message);
         }
     }
 }
