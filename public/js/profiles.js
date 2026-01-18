@@ -140,29 +140,52 @@ function renderProfiles() {
                 <div class="actions-cell">
                     ${profile.status !== 'connected' ? `
                         <button class="action-btn connect" onclick="connectProfileWithCheck(${profile.id})" title="Connect">
-                            📱
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+                                <path d="M12 18h.01"/>
+                            </svg>
                         </button>
                         ${profile.status === 'disconnected' && profile.questionnaire_completed ? `
                             <button class="action-btn report-ban" onclick="reportBan(${profile.id})" title="Report Ban">
-                                🚫
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="m4.9 4.9 14.2 14.2"/>
+                                </svg>
                             </button>
                         ` : ''}
                     ` : `
                         <button class="action-btn disconnect" onclick="openDisconnectModal(${profile.id})" title="Disconnect">
-                            🔌
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18.36 6.64A9 9 0 0 1 20.77 15"/>
+                                <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"/>
+                                <path d="M12 2v4"/>
+                                <path d="m2 2 20 20"/>
+                            </svg>
                         </button>
                     `}
                     <button class="action-btn details" onclick="openDetails(${profile.id})" title="Details">
-                        👁️
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
                     </button>
                     <button class="action-btn edit" onclick="openEditModal(${profile.id})" title="Edit">
-                        ✏️
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                        </svg>
                     </button>
                     <button class="action-btn copy" onclick="copyUUID('${profile.uuid}')" title="Copy UUID">
-                        📋
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
                     </button>
                     <button class="action-btn delete" onclick="deleteProfile(${profile.id})" title="Delete">
-                        🗑️
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18"/>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        </svg>
                     </button>
                 </div>
             </td>
@@ -175,13 +198,13 @@ function renderProfiles() {
  */
 function getStatusBadge(status) {
     const badges = {
-        'connected': '<span class="status-badge status-connected">متصل</span>',
-        'disconnected': '<span class="status-badge status-disconnected">غير متصل</span>',
-        'qr': '<span class="status-badge status-connecting">في انتظار QR</span>',
-        'initializing': '<span class="status-badge status-connecting">جاري التهيئة...</span>',
-        'authenticated': '<span class="status-badge status-connecting">تم المصادقة</span>',
-        'error': '<span class="status-badge status-error">خطأ</span>',
-        'auth_failure': '<span class="status-badge status-error">فشل المصادقة</span>'
+        'connected': '<span class="status-badge status-connected"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> متصل</span>',
+        'disconnected': '<span class="status-badge status-disconnected"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> غير متصل</span>',
+        'qr': '<span class="status-badge status-connecting"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/></svg> في انتظار QR</span>',
+        'initializing': '<span class="status-badge status-connecting"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> جاري التهيئة...</span>',
+        'authenticated': '<span class="status-badge status-connecting"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> تم المصادقة</span>',
+        'error': '<span class="status-badge status-error"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg> خطأ</span>',
+        'auth_failure': '<span class="status-badge status-error"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg> فشل المصادقة</span>'
     };
     return badges[status] || badges['disconnected'];
 }
@@ -191,10 +214,10 @@ function getStatusBadge(status) {
  */
 function getTrustBadge(level) {
     const badges = {
-        1: '<span class="trust-badge trust-warning" title="جهاز جديد - محدود">⚠️ المستوى 1</span>',
-        2: '<span class="trust-badge trust-normal" title="عادي">🟢 المستوى 2</span>',
-        3: '<span class="trust-badge trust-good" title="جيد">✨ المستوى 3</span>',
-        4: '<span class="trust-badge trust-excellent" title="ممتاز">🌟 المستوى 4</span>'
+        1: '<span class="trust-badge trust-warning" title="جهاز جديد - محدود"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> المستوى 1</span>',
+        2: '<span class="trust-badge trust-normal" title="عادي"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> المستوى 2</span>',
+        3: '<span class="trust-badge trust-good" title="جيد"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg> المستوى 3</span>',
+        4: '<span class="trust-badge trust-excellent" title="ممتاز"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> المستوى 4</span>'
     };
     return badges[level] || badges[1];
 }

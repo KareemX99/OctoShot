@@ -1,63 +1,136 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حملات الرسائل - OctoSHOT WhatsApp</title>
+    <title>الحملات | اكــتوشــوت واتساب</title>
+
+    <!-- Fonts - Modern -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
-    <link rel="stylesheet" href="/css/campaigns.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/premium.css">
+    <link rel="stylesheet" href="/css/icons.css">
 </head>
 
 <body>
-    <div class="app-container">
+    <!-- Aurora Background -->
+    <div class="aurora-bg"></div>
+
+    <div class="layout-wrapper">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">🐙</span>
-                    <span class="logo-text">اكــتوشــوت</span>
-                </div>
+                <a href="/" class="logo">
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 12a4 4 0 1 0 8 0 4 4 0 1 0-8 0" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                        </svg>
+                    </span>
+                    <span class="logo-text">OctoSHOT</span>
+                </a>
             </div>
+
             <nav class="sidebar-nav">
-                <a href="/profiles" class="nav-item">
-                    <span class="nav-icon">📱</span>
-                    <span class="nav-text">الأجهزة</span>
-                </a>
-                <a href="/api-docs" class="nav-item">
-                    <span class="nav-icon">📚</span>
-                    <span class="nav-text">دليل API للمطورين</span>
-                </a>
-                <a href="/api-logs" class="nav-item">
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-text">سجل الرسائل</span>
-                </a>
-                <a href="/dashboard" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">لوحة التحكم</span>
-                </a>
-                <a href="/chats" class="nav-item">
-                    <span class="nav-icon">💬</span>
-                    <span class="nav-text">المحادثات</span>
-                </a>
-                <a href="/spintax" class="nav-item">
-                    <span class="nav-icon">✨</span>
-                    <span class="nav-text">مولد الرسائل الذكي</span>
-                </a>
-                <a href="/campaigns" class="nav-item active">
-                    <span class="nav-icon">📣</span>
-                    <span class="nav-text">الحملات</span>
-                </a>
+                <div class="nav-section">
+                    <div class="nav-section-title">الرئيسية</div>
+                    <a href="/dashboard" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="7" height="9" x="3" y="3" rx="1" />
+                                <rect width="7" height="5" x="14" y="3" rx="1" />
+                                <rect width="7" height="9" x="14" y="12" rx="1" />
+                                <rect width="7" height="5" x="3" y="16" rx="1" />
+                            </svg></span>
+                        <span class="nav-text">لوحة التحكم</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">واتساب</div>
+                    <a href="/profiles" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                                <path d="M12 18h.01" />
+                            </svg></span>
+                        <span class="nav-text">الأجهزة</span>
+                    </a>
+                    <a href="/chats" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
+                            </svg></span>
+                        <span class="nav-text">المحادثات</span>
+                    </a>
+                    <a href="/campaigns" class="nav-item active">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 11 18-5v12L3 13v-2z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                            </svg></span>
+                        <span class="nav-text">الحملات</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">الأدوات</div>
+                    <a href="/contacts" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg></span>
+                        <span class="nav-text">جهات الاتصال</span>
+                    </a>
+                    <a href="/spintax" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg></span>
+                        <span class="nav-text">مولد الرسائل</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">للمطورين</div>
+                    <a href="/api-docs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                <path d="m9 9.5 2 2-2 2" />
+                                <path d="M13 13.5h3" />
+                            </svg></span>
+                        <span class="nav-text">دليل API</span>
+                    </a>
+                    <a href="/api-logs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                            </svg></span>
+                        <span class="nav-text">سجل الرسائل</span>
+                    </a>
+                </div>
             </nav>
+
             <div class="sidebar-footer">
                 <div class="theme-row">
-                    <span>الوضع</span>
+                    <span>الوضع المظلم</span>
                     <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
-                        <span class="theme-icon">🌙</span>
+                        <svg class="theme-icon" viewBox="0 0 24 24">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -65,443 +138,277 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="campaigns-container">
-                <!-- Header -->
-                <div class="page-header">
-                    <div class="page-title">
-                        <span style="font-size: 32px;">📣</span>
-                        <h1>حملات الرسائل</h1>
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-row">
+                    <div>
+                        <h1>
+                            <span class="icon"><svg viewBox="0 0 24 24">
+                                    <path d="m3 11 18-5v12L3 13v-2z" />
+                                    <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                                </svg></span>
+                            حملات الرسائل
+                        </h1>
+                        <p>إدارة وتتبع حملات الرسائل الجماعية</p>
                     </div>
-                    <div style="display: flex; gap: 12px;">
-                        <a href="/campaigns/templates/recipients.csv" download class="btn btn-secondary">
-                            ⬇️ تحميل قالب CSV
-                        </a>
-                        <a href="/campaign-create" class="btn btn-primary">
-                            ➕ حملة جديدة
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(0, 217, 255, 0.2);">📊</div>
-                        <div class="stat-value" id="totalCampaigns">0</div>
-                        <div class="stat-label">إجمالي الحملات</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(0, 255, 136, 0.2);">▶️</div>
-                        <div class="stat-value" id="runningCampaigns">0</div>
-                        <div class="stat-label">حملات نشطة</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(102, 126, 234, 0.2);">✅</div>
-                        <div class="stat-value" id="completedCampaigns">0</div>
-                        <div class="stat-label">مكتملة</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(255, 179, 0, 0.2);">📤</div>
-                        <div class="stat-value" id="totalSent">0</div>
-                        <div class="stat-label">رسائل مرسلة</div>
-                    </div>
-                </div>
-
-                <!-- Campaigns Table -->
-                <div class="campaigns-card">
-                    <div class="card-header">
-                        <h2>📋 قائمة الحملات</h2>
-                        <div class="filter-group">
-                            <select id="profileFilter" class="filter-select">
-                                <option value="">كل الأجهزة</option>
-                            </select>
-                            <select id="statusFilter" class="filter-select">
-                                <option value="">كل الحالات</option>
-                                <option value="draft">مسودة</option>
-                                <option value="running">نشط</option>
-                                <option value="paused">متوقف</option>
-                                <option value="completed">مكتمل</option>
-                            </select>
-                            <div class="search-box">
-                                <span>🔍</span>
-                                <input type="text" id="searchInput" placeholder="بحث...">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="campaignsContainer">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                        </div>
-                    </div>
+                    <a href="/campaign-create" class="btn btn-primary">
+                        <span class="icon"><svg viewBox="0 0 24 24">
+                                <path d="M5 12h14" />
+                                <path d="M12 5v14" />
+                            </svg></span>
+                        حملة جديدة
+                    </a>
                 </div>
             </div>
-    </div>
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script>
-        const socket = io();
-        let campaigns = [];
-        let profiles = [];
-        let currentDeviceId = null;
-
-        // Load profiles for filter
-        async function loadProfiles() {
-            try {
-                const response = await fetch('/api/profiles');
-                const data = await response.json();
-                if (data.success && data.data) {
-                    profiles = data.data;
-                    const profileFilter = document.getElementById('profileFilter');
-                    profiles.forEach(p => {
-                        const option = document.createElement('option');
-                        option.value = p.id;
-                        option.textContent = p.name || `جهاز ${p.id}`;
-                        profileFilter.appendChild(option);
-                    });
-                } else {
-                    profiles = [];
-                }
-            } catch (error) {
-                console.error('Error loading profiles:', error);
-                profiles = [];
-            }
-        }
-
-        // Load campaigns
-        async function loadCampaigns() {
-            const deviceId = document.getElementById('profileFilter').value;
-            const status = document.getElementById('statusFilter').value;
-            const search = document.getElementById('searchInput').value.toLowerCase();
-
-            if (!deviceId && profiles && profiles.length > 0) {
-                // Load all campaigns from all devices
-                let allCampaigns = [];
-                for (const profile of profiles) {
-                    try {
-                        let url = `/api/campaigns?device_id=${profile.id}`;
-                        if (status) url += `&status=${status}`;
-                        const response = await fetch(url);
-                        const data = await response.json();
-                        if (data.success && data.campaigns) {
-                            allCampaigns = [...allCampaigns, ...data.campaigns.map(c => ({
-                                ...c,
-                                profile_name: profile.name || `جهاز ${profile.id}`
-                            }))];
-                        }
-                    } catch (error) {
-                        console.error('Error loading campaigns for device:', profile.id, error);
-                    }
-                }
-                campaigns = allCampaigns;
-            } else if (deviceId) {
-                try {
-                    let url = `/api/campaigns?device_id=${deviceId}`;
-                    if (status) url += `&status=${status}`;
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    if (data.success && data.campaigns) {
-                        const profile = profiles.find(p => p.id == deviceId);
-                        campaigns = data.campaigns.map(c => ({
-                            ...c,
-                            profile_name: profile?.name || `جهاز ${deviceId}`
-                        }));
-                    } else {
-                        campaigns = [];
-                    }
-                } catch (error) {
-                    console.error('Error loading campaigns:', error);
-                    campaigns = [];
-                }
-            } else {
-                // No profiles loaded, try to show empty state
-                campaigns = [];
-                renderCampaigns();
-                updateStats();
-                return;
-            }
-
-            // Apply search filter
-            if (search) {
-                campaigns = campaigns.filter(c =>
-                    c.name.toLowerCase().includes(search) ||
-                    c.profile_name?.toLowerCase().includes(search)
-                );
-            }
-
-            renderCampaigns();
-            updateStats();
-        }
-
-        function renderCampaigns() {
-            const container = document.getElementById('campaignsContainer');
-
-            if (campaigns.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📣</div>
-                        <h3>لا توجد حملات</h3>
-                        <p>ابدأ بإنشاء حملة جديدة لإرسال رسائل جماعية</p>
-                        <a href="/campaign-create" class="btn btn-primary">➕ إنشاء حملة</a>
+            <!-- Stats Grid -->
+            <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">إجمالي الحملات</span>
+                        <div class="stat-card-icon purple">
+                            <svg viewBox="0 0 24 24">
+                                <path d="m3 11 18-5v12L3 13v-2z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                            </svg>
+                        </div>
                     </div>
-                `;
-                return;
-            }
+                    <div class="stat-value" id="totalCampaigns">0</div>
+                </div>
 
-            const tableHTML = `
-                <table class="campaigns-table">
-                    <thead>
-                        <tr>
-                            <th>الحملة</th>
-                            <th>الجهاز</th>
-                            <th>النوع</th>
-                            <th>الحالة</th>
-                            <th>التقدم</th>
-                            <th>التاريخ</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${campaigns.map(c => `
-                            <tr data-id="${c.id}">
-                                <td>
-                                    <a href="/campaign-detail?id=${c.id}" class="campaign-name">${escapeHtml(c.name)}</a>
-                                </td>
-                                <td>
-                                    <div class="campaign-device">
-                                        <div class="device-avatar">📱</div>
-                                        <span>${escapeHtml(c.profile_name || 'غير محدد')}</span>
-                                    </div>
-                                </td>
-                                <td>${c.type === 'single' ? 'رسالة واحدة' : 'متسلسل'}</td>
-                                <td>
-                                    <span class="status-badge status-${c.status}">
-                                        ${getStatusIcon(c.status)} ${getStatusText(c.status)}
-                                    </span>
-                                </td>
-                                <td class="progress-cell">
-                                    ${renderProgress(c)}
-                                </td>
-                                <td>${formatDate(c.created_at)}</td>
-                                <td>
-                                    <div class="action-btns">
-                                        ${renderActionButtons(c)}
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">نشطة</span>
+                        <div class="stat-card-icon green">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="activeCampaigns">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">مكتملة</span>
+                        <div class="stat-card-icon blue">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                                <path d="m9 12 2 2 4-4" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="completedCampaigns">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">الرسائل المرسلة</span>
+                        <div class="stat-card-icon orange">
+                            <svg viewBox="0 0 24 24">
+                                <path d="m22 2-7 20-4-9-9-4Z" />
+                                <path d="M22 2 11 13" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="totalSent">0</div>
+                </div>
+            </div>
+
+            <!-- Campaigns Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="icon"><svg viewBox="0 0 24 24">
+                                <rect width="18" height="18" x="3" y="3" rx="2" />
+                                <path d="M3 9h18" />
+                                <path d="M9 21V9" />
+                            </svg></span>
+                        قائمة الحملات
+                    </h2>
+                    <input type="text" class="form-control" placeholder="بحث..."
+                        style="width: 250px; padding: 0.5rem 1rem;" id="searchInput">
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم الحملة</th>
+                                <th>المستلمين</th>
+                                <th>الحالة</th>
+                                <th>التقدم</th>
+                                <th>تاريخ الإنشاء</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaignsTableBody">
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <div class="empty-state-icon" style="font-size: 3rem;">
+                                            <svg viewBox="0 0 24 24"
+                                                style="width: 60px; height: 60px; stroke: var(--text-muted); stroke-width: 1.5; fill: none;">
+                                                <path d="m3 11 18-5v12L3 13v-2z" />
+                                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                                            </svg>
+                                        </div>
+                                        <h3>لا توجد حملات</h3>
+                                        <p>أنشئ حملتك الأولى لإرسال رسائل جماعية</p>
+                                        <a href="/campaign-create" class="btn btn-primary">
+                                            <span class="icon"><svg viewBox="0 0 24 24">
+                                                    <path d="M5 12h14" />
+                                                    <path d="M12 5v14" />
+                                                </svg></span>
+                                            إنشاء حملة
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-            container.innerHTML = tableHTML;
-
-            // Attach event listeners
-            container.querySelectorAll('.btn-icon').forEach(btn => {
-                btn.addEventListener('click', handleAction);
-            });
-        }
-
-        function renderProgress(campaign) {
-            const total = campaign.total_recipients || 0;
-            const sent = campaign.sent_count || 0;
-            const percent = total > 0 ? Math.round((sent / total) * 100) : 0;
-
-            return `
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${percent}%"></div>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="progress-text">${sent} / ${total} (${percent}%)</div>
-            `;
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+
+        if (isDarkTheme) {
+            document.body.classList.add('dark-theme');
+            themeToggle.innerHTML = '<svg class="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>';
         }
 
-        function renderActionButtons(campaign) {
-            let buttons = '';
-
-            if (campaign.status === 'draft' || campaign.status === 'paused') {
-                buttons += `<button class="btn-icon play" data-action="start" data-id="${campaign.id}" title="تشغيل">▶️</button>`;
-            }
-            if (campaign.status === 'running') {
-                buttons += `<button class="btn-icon pause" data-action="pause" data-id="${campaign.id}" title="إيقاف مؤقت">⏸️</button>`;
-            }
-
-            buttons += `<button class="btn-icon" data-action="view" data-id="${campaign.id}" title="عرض التفاصيل">👁️</button>`;
-
-            if (campaign.status === 'draft') {
-                buttons += `<button class="btn-icon delete" data-action="delete" data-id="${campaign.id}" title="حذف">🗑️</button>`;
-            }
-
-            return buttons;
-        }
-
-        async function handleAction(e) {
-            const action = e.currentTarget.dataset.action;
-            const id = e.currentTarget.dataset.id;
-
-            switch (action) {
-                case 'start':
-                    await startCampaign(id);
-                    break;
-                case 'pause':
-                    await pauseCampaign(id);
-                    break;
-                case 'view':
-                    window.location.href = `/campaign-detail?id=${id}`;
-                    break;
-                case 'delete':
-                    if (confirm('هل أنت متأكد من حذف هذه الحملة؟')) {
-                        await deleteCampaign(id);
-                    }
-                    break;
-            }
-        }
-
-        async function startCampaign(id) {
-            try {
-                const response = await fetch(`/api/campaigns/${id}/start`, { method: 'POST' });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('تم تشغيل الحملة بنجاح', 'success');
-                    loadCampaigns();
-                } else {
-                    showToast(data.error || 'فشل تشغيل الحملة', 'error');
-                }
-            } catch (error) {
-                showToast('خطأ في الاتصال', 'error');
-            }
-        }
-
-        async function pauseCampaign(id) {
-            try {
-                const response = await fetch(`/api/campaigns/${id}/pause`, { method: 'POST' });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('تم إيقاف الحملة مؤقتاً', 'warning');
-                    loadCampaigns();
-                } else {
-                    showToast(data.error || 'فشل إيقاف الحملة', 'error');
-                }
-            } catch (error) {
-                showToast('خطأ في الاتصال', 'error');
-            }
-        }
-
-        async function deleteCampaign(id) {
-            try {
-                const response = await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('تم حذف الحملة', 'success');
-                    loadCampaigns();
-                } else {
-                    showToast(data.error || 'فشل حذف الحملة', 'error');
-                }
-            } catch (error) {
-                showToast('خطأ في الاتصال', 'error');
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('totalCampaigns').textContent = campaigns.length;
-            document.getElementById('runningCampaigns').textContent = campaigns.filter(c => c.status === 'running').length;
-            document.getElementById('completedCampaigns').textContent = campaigns.filter(c => c.status === 'completed').length;
-            document.getElementById('totalSent').textContent = campaigns.reduce((sum, c) => sum + (c.sent_count || 0), 0);
-        }
-
-        function getStatusIcon(status) {
-            const icons = {
-                draft: '📝',
-                scheduled: '📅',
-                running: '▶️',
-                paused: '⏸️',
-                completed: '✅',
-                cancelled: '❌',
-                failed: '⚠️'
-            };
-            return icons[status] || '❓';
-        }
-
-        function getStatusText(status) {
-            const texts = {
-                draft: 'مسودة',
-                scheduled: 'مجدول',
-                running: 'نشط',
-                paused: 'متوقف',
-                completed: 'مكتمل',
-                cancelled: 'ملغى',
-                failed: 'فشل'
-            };
-            return texts[status] || status;
-        }
-
-        function formatDate(dateStr) {
-            if (!dateStr) return '-';
-            return new Date(dateStr).toLocaleDateString('ar-EG', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 24px;
-                left: 24px;
-                padding: 16px 24px;
-                background: ${type === 'success' ? '#00ff88' : type === 'error' ? '#ff4757' : '#ffb300'};
-                color: #000;
-                border-radius: 8px;
-                font-weight: 600;
-                z-index: 1000;
-                animation: slideIn 0.3s ease;
-            `;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        // Socket.IO for real-time updates
-        socket.on('campaign:progress', (data) => {
-            const campaign = campaigns.find(c => c.id === data.campaignId);
-            if (campaign) {
-                campaign.sent_count = data.sent || campaign.sent_count;
-                campaign.status = data.status || campaign.status;
-                renderCampaigns();
-                updateStats();
-            }
+        themeToggle.addEventListener('click', () => {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            themeToggle.innerHTML = isDarkTheme
+                ? '<svg class="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>'
+                : '<svg class="theme-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
         });
 
-        socket.on('campaign:status', (data) => {
-            const campaign = campaigns.find(c => c.id === data.campaignId);
-            if (campaign) {
-                campaign.status = data.status;
-                renderCampaigns();
-                updateStats();
+        // Load Campaigns
+        async function loadCampaigns() {
+            try {
+                const response = await fetch('/api/campaigns');
+                const data = await response.json();
+
+                if (data.success && data.data.length > 0) {
+                    const campaigns = data.data;
+
+                    // Pre-calculate display status for each campaign
+                    campaigns.forEach(c => {
+                        const recipients = parseInt(c.enrollment_count) || parseInt(c.total_recipients) || 0;
+                        const sent = parseInt(c.sent_count) || 0;
+                        const progress = recipients > 0 ? Math.round((sent / recipients) * 100) : 0;
+                        // Override status if 100% complete
+                        c.displayStatus = (progress >= 100 && c.status !== 'cancelled' && c.status !== 'failed') ? 'completed' : c.status;
+                        c.progressPercent = progress;
+                    });
+
+                    document.getElementById('totalCampaigns').textContent = campaigns.length;
+                    document.getElementById('activeCampaigns').textContent = campaigns.filter(c => (c.displayStatus === 'active' || c.displayStatus === 'running') && c.progressPercent < 100).length;
+                    document.getElementById('completedCampaigns').textContent = campaigns.filter(c => c.displayStatus === 'completed' || c.progressPercent >= 100).length;
+
+                    // Calculate total sent messages
+                    const totalSent = campaigns.reduce((sum, c) => sum + (parseInt(c.sent_count) || 0), 0);
+                    document.getElementById('totalSent').textContent = totalSent;
+
+                    const tbody = document.getElementById('campaignsTableBody');
+                    tbody.innerHTML = campaigns.map((c, i) => {
+                        // Use enrollment_count or total_recipients
+                        const recipients = parseInt(c.enrollment_count) || parseInt(c.total_recipients) || 0;
+                        const progress = c.progressPercent;
+                        const displayStatus = c.displayStatus;
+
+                        // Get status badge class and text
+                        let badgeClass, statusText;
+                        if (displayStatus === 'completed' || progress >= 100) {
+                            badgeClass = 'success';
+                            statusText = 'مكتمل';
+                        } else if (displayStatus === 'running' || displayStatus === 'active') {
+                            badgeClass = 'pending';
+                            statusText = 'جاري';
+                        } else if (displayStatus === 'paused') {
+                            badgeClass = 'warning';
+                            statusText = 'متوقف';
+                        } else if (displayStatus === 'cancelled') {
+                            badgeClass = 'error';
+                            statusText = 'ملغي';
+                        } else if (displayStatus === 'failed') {
+                            badgeClass = 'error';
+                            statusText = 'فشل';
+                        } else {
+                            badgeClass = 'info';
+                            statusText = 'مسودة';
+                        }
+
+                        // Get progress bar color based on status
+                        let progressColor, progressBgColor;
+                        if (displayStatus === 'completed' || progress >= 100) {
+                            progressColor = '#10b981'; // Green
+                            progressBgColor = 'rgba(16, 185, 129, 0.15)';
+                        } else if (displayStatus === 'running' || displayStatus === 'active') {
+                            progressColor = '#8b5cf6'; // Purple
+                            progressBgColor = 'rgba(139, 92, 246, 0.15)';
+                        } else if (displayStatus === 'paused') {
+                            progressColor = '#f59e0b'; // Orange
+                            progressBgColor = 'rgba(245, 158, 11, 0.15)';
+                        } else if (displayStatus === 'failed' || displayStatus === 'cancelled') {
+                            progressColor = '#ef4444'; // Red
+                            progressBgColor = 'rgba(239, 68, 68, 0.15)';
+                        } else {
+                            progressColor = '#64748b'; // Gray
+                            progressBgColor = 'rgba(100, 116, 139, 0.15)';
+                        }
+
+                        return `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td><strong>${c.name}</strong></td>
+                            <td>${recipients}</td>
+                            <td><span class="badge badge-${badgeClass}">${statusText}</span></td>
+                            <td>
+                                <div style="background: ${progressBgColor}; border-radius: 10px; height: 10px; width: 100px; overflow: hidden;">
+                                    <div style="background: linear-gradient(90deg, ${progressColor}, ${progressColor}dd); border-radius: 10px; height: 100%; width: ${Math.min(progress, 100)}%; transition: width 0.3s ease;"></div>
+                                </div>
+                                <span style="font-size: 0.75rem; font-weight: 600; color: ${progressColor};">${progress}%</span>
+                            </td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);">${formatDate(c.created_at)}</td>
+                            <td>
+                                <a href="/campaign-detail?id=${c.id}" class="btn btn-secondary btn-sm">عرض</a>
+                            </td>
+                        </tr>
+                    `}).join('');
+                }
+            } catch (error) {
+                console.error('Error:', error);
             }
-        });
-
-        // Event listeners
-        document.getElementById('profileFilter').addEventListener('change', loadCampaigns);
-        document.getElementById('statusFilter').addEventListener('change', loadCampaigns);
-        document.getElementById('searchInput').addEventListener('input', debounce(loadCampaigns, 300));
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
         }
 
-        // Initialize
-        loadProfiles().then(() => loadCampaigns());
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            return new Date(timestamp).toLocaleDateString('ar-EG');
+        }
+
+        loadCampaigns();
     </script>
+
+    <style>
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+    </style>
 </body>
 
 </html>

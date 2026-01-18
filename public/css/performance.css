@@ -1,0 +1,101 @@
+/* ===================================
+   OctoSHOT - Performance Optimizations
+   Disables heavy animations for faster navigation
+   =================================== */
+
+/* Disable ALL entry animations - they run on every page load */
+.main-content,
+.page-header,
+.sidebar,
+.sidebar-nav .nav-item,
+.stats-grid .stat-card,
+.card,
+.logo,
+.modal,
+.modal-backdrop,
+.modal-content,
+.toast {
+    animation: none !important;
+    opacity: 1 !important;
+}
+
+/* Keep only essential hover effects (fast) */
+.stat-card:hover,
+.card:hover {
+    transform: translateY(-2px);
+    transition: transform 0.15s ease;
+}
+
+/* Faster transitions */
+.btn,
+.nav-item,
+.form-control {
+    transition-duration: 0.15s !important;
+}
+
+/* Disable sidebar slide animation */
+.sidebar {
+    transform: none !important;
+}
+
+/* Disable nav item stagger animations */
+.sidebar-nav .nav-item {
+    animation-delay: 0s !important;
+}
+
+/* Disable stat card stagger */
+.stats-grid .stat-card {
+    animation-delay: 0s !important;
+}
+
+/* Disable shimmer/pulse on load */
+.skeleton,
+.loading-spinner {
+    animation-duration: 0.5s !important;
+}
+
+/* Disable heavy glow effects */
+.nav-badge,
+.animate-glow {
+    animation: none !important;
+}
+
+/* Keep only essential button feedback */
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Disable ripple effect on buttons */
+.btn::after {
+    display: none !important;
+}
+
+/* Speed up chart animations */
+.chart-container svg circle {
+    transition-duration: 0.3s !important;
+}
+
+/* Faster table row hover */
+.data-table tbody tr {
+    transition-duration: 0.1s !important;
+}
+
+.data-table tbody tr:hover {
+    transform: none !important;
+    background-color: var(--bg-hover) !important;
+}
+
+/* Disable empty state bounce */
+.empty-state-icon {
+    animation: none !important;
+}
+
+/* Faster modal appearance */
+.modal-content {
+    animation: none !important;
+    transform: scale(1) !important;
+}

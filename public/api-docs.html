@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Documentation - OctoSHOT WhatsApp Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&family=Fira+Code:wght@400&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/sidebar.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Fira+Code:wght@400&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/premium.css">
+    <link rel="stylesheet" href="/css/icons.css">
     <style>
         /* ===== MAIN LAYOUT ===== */
         .app-container {
@@ -455,46 +459,108 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">🐙</span>
-                    <span class="logo-text">اكــتوشــوت</span>
-                </div>
+                <a href="/" class="logo">
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 12a4 4 0 1 0 8 0 4 4 0 1 0-8 0" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                        </svg>
+                    </span>
+                    <span class="logo-text">OctoSHOT</span>
+                </a>
             </div>
+
             <nav class="sidebar-nav">
-                <a href="/profiles" class="nav-item">
-                    <span class="nav-icon">📱</span>
-                    <span class="nav-text">الأجهزة</span>
-                </a>
-                <a href="/api-docs" class="nav-item active">
-                    <span class="nav-icon">📚</span>
-                    <span class="nav-text">دليل API للمطورين</span>
-                </a>
-                <a href="/api-logs" class="nav-item">
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-text">سجل الرسائل</span>
-                </a>
-                <a href="/dashboard" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">لوحة التحكم</span>
-                </a>
-                <a href="/chats" class="nav-item">
-                    <span class="nav-icon">💬</span>
-                    <span class="nav-text">المحادثات</span>
-                </a>
-                <a href="/spintax" class="nav-item">
-                    <span class="nav-icon">✨</span>
-                    <span class="nav-text">مولد الرسائل الذكي</span>
-                </a>
-                <a href="/campaigns" class="nav-item">
-                    <span class="nav-icon">📢</span>
-                    <span class="nav-text">الحملات</span>
-                </a>
+                <div class="nav-section">
+                    <div class="nav-section-title">الرئيسية</div>
+                    <a href="/dashboard" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="7" height="9" x="3" y="3" rx="1" />
+                                <rect width="7" height="5" x="14" y="3" rx="1" />
+                                <rect width="7" height="9" x="14" y="12" rx="1" />
+                                <rect width="7" height="5" x="3" y="16" rx="1" />
+                            </svg></span>
+                        <span class="nav-text">لوحة التحكم</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">واتساب</div>
+                    <a href="/profiles" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                                <path d="M12 18h.01" />
+                            </svg></span>
+                        <span class="nav-text">الأجهزة</span>
+                    </a>
+                    <a href="/chats" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
+                            </svg></span>
+                        <span class="nav-text">المحادثات</span>
+                    </a>
+                    <a href="/campaigns" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 11 18-5v12L3 13v-2z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                            </svg></span>
+                        <span class="nav-text">الحملات</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">الأدوات</div>
+                    <a href="/contacts" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg></span>
+                        <span class="nav-text">جهات الاتصال</span>
+                    </a>
+                    <a href="/spintax" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg></span>
+                        <span class="nav-text">مولد الرسائل</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">للمطورين</div>
+                    <a href="/api-docs" class="nav-item active">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                <path d="m9 9.5 2 2-2 2" />
+                                <path d="M13 13.5h3" />
+                            </svg></span>
+                        <span class="nav-text">دليل API</span>
+                    </a>
+                    <a href="/api-logs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                            </svg></span>
+                        <span class="nav-text">سجل الطلبات</span>
+                    </a>
+                </div>
             </nav>
+
             <div class="sidebar-footer">
                 <div class="theme-row">
-                    <span>الوضع</span>
+                    <span>الوضع المظلم</span>
                     <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
-                        <span class="theme-icon">🌙</span>
+                        <svg class="theme-icon" viewBox="0 0 24 24">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
                     </button>
                 </div>
             </div>

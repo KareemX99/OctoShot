@@ -4,60 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مولد الرسائل الذكي - OctoSHOT WhatsApp</title>
+    <title>مولد الرسائل | اكــتوشــوت واتساب</title>
+
+    <!-- Fonts - Modern -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
-    <link rel="stylesheet" href="/css/spintax.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/premium.css">
+    <link rel="stylesheet" href="/css/icons.css">
 </head>
 
 <body>
-    <div class="app-container">
+    <!-- Aurora Background -->
+    <div class="aurora-bg"></div>
+
+    <div class="layout-wrapper">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">🐙</span>
-                    <span class="logo-text">اكــتوشــوت</span>
-                </div>
+                <a href="/" class="logo">
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 12a4 4 0 1 0 8 0 4 4 0 1 0-8 0" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                        </svg>
+                    </span>
+                    <span class="logo-text">OctoSHOT</span>
+                </a>
             </div>
+
             <nav class="sidebar-nav">
-                <a href="/profiles" class="nav-item">
-                    <span class="nav-icon">📱</span>
-                    <span class="nav-text">الأجهزة</span>
-                </a>
-                <a href="/api-docs" class="nav-item">
-                    <span class="nav-icon">📚</span>
-                    <span class="nav-text">دليل API للمطورين</span>
-                </a>
-                <a href="/api-logs" class="nav-item">
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-text">سجل الرسائل</span>
-                </a>
-                <a href="/dashboard" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">لوحة التحكم</span>
-                </a>
-                <a href="/chats" class="nav-item">
-                    <span class="nav-icon">💬</span>
-                    <span class="nav-text">المحادثات</span>
-                </a>
-                <a href="/spintax" class="nav-item active">
-                    <span class="nav-icon">✨</span>
-                    <span class="nav-text">مولد الرسائل الذكي</span>
-                </a>
-                <a href="/campaigns" class="nav-item">
-                    <span class="nav-icon">📣</span>
-                    <span class="nav-text">الحملات</span>
-                </a>
+                <div class="nav-section">
+                    <div class="nav-section-title">الرئيسية</div>
+                    <a href="/dashboard" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="7" height="9" x="3" y="3" rx="1" />
+                                <rect width="7" height="5" x="14" y="3" rx="1" />
+                                <rect width="7" height="9" x="14" y="12" rx="1" />
+                                <rect width="7" height="5" x="3" y="16" rx="1" />
+                            </svg></span>
+                        <span class="nav-text">لوحة التحكم</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">واتساب</div>
+                    <a href="/profiles" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                                <path d="M12 18h.01" />
+                            </svg></span>
+                        <span class="nav-text">الأجهزة</span>
+                    </a>
+                    <a href="/chats" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
+                            </svg></span>
+                        <span class="nav-text">المحادثات</span>
+                    </a>
+                    <a href="/campaigns" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 11 18-5v12L3 13v-2z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                            </svg></span>
+                        <span class="nav-text">الحملات</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">الأدوات</div>
+                    <a href="/contacts" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg></span>
+                        <span class="nav-text">جهات الاتصال</span>
+                    </a>
+                    <a href="/spintax" class="nav-item active">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg></span>
+                        <span class="nav-text">مولد الرسائل</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">للمطورين</div>
+                    <a href="/api-docs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                <path d="m9 9.5 2 2-2 2" />
+                                <path d="M13 13.5h3" />
+                            </svg></span>
+                        <span class="nav-text">دليل API</span>
+                    </a>
+                    <a href="/api-logs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                            </svg></span>
+                        <span class="nav-text">سجل الطلبات</span>
+                    </a>
+                </div>
             </nav>
+
             <div class="sidebar-footer">
                 <div class="theme-row">
-                    <span>الوضع</span>
+                    <span>الوضع المظلم</span>
                     <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
-                        <span class="theme-icon">🌙</span>
+                        <svg class="theme-icon" viewBox="0 0 24 24">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -65,206 +138,380 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="spintax-layout">
-                <!-- Header - Full Width -->
-                <div class="spintax-header">
-                    <h1>✨ Smart Spintax Generator</h1>
-                    <p>AI-powered message variations to avoid spam detection</p>
-                </div>
+            <!-- Page Header -->
+            <div class="page-header" style="text-align: center;">
+                <h1>
+                    <span class="icon"><svg viewBox="0 0 24 24">
+                            <path
+                                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            <path d="M5 3v4" />
+                            <path d="M19 17v4" />
+                            <path d="M3 5h4" />
+                            <path d="M17 19h4" />
+                        </svg></span>
+                    Smart Spintax Generator
+                </h1>
+                <p>مولد رسائل ذكي لتجنب البلوك والسبام</p>
+            </div>
 
-                <!-- Generator Panel (Right in RTL) -->
-                <div class="generator-panel">
-                    <div class="form-card">
+            <!-- Main Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <!-- Input Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="icon"><svg viewBox="0 0 24 24">
+                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                    <path d="m15 5 4 4" />
+                                </svg></span>
+                            نص الرسالة الأصلية
+                        </h2>
+                    </div>
+                    <div class="card-body">
                         <div class="form-group">
-                            <label>📝 Original Message</label>
-                            <textarea id="originalMessage"
-                                placeholder="اكتب رسالتك هنا وسيتم تحويلها إلى spintax..."></textarea>
+                            <textarea id="originalText" class="form-control" rows="8" placeholder="اكتب رسالتك هنا...
+
+مثال:
+مرحباً! نحن سعداء بالتواصل معك.
+لدينا عرض خاص لك اليوم.
+تواصل معنا للمزيد من التفاصيل."></textarea>
                         </div>
 
                         <div class="form-group">
-                            <div class="spinner-group">
-                                <label>Variations per word</label>
-                                <input type="number" id="variationsCount" class="spinner-input" value="5" min="3"
-                                    max="10" step="1">
-                                <span class="spinner-hint">(3 - 10)</span>
-                            </div>
+                            <label>عدد النسخ المطلوبة</label>
+                            <input type="number" id="variationsCount" class="form-control" value="5" min="1" max="20">
                         </div>
 
-                        <button class="generate-btn" id="generateBtn" onclick="generateSpintax()">
-                            <span>✨</span>
-                            Convert to Spintax
+                        <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="generateSpintax()">
+                            <span class="icon"><svg viewBox="0 0 24 24">
+                                    <path
+                                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                                </svg></span>
+                            توليد النسخ المختلفة
                         </button>
-
-                        <div id="convertResult" class="result-section">
-                            <div class="result-header">
-                                <h3>✅ Spintax Result</h3>
-                                <button class="copy-btn" onclick="copyResult('spintaxOutput')">
-                                    <span>📋</span> Copy
-                                </button>
-                            </div>
-                            <textarea id="spintaxOutput" class="result-box editable"
-                                placeholder="Spintax will appear here..."></textarea>
-                        </div>
-
-                        <div id="convertError" class="error-box" style="display: none;">
-                            <span>❌</span>
-                            <span id="convertErrorText"></span>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Examples Panel (Left in RTL) -->
-                <div id="examplesPanel" class="examples-panel">
-                    <div class="examples-card">
-                        <div class="examples-header">
-                            <h3>📋 Message Examples</h3>
-                            <span id="examplesCount" class="examples-count">0</span>
-                        </div>
-                        <ul id="examplesList" class="examples-list"></ul>
-                        <button id="showMoreBtn" class="show-more-btn" onclick="loadMoreExamples()">
-                            <span>➕</span> Show More Examples
+                <!-- Output Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="icon"><svg viewBox="0 0 24 24">
+                                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                                    <path
+                                        d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                                </svg></span>
+                            النسخ المولدة
+                        </h2>
+                        <button class="btn btn-secondary btn-sm" onclick="copyAll()">
+                            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;">
+                                <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                            </svg>
+                            نسخ الكل
                         </button>
+                    </div>
+                    <div class="card-body" id="outputArea">
+                        <div class="empty-state" style="padding: 2rem;">
+                            <div class="empty-state-icon">
+                                <svg viewBox="0 0 24 24"
+                                    style="width: 60px; height: 60px; stroke: var(--text-muted); stroke-width: 1.5; fill: none;">
+                                    <path
+                                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                                </svg>
+                            </div>
+                            <h3>أدخل نص الرسالة</h3>
+                            <p>ثم اضغط على زر التوليد للحصول على نسخ مختلفة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guide Card -->
+            <div class="card" style="margin-top: 1.5rem;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="icon"><svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                <path d="M12 17h.01" />
+                            </svg></span>
+                        كيف يعمل مولد الرسائل؟
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                        <div style="text-align: center; padding: 1rem;">
+                            <div
+                                style="width: 60px; height: 60px; background: rgba(139, 92, 246, 0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                                <svg viewBox="0 0 24 24"
+                                    style="width: 28px; height: 28px; stroke: #8b5cf6; fill: none;">
+                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                    <path d="m15 5 4 4" />
+                                </svg>
+                            </div>
+                            <h4 style="margin-bottom: 0.5rem;">اكتب رسالتك</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">أدخل نص الرسالة الأصلية في المربع
+                                الأيسر</p>
+                        </div>
+                        <div style="text-align: center; padding: 1rem;">
+                            <div
+                                style="width: 60px; height: 60px; background: rgba(6, 182, 212, 0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                                <svg viewBox="0 0 24 24"
+                                    style="width: 28px; height: 28px; stroke: #06b6d4; fill: none;">
+                                    <path d="M12 20v-6M6 20V10M18 20V4" />
+                                </svg>
+                            </div>
+                            <h4 style="margin-bottom: 0.5rem;">حدد عدد النسخ</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">اختر عدد النسخ المختلفة المطلوبة</p>
+                        </div>
+                        <div style="text-align: center; padding: 1rem;">
+                            <div
+                                style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                                <svg viewBox="0 0 24 24"
+                                    style="width: 28px; height: 28px; stroke: #10b981; fill: none;">
+                                    <path d="m22 2-7 20-4-9-9-4Z" />
+                                    <path d="M22 2 11 13" />
+                                </svg>
+                            </div>
+                            <h4 style="margin-bottom: 0.5rem;">استخدم النسخ</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">انسخ النسخ المختلفة واستخدمها في
+                                حملاتك</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
+    </div>
 
-        <script>
-            // Theme toggle
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = themeToggle.querySelector('.theme-icon');
-            const themeText = themeToggle.querySelector('.theme-text');
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
 
-            if (localStorage.getItem('darkMode') === 'true') {
-                document.body.classList.add('dark-mode');
-                themeIcon.textContent = '☀️';
-                themeText.textContent = 'Light Mode';
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+
+        if (isDarkTheme) {
+            document.body.classList.add('dark-theme');
+            themeToggle.innerHTML = '<svg class="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            themeToggle.innerHTML = isDarkTheme
+                ? '<svg class="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>'
+                : '<svg class="theme-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        });
+
+        // Enhanced Synonyms database with many more Arabic words
+        const synonyms = {
+            // Greetings
+            'مرحباً': ['أهلاً', 'السلام عليكم', 'هلا', 'مرحبا', 'أهلا وسهلا', 'أهلًا بك', 'يا هلا'],
+            'مرحبا': ['أهلا', 'السلام عليكم', 'هلا', 'أهلاً', 'مرحباً', 'أهلا وسهلا'],
+            'أهلا': ['مرحبا', 'هلا', 'السلام عليكم', 'مرحباً', 'أهلاً', 'يا هلا'],
+            'أهلاً': ['مرحباً', 'هلا', 'السلام عليكم', 'مرحبا', 'أهلا وسهلا'],
+            'هلا': ['مرحبا', 'أهلا', 'السلام عليكم', 'يا هلا', 'مرحباً'],
+            'سهلا': ['وسهلا', 'و سهلا', 'ومرحبا', 'فيكم', 'نورتونا'],
+            'وسهلا': ['سهلا', 'و سهلا', 'ومرحبا', 'فيكم'],
+
+            // Pronouns & Address
+            'بيكم': ['فيكم', 'بكم', 'معكم', 'بيك', 'فيك'],
+            'بكم': ['فيكم', 'بيكم', 'معكم', 'بك'],
+            'فيكم': ['بيكم', 'بكم', 'معكم', 'فيك'],
+            'معكم': ['معاكم', 'وياكم', 'معك'],
+
+            // Services & Products
+            'خدمة': ['خدمتنا', 'سيرفس', 'منتج', 'خدماتنا'],
+            'خدمتنا': ['خدمة', 'خدماتنا', 'منتجنا'],
+            'منتج': ['خدمة', 'سلعة', 'منتجنا'],
+            'جديدة': ['جديده', 'جديدة تماماً', 'مميزة', 'رائعة', 'حصرية'],
+            'جديده': ['جديدة', 'جديدة تماماً', 'مميزة', 'فريدة'],
+            'مميزة': ['جديدة', 'رائعة', 'حصرية', 'فريدة', 'استثنائية'],
+            'رائعة': ['مميزة', 'جميلة', 'ممتازة', 'حلوة'],
+
+            // In/At
+            'في': ['فى', 'ف', 'داخل', 'ضمن', 'على', 'من'],
+            'فى': ['في', 'ف', 'داخل'],
+
+            // Common words
+            'سعداء': ['مسرورون', 'سعيدون', 'فرحون', 'مبتهجون', 'سُعداء', 'سعداء جداً'],
+            'عرض': ['تخفيض', 'عروض', 'خصم', 'فرصة', 'تخفيضات', 'أوفر'],
+            'عروض': ['تخفيضات', 'خصومات', 'عرض', 'فرص'],
+            'خاص': ['مميز', 'حصري', 'استثنائي', 'رائع', 'فريد', 'خاصة'],
+            'حصري': ['خاص', 'مميز', 'استثنائي', 'فريد'],
+            'اليوم': ['الآن', 'حالياً', 'هذا اليوم', 'الأن', 'اللحظة', 'دلوقتي'],
+            'الآن': ['اليوم', 'حالياً', 'اللحظة', 'الأن'],
+            'تواصل': ['راسلنا', 'اتصل', 'كلمنا', 'تحدث', 'تواصل معنا', 'ابعتلنا'],
+            'التفاصيل': ['المعلومات', 'المزيد', 'التفصيل', 'الاستفسار', 'التفاصيل الكاملة'],
+            'المزيد': ['التفاصيل', 'أكتر', 'أكثر', 'المعلومات'],
+            'شكراً': ['شكرا', 'ممتنون', 'نشكركم', 'جزيل الشكر', 'شكراً جزيلاً', 'متشكرين'],
+            'شكرا': ['شكراً', 'ممتنون', 'نشكرك', 'جزيل الشكر'],
+            'نحن': ['إحنا', 'احنا', 'نحنُ'],
+            'احنا': ['نحن', 'إحنا', 'نحنُ'],
+            'معك': ['معاك', 'معكم', 'معكَ', 'وياك'],
+            'معاك': ['معك', 'معكم', 'وياك'],
+
+            // Common verbs
+            'نقدم': ['نوفر', 'نعرض', 'نقدملك', 'بنقدم'],
+            'نوفر': ['نقدم', 'نعرض', 'بنوفر'],
+            'يمكنك': ['تقدر', 'بإمكانك', 'ممكن', 'يمكنكم'],
+            'تقدر': ['يمكنك', 'بإمكانك', 'ممكن'],
+            'اضغط': ['اكبس', 'كليك', 'دوس', 'انقر'],
+            'ارسل': ['ابعت', 'راسل', 'ارسلنا'],
+            'ابعت': ['ارسل', 'راسل', 'ابعتلنا'],
+
+            // Adjectives
+            'أفضل': ['أحسن', 'أفضل', 'الأفضل', 'أحلى'],
+            'أحسن': ['أفضل', 'الأفضل', 'أحلى'],
+            'سريع': ['فوري', 'سريعة', 'بسرعة'],
+            'مجاني': ['ببلاش', 'مجانا', 'بالمجان', 'فري'],
+            'ببلاش': ['مجاني', 'مجانا', 'بالمجان'],
+
+            // Common endings
+            'للمزيد': ['لمزيد', 'للتفاصيل', 'للاستفسار'],
+            'الاستفسار': ['التفاصيل', 'الاستعلام', 'السؤال'],
+        };
+
+        const invisibleChars = ['\u200B', '\u200C', '\u200D', '\u2060', '\uFEFF'];
+
+        // Emojis to randomly add for variation
+        const emojis = ['✨', '🎉', '🚀', '💫', '⭐', '🔥', '💪', '👋', '😊', '💯', '🎁', '💰', '📱', '📞', '💬'];
+
+        // Punctuation variations
+        const punctuationVariants = {
+            '.': ['.', '..', '!', ' ✨', ' 🎉'],
+            '!': ['!', '!!', '.', ' 🔥', ' 💪'],
+            '،': ['،', ',', ' -', ' ،'],
+            ',': [',', '،', ' -'],
+        };
+
+        function generateSpintax() {
+            const originalText = document.getElementById('originalText').value.trim();
+            const count = parseInt(document.getElementById('variationsCount').value) || 5;
+
+            if (!originalText) {
+                showToast('يرجى إدخال نص الرسالة', 'warning');
+                return;
             }
 
-            themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                const isDark = document.body.classList.contains('dark-mode');
-                localStorage.setItem('darkMode', isDark);
-                themeIcon.textContent = isDark ? '☀️' : '🌙';
-                themeText.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+            const variations = [];
+            const usedVariations = new Set(); // To avoid duplicates
+
+            for (let i = 0; i < count; i++) {
+                let variation = originalText;
+                let attempts = 0;
+
+                do {
+                    variation = originalText;
+
+                    // Replace synonyms - try multiple words
+                    const words = variation.split(/\s+/);
+                    const newWords = words.map(word => {
+                        // Clean the word of punctuation for matching
+                        const cleanWord = word.replace(/[،.,!?؟:]/g, '');
+                        const punct = word.replace(cleanWord, '');
+
+                        if (synonyms[cleanWord] && Math.random() > 0.3) {
+                            const syns = synonyms[cleanWord];
+                            return syns[Math.floor(Math.random() * syns.length)] + punct;
+                        }
+                        return word;
+                    });
+                    variation = newWords.join(' ');
+
+                    // Randomly vary punctuation
+                    for (const [punct, variants] of Object.entries(punctuationVariants)) {
+                        if (variation.includes(punct) && Math.random() > 0.5) {
+                            variation = variation.replace(punct, variants[Math.floor(Math.random() * variants.length)]);
+                        }
+                    }
+
+                    // Sometimes add an emoji at the start or end
+                    if (Math.random() > 0.6) {
+                        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+                        if (Math.random() > 0.5) {
+                            variation = emoji + ' ' + variation;
+                        } else {
+                            variation = variation + ' ' + emoji;
+                        }
+                    }
+
+                    // Add invisible character for uniqueness
+                    const randomInvisible = invisibleChars[Math.floor(Math.random() * invisibleChars.length)];
+                    const position = Math.floor(Math.random() * variation.length);
+                    variation = variation.slice(0, position) + randomInvisible + variation.slice(position);
+
+                    attempts++;
+                } while (usedVariations.has(variation) && attempts < 10);
+
+                usedVariations.add(variation);
+                variations.push(variation);
+            }
+
+            renderVariations(variations);
+        }
+
+        function renderVariations(variations) {
+            const outputArea = document.getElementById('outputArea');
+            outputArea.innerHTML = variations.map((v, i) => `
+                <div style="background: var(--bg-body); border-radius: 10px; padding: 1rem; margin-bottom: 0.75rem; border: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <span class="badge badge-pending" style="margin-bottom: 0.5rem;">نسخة ${i + 1}</span>
+                            <p style="white-space: pre-wrap; margin: 0; line-height: 1.6;">${v}</p>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="copyVariation(this, \`${v.replace(/`/g, '\\`')}\`)">
+                            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyVariation(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;"><polyline points="20 6 9 17 4 12"/></svg>';
+                setTimeout(() => btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>', 1500);
             });
+        }
 
-            // Store current spintax for generating examples
-            let currentSpintax = '';
-            let currentExamplesCount = 0;
-
-            // Generate Spintax
-            async function generateSpintax() {
-                const text = document.getElementById('originalMessage').value.trim();
-                const variations = parseInt(document.getElementById('variationsCount').value) || 5;
-                const btn = document.getElementById('generateBtn');
-                const resultSection = document.getElementById('convertResult');
-                const errorSection = document.getElementById('convertError');
-                const examplesPanel = document.getElementById('examplesPanel');
-
-                if (!text) {
-                    showError('convertError', 'Please enter a message to convert');
-                    return;
-                }
-
-                const clampedVariations = Math.min(10, Math.max(3, variations));
-                document.getElementById('variationsCount').value = clampedVariations;
-
-                btn.disabled = true;
-                btn.innerHTML = '<div class="spinner"></div> Generating...';
-                errorSection.style.display = 'none';
-                resultSection.classList.remove('show');
-                examplesPanel.classList.remove('show');
-
-                try {
-                    const response = await fetch('/api/spintax/generate', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ text, variations: clampedVariations })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        currentSpintax = data.spintax;
-                        document.getElementById('spintaxOutput').value = data.spintax;
-                        resultSection.classList.add('show');
-
-                        // Show examples panel and generate initial examples
-                        currentExamplesCount = 0;
-                        document.getElementById('examplesList').innerHTML = '';
-                        examplesPanel.classList.add('show');
-                        loadMoreExamples();
-                    } else {
-                        showError('convertError', data.error || 'Failed to generate spintax');
-                    }
-                } catch (error) {
-                    showError('convertError', 'Connection error. Please try again.');
-                }
-
-                btn.disabled = false;
-                btn.innerHTML = '<span>✨</span> Convert to Spintax';
+        function copyAll() {
+            const variations = document.querySelectorAll('#outputArea > div p');
+            if (variations.length === 0) {
+                showToast('لا توجد نسخ للنسخ', 'warning');
+                return;
             }
 
-            // Load more examples
-            async function loadMoreExamples() {
-                // Use the current value from the textarea (in case user edited it)
-                const spintaxText = document.getElementById('spintaxOutput').value || currentSpintax;
-                if (!spintaxText) return;
+            const allText = Array.from(variations).map(p => p.textContent).join('\n---\n');
+            navigator.clipboard.writeText(allText).then(() => {
+                showToast('تم نسخ جميع النسخ', 'success');
+            });
+        }
 
-                const btn = document.getElementById('showMoreBtn');
-                btn.disabled = true;
-                btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;"></div> Loading...';
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+    </script>
 
-                try {
-                    const response = await fetch('/api/spintax/expand', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ spintax: spintaxText, count: 5 })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        const list = document.getElementById('examplesList');
-                        data.variations.forEach(v => {
-                            currentExamplesCount++;
-                            const li = document.createElement('li');
-                            li.textContent = v;
-                            list.appendChild(li);
-                        });
-                        document.getElementById('examplesCount').textContent = currentExamplesCount;
-                    }
-                } catch (error) {
-                    console.error('Error loading examples:', error);
-                }
-
-                btn.disabled = false;
-                btn.innerHTML = '<span>➕</span> Show More Examples';
+    <style>
+        @media (max-width: 768px) {
+            .main-content>div:first-of-type {
+                grid-template-columns: 1fr !important;
             }
 
-            // Show error
-            function showError(id, message) {
-                const errorSection = document.getElementById(id);
-                document.getElementById(id + 'Text').textContent = message;
-                errorSection.style.display = 'flex';
+            .card-body>div[style*="grid-template-columns: repeat(3"] {
+                grid-template-columns: 1fr !important;
             }
-
-            // Copy to clipboard
-            function copyResult(elementId) {
-                const element = document.getElementById(elementId);
-                const text = element.value || element.textContent;
-                navigator.clipboard.writeText(text).then(() => {
-                    const btn = event.target.closest('.copy-btn');
-                    btn.classList.add('copied');
-                    btn.innerHTML = '<span>✅</span> Copied!';
-                    setTimeout(() => {
-                        btn.classList.remove('copied');
-                        btn.innerHTML = '<span>📋</span> Copy';
-                    }, 2000);
-                });
-            }
-        </script>
+        }
+    </style>
 </body>
 
 </html>

@@ -626,8 +626,27 @@ class WhatsAppManager {
             const cairoDate = new Date(msgDate.getTime() + cairoOffset);
             const localTimestamp = cairoDate.toISOString().replace('Z', '+02:00');
 
-            // NOTE: Message saving to database DISABLED
-            // const savedMessage = await Message.create(messageData);
+            // Prepare message data for database
+            const messageData = {
+                client_id: profileId,
+                message_id: msg.id._serialized,
+                chat_id: msg.from,
+                from_number: msg.from.replace('@c.us', '').replace('@g.us', ''),
+                to_number: msg.to ? msg.to.replace('@c.us', '').replace('@g.us', '') : null,
+                from_name: isGroup ? (pushName || authorNumber) : (pushName || contactName),
+                body: msg.body || '',
+                type: detectedType,
+                is_from_me: msg.fromMe,
+                is_forwarded: msg.isForwarded || false,
+                has_media: msg.hasMedia,
+                media_url: mediaUrlMp3 || mediaUrl,
+                media_type: mimeType,
+                timestamp: localTimestamp,
+                ack: msg.ack
+            };
+
+            // Save to database
+            const savedMessage = await Message.create(messageData);
 
             // Build comprehensive webhook data
             const webhookData = {
