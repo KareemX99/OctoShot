@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSocket();
     loadProfiles();
     setupEventListeners();
-    setupTheme();
+    // setupTheme(); // Handled by theme.js
 });
 
 /**
@@ -90,8 +90,8 @@ function setupEventListeners() {
     // Search
     searchInput.addEventListener('input', debounce(handleSearch, 300));
 
-    // Theme toggle
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    // Theme toggle - Handled by theme.js
+    // document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 }
 
 /**
@@ -510,34 +510,8 @@ function handleSearch(e) {
 }
 
 /**
- * Setup theme
+ * Theme logic is now handled by theme.js
  */
-function setupTheme() {
-    const isDark = localStorage.getItem('darkMode') === 'true';
-    if (isDark) {
-        document.body.classList.add('dark-mode');
-        document.getElementById('themeToggle').innerHTML = `
-            <span class="theme-icon">☀️</span>
-            <span class="theme-text">الوضع النهاري</span>
-        `;
-    }
-}
-
-/**
- * Toggle theme
- */
-function toggleTheme() {
-    const isDark = document.body.classList.toggle('dark-mode');
-    localStorage.setItem('darkMode', isDark);
-
-    document.getElementById('themeToggle').innerHTML = isDark ? `
-        <span class="theme-icon">☀️</span>
-        <span class="theme-text">الوضع النهاري</span>
-    ` : `
-        <span class="theme-icon">🌙</span>
-        <span class="theme-text">الوضع الليلي</span>
-    `;
-}
 
 /**
  * Show toast notification

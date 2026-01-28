@@ -603,56 +603,56 @@ body.dark-mode .batches-modal .modal-header h3 {
 }
 
 /* Dark Mode */
-body.dark-mode .stat-card {
+.dark-theme .stat-card {
     background: #1e293b;
 }
 
-body.dark-mode .stat-value {
+.dark-theme .stat-value {
     color: white;
 }
 
-body.dark-mode .table-container {
+.dark-theme .table-container {
     background: #1e293b;
 }
 
-body.dark-mode .logs-table th {
+.dark-theme .logs-table th {
     background: #334155;
     color: white;
 }
 
-body.dark-mode .logs-table td {
+.dark-theme .logs-table td {
     color: white;
     border-color: #334155;
 }
 
-body.dark-mode .logs-table tbody tr:hover {
+.dark-theme .logs-table tbody tr:hover {
     filter: brightness(1.1);
 }
 
-body.dark-mode .batch-id-cell {
+.dark-theme .batch-id-cell {
     color: #94a3b8;
 }
 
-body.dark-mode .timestamp {
+.dark-theme .timestamp {
     color: #94a3b8;
 }
 
-body.dark-mode .message-preview {
+.dark-theme .message-preview {
     color: #e2e8f0;
 }
 
-body.dark-mode .filters-bar select,
-body.dark-mode .filters-bar input {
+.dark-theme .filters-bar select,
+.dark-theme .filters-bar input {
     background: #1e293b;
     border-color: #475569;
     color: white;
 }
 
-body.dark-mode .empty-state {
+.dark-theme .empty-state {
     background: #1e293b;
 }
 
-body.dark-mode .empty-state h3 {
+.dark-theme .empty-state h3 {
     color: white;
 }
 
