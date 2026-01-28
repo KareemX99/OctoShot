@@ -52,12 +52,238 @@ router.get('/', async (req, res) => {
  */
 router.get('/stats', async (req, res) => {
     try {
-        const clientId = req.query.clientId || 1;
-        const type = req.query.type || 'all'; // Support filtering stats too
+        // If clientId is provided, use it. Otherwise pass null to get ALL stats.
+        const clientId = req.query.clientId ? parseInt(req.query.clientId) : null;
+        const type = req.query.type || 'all';
         const stats = await Contact.getCount(clientId, type);
         res.json({ success: true, data: stats });
     } catch (error) {
         console.error('Error fetching contact stats:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * POST /api/contacts/extract-live
+ * Extract contacts directly from WhatsApp WITHOUT saving to database
+ * Returns ONLY contacts with actual chat history (not AI bots)
+ */
+router.post('/extract-live', async (req, res) => {
+    try {
+        const requestedProfileId = req.query.profileId || req.body.profileId;
+        const allStatus = whatsappManager.getAllStatus();
+        let activeProfileId;
+
+        if (requestedProfileId) {
+            const reqId = parseInt(requestedProfileId);
+            if (allStatus[reqId] && allStatus[reqId].connected) {
+                activeProfileId = reqId;
+            } else {
+                return res.status(400).json({ success: false, error: 'الجهاز المحدد غير متصل' });
+            }
+        } else {
+            activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+        }
+
+        if (!activeProfileId) {
+            return res.status(400).json({ success: false, error: 'لا يوجد جهاز متصل' });
+        }
+
+        logDebug(`[Extract-Live] Starting for profile ${activeProfileId}`);
+        const waClient = whatsappManager.getClient(parseInt(activeProfileId));
+
+        let contacts = [];
+        let method = '';
+
+        // Method 1: Chat Store - Gets ONLY contacts with actual chat history (what user wants)
+        try {
+            logDebug(`[Extract-Live] Trying Chat Store (actual conversations only)...`);
+            const storeChats = await waClient.pupPage.evaluate(() => {
+                if (window.Store && window.Store.Chat) {
+                    return window.Store.Chat.getModelsArray()
+                        .filter(chat => {
+                            // Only individual chats (not groups), only @c.us (not AI bots which use @lid or other)
+                            const isIndividual = !chat.isGroup;
+                            const isRealUser = chat.id._serialized.includes('@c.us');
+                            // Filter out Meta AI characters (they have specific patterns)
+                            const isNotAI = !chat.id._serialized.includes('@lid') &&
+                                !chat.id._serialized.startsWith('13135550');
+                            return isIndividual && isRealUser && isNotAI;
+                        })
+                        .map(chat => ({
+                            id: chat.id._serialized,
+                            phone: chat.id.user,
+                            name: chat.name || chat.formattedTitle || chat.contact?.pushname || chat.contact?.name || null
+                        }));
+                }
+                return [];
+            });
+
+            if (storeChats && storeChats.length > 0) {
+                method = 'محادثات فعلية';
+                contacts = storeChats;
+                logDebug(`[Extract-Live] Chat Store found ${contacts.length} real conversation contacts`);
+            }
+        } catch (e) {
+            logDebug(`[Extract-Live] Chat Store failed: ${e.message}`);
+        }
+
+        // Method 2: Fallback - getContacts but filter heavily
+        if (contacts.length === 0) {
+            try {
+                logDebug(`[Extract-Live] Trying getContacts (filtered)...`);
+                const waContacts = await waClient.getContacts();
+
+                contacts = waContacts
+                    .filter(c => {
+                        const isUser = c.isUser && !c.isGroup;
+                        const isRealUser = c.id._serialized.includes('@c.us');
+                        // Filter AI characters by phone pattern (Meta AI uses 1313555xxxx)
+                        const phone = c.number || c.id.user || '';
+                        const isNotAI = !phone.startsWith('1313555') && !c.id._serialized.includes('@lid');
+                        return isUser && isRealUser && isNotAI;
+                    })
+                    .map(c => ({
+                        id: c.id._serialized,
+                        phone: c.number || c.id.user,
+                        name: c.name || c.pushname || null
+                    }));
+
+                method = 'جهات اتصال (مفلترة)';
+                logDebug(`[Extract-Live] getContacts found ${contacts.length} contacts (filtered)`);
+            } catch (e) {
+                logDebug(`[Extract-Live] getContacts failed: ${e.message}`);
+            }
+        }
+
+        logDebug(`[Extract-Live] Completed. Total: ${contacts.length} via ${method}`);
+
+        res.json({
+            success: true,
+            message: `تم استخراج ${contacts.length} رقم من المحادثات الفعلية`,
+            count: contacts.length,
+            method,
+            contacts: contacts
+        });
+    } catch (error) {
+        logDebug(`[Extract-Live] Error: ${error.message}`);
+        console.error('Error in extract-live:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * POST /api/contacts/export-live-csv
+ * Generate CSV from provided contacts (no database)
+ */
+router.post('/export-live-csv', (req, res) => {
+    try {
+        const { contacts } = req.body;
+
+        if (!contacts || !Array.isArray(contacts) || contacts.length === 0) {
+            return res.status(400).json({ success: false, error: 'لا توجد أرقام للتصدير' });
+        }
+
+        // Create CSV content
+        const BOM = '\uFEFF';
+        let csv = BOM + 'الاسم,رقم الهاتف\n';
+
+        for (const contact of contacts) {
+            const name = (contact.name || 'بدون اسم').replace(/,/g, ' ').replace(/"/g, "'");
+            const phone = contact.phone || '';
+            csv += `"${name}","=""${phone}"""\n`;
+        }
+
+        const filename = `contacts_${new Date().toISOString().split('T')[0]}.csv`;
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(csv);
+    } catch (error) {
+        console.error('Error exporting live CSV:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ... (skipping some routes)
+
+/**
+ * POST /api/contacts/sync
+ * Sync contacts from WhatsApp
+ */
+router.post('/sync', async (req, res) => {
+    try {
+        // Accept clientId from query or body
+        const requestedClientId = req.query.clientId || req.body.clientId;
+        const allStatus = whatsappManager.getAllStatus();
+        let waClient = null;
+        let activeProfileId = null;
+
+        if (requestedClientId) {
+            const requestedId = parseInt(requestedClientId);
+            if (allStatus[requestedId] && allStatus[requestedId].connected) {
+                activeProfileId = requestedId;
+                waClient = whatsappManager.getClient(requestedId);
+            } else {
+                return res.status(400).json({ success: false, error: 'Selected device is not connected' });
+            }
+        } else {
+            activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+            if (activeProfileId) {
+                waClient = whatsappManager.getClient(parseInt(activeProfileId));
+            }
+        }
+
+        if (!waClient) {
+            return res.status(400).json({ success: false, error: 'WhatsApp not connected' });
+        }
+
+        logDebug(`[Sync] Starting contact sync for Profile ${activeProfileId}`);
+
+        const waContacts = await waClient.getContacts();
+        logDebug(`[Sync] Found ${waContacts.length} raw contacts from WhatsApp`);
+
+        let synced = 0;
+        let errors = 0;
+
+        for (const contact of waContacts) {
+            try {
+                // Log first few for debugging structure
+                if (synced < 3) {
+                    logDebug(`[Sync] Sample Contact: ${JSON.stringify({
+                        id: contact.id,
+                        isUser: contact.isUser,
+                        name: contact.name,
+                        number: contact.number
+                    })}`);
+                }
+
+                if (contact.isUser && contact.id._serialized) {
+                    await Contact.upsert({
+                        client_id: parseInt(activeProfileId),
+                        contact_id: contact.id._serialized,
+                        phone_number: contact.number,
+                        name: contact.name,
+                        push_name: contact.pushname,
+                        short_name: contact.shortName,
+                        is_business: contact.isBusiness,
+                        is_blocked: contact.isBlocked,
+                        is_my_contact: contact.isMyContact
+                    });
+                    synced++;
+                }
+            } catch (err) {
+                if (errors < 5) logDebug(`[Sync] Error saving contact: ${err.message}`);
+                errors++;
+            }
+        }
+
+        logDebug(`[Sync] Completed. Synced: ${synced}, Errors: ${errors}`);
+        logDebug(`[Sync] SUCCESS - Final count synced to DB: ${synced}`);
+
+        res.json({ success: true, message: `تم مزامنة ${synced} جهة اتصال`, debugInfo: { totalFound: waContacts.length, synced } });
+    } catch (error) {
+        logDebug(`[Sync] Fatal error: ${error.message}`);
+        console.error('Error syncing contacts:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -68,8 +294,29 @@ router.get('/stats', async (req, res) => {
  */
 router.get('/export-csv', async (req, res) => {
     try {
-        const clientId = req.query.clientId || 1;
-        const contacts = await Contact.getAll(clientId, 10000, 0); // Get all contacts
+        // Get clientId from query, or find the connected profile's ID
+        let clientId = req.query.clientId;
+
+        if (!clientId) {
+            // Auto-detect: find the first connected profile's ID
+            const allStatus = whatsappManager.getAllStatus();
+            const connectedProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+            clientId = connectedProfileId ? parseInt(connectedProfileId) : null;
+            logDebug(`[CSV Export] Auto-detected clientId: ${clientId}`);
+        } else {
+            clientId = parseInt(clientId);
+        }
+
+        const type = req.query.type || 'all'; // 'all' or 'recent'
+
+        let contacts;
+        if (type === 'recent') {
+            contacts = await Contact.getAll(clientId, 10000, 0, 'recent');
+        } else {
+            contacts = await Contact.getAll(clientId, 10000, 0);
+        }
+
+        logDebug(`[CSV Export] Found ${contacts.length} contacts for clientId=${clientId}, type=${type}`);
 
         // Create CSV content
         const BOM = '\uFEFF'; // UTF-8 BOM for Arabic support in Excel
@@ -136,33 +383,86 @@ router.get('/blocked', async (req, res) => {
  */
 router.get('/groups', async (req, res) => {
     try {
+        const profileId = req.query.profileId;
         const allStatus = whatsappManager.getAllStatus();
-        const activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+
+        // If profileId provided, check if connected. Else find first connected.
+        let activeProfileId;
+        if (profileId) {
+            if (allStatus[profileId] && allStatus[profileId].connected) {
+                activeProfileId = profileId;
+            } else {
+                return res.status(400).json({ success: false, error: 'الجهاز المحدد غير متصل' });
+            }
+        } else {
+            activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+        }
 
         if (!activeProfileId) {
-            return res.status(400).json({ success: false, error: 'WhatsApp not connected' });
+            return res.status(400).json({ success: false, error: 'لا يوجد جهاز متصل' });
         }
 
         const waClient = whatsappManager.getClient(parseInt(activeProfileId));
         let groups = [];
         let method = '';
 
-        // Prioritize getContacts() for LISTING because getChats() is currently crashing in this version
-        // We filter by isGroup: true
+        // Method 1: getChats() - More reliable for new devices
         try {
-            const contacts = await waClient.getContacts();
-            groups = contacts
+            console.log(`[Groups] Trying getChats() for profile ${activeProfileId}...`);
+            const chats = await waClient.getChats();
+            groups = chats
                 .filter(c => c.isGroup)
                 .map(c => ({
                     id: c.id._serialized,
-                    name: c.name || c.verifiedName || 'مجموعة بدون اسم',
-                    participantsCount: null
+                    name: c.name || 'مجموعة بدون اسم',
+                    participantsCount: c.participants?.length || null
                 }));
-            method = 'getContacts';
-            console.log(`Found ${groups.length} groups via getContacts()`);
+            method = 'getChats';
+            console.log(`[Groups] getChats() found ${groups.length} groups`);
         } catch (error) {
-            console.error('getContacts() failed:', error);
-            // Fallback (though getChats likely fails too based on recent logs)
+            console.error('[Groups] getChats() failed:', error.message);
+        }
+
+        // Method 2: getContacts() backup
+        if (groups.length === 0) {
+            try {
+                console.log(`[Groups] Trying getContacts() backup...`);
+                const contacts = await waClient.getContacts();
+                groups = contacts
+                    .filter(c => c.isGroup)
+                    .map(c => ({
+                        id: c.id._serialized,
+                        name: c.name || c.verifiedName || 'مجموعة بدون اسم',
+                        participantsCount: null
+                    }));
+                method = 'getContacts';
+                console.log(`[Groups] getContacts() found ${groups.length} groups`);
+            } catch (error) {
+                console.error('[Groups] getContacts() failed:', error.message);
+            }
+        }
+
+        // Method 3: Direct Store access backup
+        if (groups.length === 0) {
+            try {
+                console.log(`[Groups] Trying Store access...`);
+                const storeGroups = await waClient.pupPage.evaluate(() => {
+                    if (window.Store && window.Store.Chat) {
+                        return window.Store.Chat.getModelsArray()
+                            .filter(chat => chat.isGroup)
+                            .map(chat => ({
+                                id: chat.id._serialized,
+                                name: chat.name || chat.formattedTitle || 'مجموعة بدون اسم'
+                            }));
+                    }
+                    return [];
+                });
+                groups = storeGroups;
+                method = 'Store';
+                console.log(`[Groups] Store found ${groups.length} groups`);
+            } catch (error) {
+                console.error('[Groups] Store access failed:', error.message);
+            }
         }
 
         res.json({ success: true, count: groups.length, groups, method });
@@ -259,12 +559,28 @@ router.post('/:id/unblock', async (req, res) => {
  */
 router.post('/sync', async (req, res) => {
     try {
-        const clientId = req.query.clientId || 1;
-
-        // Get WhatsApp client from first connected profile
+        // Accept clientId from query or body
+        const requestedClientId = req.query.clientId || req.body.clientId;
         const allStatus = whatsappManager.getAllStatus();
-        const activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
-        const waClient = activeProfileId ? whatsappManager.getClient(parseInt(activeProfileId)) : null;
+        let waClient = null;
+        let activeProfileId = null;
+
+        if (requestedClientId) {
+            // If client ID requested, check if valid and connected
+            const requestedId = parseInt(requestedClientId);
+            if (allStatus[requestedId] && allStatus[requestedId].connected) {
+                activeProfileId = requestedId;
+                waClient = whatsappManager.getClient(requestedId);
+            } else {
+                return res.status(400).json({ success: false, error: 'Selected device is not connected' });
+            }
+        } else {
+            // Fallback: Get first connected profile
+            activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+            if (activeProfileId) {
+                waClient = whatsappManager.getClient(parseInt(activeProfileId));
+            }
+        }
 
         if (!waClient) {
             return res.status(400).json({ success: false, error: 'WhatsApp not connected' });
@@ -273,21 +589,31 @@ router.post('/sync', async (req, res) => {
         const waContacts = await waClient.getContacts();
         let synced = 0;
 
-        for (const contact of waContacts) {
-            if (contact.isUser && contact.id._serialized) {
-                await Contact.upsert({
-                    client_id: clientId,
-                    contact_id: contact.id._serialized,
-                    phone_number: contact.number,
-                    name: contact.name,
-                    push_name: contact.pushname,
-                    short_name: contact.shortName,
-                    is_business: contact.isBusiness,
-                    is_blocked: contact.isBlocked,
-                    is_my_contact: contact.isMyContact
-                });
-                synced++;
-            }
+        // Filter valid contacts first
+        const validContacts = waContacts.filter(c => c.isUser && c.id._serialized);
+
+        // Process in chunks of 50 to avoid DB pool exhaustion but allow parallelism
+        const CHUNK_SIZE = 50;
+        for (let i = 0; i < validContacts.length; i += CHUNK_SIZE) {
+            const chunk = validContacts.slice(i, i + CHUNK_SIZE);
+            await Promise.all(chunk.map(async (contact) => {
+                try {
+                    await Contact.upsert({
+                        client_id: parseInt(activeProfileId), // Fix: use resolved activeProfileId
+                        contact_id: contact.id._serialized,
+                        phone_number: contact.number,
+                        name: contact.name,
+                        push_name: contact.pushname,
+                        short_name: contact.shortName,
+                        is_business: contact.isBusiness,
+                        is_blocked: contact.isBlocked,
+                        is_my_contact: contact.isMyContact
+                    });
+                    synced++;
+                } catch (err) {
+                    console.error(`Failed to sync contact ${contact.number}:`, err.message);
+                }
+            }));
         }
 
         res.json({ success: true, message: `Synced ${synced} contacts` });
@@ -860,8 +1186,20 @@ router.post('/extract-history', async (req, res) => {
  */
 router.post('/extract-whatsapp', async (req, res) => {
     try {
+        const requestedProfileId = req.query.profileId || req.body.profileId;
         const allStatus = whatsappManager.getAllStatus();
-        const activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+        let activeProfileId;
+
+        if (requestedProfileId) {
+            const reqId = parseInt(requestedProfileId);
+            if (allStatus[reqId] && allStatus[reqId].connected) {
+                activeProfileId = reqId;
+            } else {
+                return res.status(400).json({ success: false, error: 'الجهاز المحدد غير متصل' });
+            }
+        } else {
+            activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+        }
 
         if (!activeProfileId) {
             return res.status(400).json({ success: false, error: 'WhatsApp not connected' });

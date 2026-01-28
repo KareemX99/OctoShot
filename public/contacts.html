@@ -189,22 +189,6 @@
                         <p>إدارة جهات الاتصال المحفوظة</p>
                     </div>
                     <div style="display: flex; gap: 0.75rem;">
-                        <button class="btn btn-success" onclick="openExtractModal()">
-                            <span class="icon"><svg viewBox="0 0 24 24">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="7 10 12 15 17 10" />
-                                    <line x1="12" x2="12" y1="15" y2="3" />
-                                </svg></span>
-                            استخراج الأرقام
-                        </button>
-                        <button class="btn btn-secondary" onclick="exportContacts()">
-                            <span class="icon"><svg viewBox="0 0 24 24">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="17 8 12 3 7 8" />
-                                    <line x1="12" x2="12" y1="3" y2="15" />
-                                </svg></span>
-                            تصدير CSV
-                        </button>
                         <button class="btn btn-primary" onclick="openAddContactModal()">
                             <span class="icon"><svg viewBox="0 0 24 24">
                                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -237,7 +221,7 @@
 
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <span class="stat-card-title">نشطة على واتساب</span>
+                        <span class="stat-card-title">حسابات واتساب للأعمال</span>
                         <div class="stat-card-icon green">
                             <svg viewBox="0 0 24 24">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -272,83 +256,106 @@
                 </button>
                 <button class="tab-btn" id="tab-groups" onclick="switchContactsTab('groups')">
                     <span class="icon"><svg viewBox="0 0 24 24">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg></span>
-                    مستخرج من المجموعات
+                    إدارة المجموعات
                 </button>
             </div>
 
-            <!-- Contacts Table -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <span class="icon"><svg viewBox="0 0 24 24">
-                                <rect width="18" height="18" x="3" y="3" rx="2" />
-                                <path d="M3 9h18" />
-                                <path d="M9 21V9" />
-                            </svg></span>
-                        قائمة جهات الاتصال
-                    </h2>
-                    <div style="display: flex; gap: 0.75rem;">
-                        <select class="form-control" style="width: auto; padding: 0.5rem 1rem;" id="sourceFilter"
-                            onchange="filterContacts()">
-                            <option value="">كل المصادر</option>
-                        </select>
-                        <input type="text" class="form-control" placeholder="بحث..."
-                            style="width: 250px; padding: 0.5rem 1rem;" id="searchInput">
+            <!-- HISTORY VIEW: Temporary Extraction -->
+            <div id="historyView_Content">
+                <div class="card" id="extractionCard">
+                    <div class="card-header">
+                        <h2 class="card-title">الأرقام المستخرجة (مؤقتة)</h2>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button class="btn btn-primary" onclick="openExtractModal()">
+                                <span class="icon">📥</span>
+                                استخراج
+                            </button>
+                            <button class="btn btn-success" onclick="exportExtractedCSV()" id="exportCSVBtn" disabled>
+                                <span class="icon">📤</span>
+                                تصدير CSV
+                            </button>
+                            <button class="btn btn-danger" onclick="clearExtracted()" id="clearBtn" disabled>
+                                <span class="icon">🗑️</span>
+                                مسح
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="text-align: center; padding: 3rem;" id="extractionEmptyState">
+                        <div
+                            style="background: rgba(124, 58, 237, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--primary);">
+                            <svg viewBox="0 0 24 24"
+                                style="width: 40px; height: 40px; stroke: currentColor; fill: none; stroke-width: 2;">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">لا توجد أرقام مستخرجة</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">اضغط على "استخراج الأرقام" لبدء
+                            الاستخراج من الجهاز المتصل</p>
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">⚠️ الأرقام المستخرجة مؤقتة ولن تُحفظ في
+                            قاعدة البيانات</p>
+                    </div>
+                    <div class="card-body" style="display: none; padding: 0;" id="extractionResults">
+                        <div
+                            style="padding: 1rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border);">
+                            <strong id="extractedCountLabel">0</strong> رقم مستخرج
+                        </div>
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>الاسم</th>
+                                        <th>رقم الهاتف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="extractedContactsBody"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body" style="padding: 0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>الاسم</th>
-                                <th>رقم الهاتف</th>
-                                <th>المصدر</th>
-                                <th>تاريخ الإضافة</th>
-                                <th>إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="contactsTableBody">
-                            <tr>
-                                <td colspan="6">
-                                    <div class="empty-state">
-                                        <div class="empty-state-icon">
-                                            <svg viewBox="0 0 24 24"
-                                                style="width: 60px; height: 60px; stroke: var(--text-muted); stroke-width: 1.5; fill: none;">
-                                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                                <circle cx="9" cy="7" r="4" />
-                                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                            </svg>
-                                        </div>
-                                        <h3>لا توجد جهات اتصال</h3>
-                                        <p>أضف جهات اتصال لبدء إرسال الرسائل</p>
-                                        <button class="btn btn-primary" onclick="openAddContactModal()">
-                                            <span class="icon"><svg viewBox="0 0 24 24">
-                                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                                    <circle cx="9" cy="7" r="4" />
-                                                    <line x1="19" x2="19" y1="8" y2="14" />
-                                                    <line x1="22" x2="16" y1="11" y2="11" />
-                                                </svg></span>
-                                            إضافة جهة اتصال
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="card-footer">
-                        <div class="pagination-container">
-                            <span class="pagination-info" id="paginationInfo">جاري التحميل...</span>
-                            <div class="pagination-controls" id="paginationControls">
-                                <!-- Controls will be injected here -->
-                            </div>
+            </div>
+
+            <!-- GROUPS VIEW: Manager -->
+            <div id="groupsView_Content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">قائمة المجموعات</h2>
+                        <div style="display: flex; gap: 0.75rem; align-items: center;">
+                            <select id="deviceSelect" class="form-control" style="width: 200px;">
+                                <option value="">اختر الجهاز للمزامنة...</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="syncGroupsWithDevice()" id="syncGroupsBtn">
+                                <span class="icon">🔄</span>
+                                مزامنة المجموعات
+                            </button>
                         </div>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>اسم المجموعة</th>
+                                    <th>ID المجموعة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="groupsTableBody">
+                                <tr>
+                                    <td colspan="3"
+                                        style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                                        قم باختيار جهاز واضغط على "مزامنة المجموعات" لعرض القائمة
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -408,137 +415,34 @@
     <!-- Extract Contacts Modal -->
     <div id="extractModal" class="modal hidden">
         <div class="modal-backdrop" onclick="closeExtractModal()"></div>
-        <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
             <div class="modal-header">
-                <h3 class="modal-title">
+                <h3 class="modal-title">استخراج الأرقام</h3>
+                <button class="modal-close" onclick="closeExtractModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+                <h3 style="margin-bottom: 0.5rem;">استخراج من واتساب مباشرة</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                    سيتم استخراج الأرقام من المحادثات الفردية التي تواصلت مع هذا الرقم مؤخراً.
+                </p>
+
+                <div style="margin-bottom: 1.5rem; text-align: right;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">اختر الجهاز:</label>
+                    <select id="extractDeviceSelect" class="form-control" style="width: 100%; padding: 0.75rem;">
+                        <option value="">جاري التحميل...</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary btn-lg" onclick="extractFromWhatsApp()" id="extractWhatsAppBtn"
+                    style="width: 100%;">
                     <span class="icon"><svg viewBox="0 0 24 24">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                             <polyline points="7 10 12 15 17 10" />
                             <line x1="12" x2="12" y1="15" y2="3" />
                         </svg></span>
-                    استخراج الأرقام
-                </h3>
-                <button class="modal-close" onclick="closeExtractModal()">
-                    <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: currentColor;">
-                        <path d="M18 6 6 18" />
-                        <path d="m6 6 12 12" />
-                    </svg>
+                    ابدأ الاستخراج
                 </button>
-            </div>
-            <div class="modal-body">
-                <!-- Tabs -->
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                    <button class="btn btn-primary extract-tab active" data-tab="groups"
-                        onclick="switchExtractTab('groups')">
-                        <span class="icon"><svg viewBox="0 0 24 24" style="width:16px;height:16px;">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                            </svg></span>
-                        من المجموعات
-                    </button>
-                    <button class="btn btn-secondary extract-tab" data-tab="history"
-                        onclick="switchExtractTab('history')">
-                        <span class="icon"><svg viewBox="0 0 24 24" style="width:16px;height:16px;">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg></span>
-                        من سجل المحادثات
-                    </button>
-                </div>
-
-                <!-- Groups Tab -->
-                <div id="groupsTab" class="extract-tab-content">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">اختر المجموعات لاستخراج أرقام الأعضاء
-                        منها:</p>
-
-                    <!-- Search Bar -->
-                    <div style="margin-bottom: 1rem;">
-                        <input type="text" id="groupSearchInput" placeholder="🔍 ابحث عن مجموعة (بالاسم أو ID)..."
-                            oninput="filterGroups(this.value)"
-                            style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--bg-secondary); color: var(--text-color); font-size: 0.95rem;">
-                    </div>
-
-                    <!-- Message Input Area -->
-                    <div
-                        style="margin-bottom: 1rem; background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border);">
-                        <label
-                            style="display: block; margin-bottom: 0.5rem; color: var(--text-color); font-weight: bold;">📢
-                            رسالة جماعية للمجموعات المحددة:</label>
-                        <textarea id="broadcastMessageInput" placeholder="اكتب رسالتك هنا..." rows="3"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--bg-primary); color: var(--text-color); resize: vertical; margin-bottom: 0.5rem;"></textarea>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">سيتم إرسال هذه الرسالة إلى جميع
-                            المجموعات المختارة بالأسفل.</div>
-                    </div>
-
-                    <div
-                        style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="checkbox" id="selectAllGroups" onchange="toggleSelectAllGroups()">
-                            <strong>تحديد الكل</strong>
-                        </label>
-                        <span id="groupsCounter" style="color: var(--text-muted); font-size: 0.85rem;">جاري
-                            التحميل...</span>
-                    </div>
-                    <div id="groupsList"
-                        style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.75rem;">
-                        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
-                            <span style="font-size: 2rem;">⏳</span>
-                            <p>جاري تحميل المجموعات...</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- History Tab -->
-                <div id="historyTab" class="extract-tab-content" style="display: none;">
-                    <div style="text-align: center; padding: 2rem;">
-                        <span style="font-size: 3rem;">📋</span>
-                        <h4 style="margin: 1rem 0 0.5rem;">استخراج من سجل المحادثات (قاعدة البيانات)</h4>
-                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
-                            سيتم استخراج أرقام العملاء الذين راسلوك والموجودين في قاعدة البيانات المحلية.
-                        </p>
-                        <button class="btn btn-success" onclick="extractFromHistory()" id="extractHistoryBtn">
-                            <span class="icon"><svg viewBox="0 0 24 24">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="7 10 12 15 17 10" />
-                                    <line x1="12" x2="12" y1="15" y2="3" />
-                                </svg></span>
-                            استخراج من قاعدة البيانات
-                        </button>
-
-                        <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border);">
-
-                        <span style="font-size: 3rem;">📱</span>
-                        <h4 style="margin: 1rem 0 0.5rem;">استخراج من واتساب مباشرة</h4>
-                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
-                            سيتم استخراج <strong>كل</strong> الأرقام من واتساب مباشرة (كل من كلمك قبل كدا).
-                        </p>
-                        <button class="btn btn-primary" onclick="extractFromWhatsApp()" id="extractWhatsAppBtn">
-                            <span class="icon"><svg viewBox="0 0 24 24">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="7 10 12 15 17 10" />
-                                    <line x1="12" x2="12" y1="15" y2="3" />
-                                </svg></span>
-                            استخراج من واتساب مباشرة
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" id="groupsFooter">
-                <button class="btn btn-secondary" onclick="closeExtractModal()">إلغاء</button>
-                <button class="btn btn-secondary" onclick="closeExtractModal()">إلغاء</button>
-                <div id="extractButtons">
-                    <button class="btn btn-success" onclick="extractFromGroups()" id="extractGroupsBtn"
-                        style="display: none;">
-                        استخراج المحدد
-                    </button>
-                    <!-- Broadcast Button (Default/New) -->
-                    <button class="btn btn-primary" onclick="broadcastToGroups()" id="broadcastGroupsBtn">
-                        <span class="icon">🚀</span>
-                        إرسال للمجموعات المحددة
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -568,236 +472,313 @@
         function openAddContactModal() { document.getElementById('addContactModal').classList.remove('hidden'); }
         function closeAddContactModal() { document.getElementById('addContactModal').classList.add('hidden'); }
 
-        let currentPage = 1;
-        const itemsPerPage = 20;
-        let totalItems = 0;
-        let currentType = 'history'; // 'history' (includes csv/unknown) or 'groups'
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load initial stats
+            loadHistoryStats();
+            // Load profiles for the dropdown
+            loadProfilesForSelect();
+        });
 
+        // --- Tabs Logic ---
         function switchContactsTab(type) {
-            currentType = type;
-            currentPage = 1; // Reset to first page
-
             // Update Tab UI
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`tab-${type}`).classList.add('active');
 
-            loadContacts(1);
-        }
+            // Toggle Views
+            const historyView = document.getElementById('historyView_Content');
+            const groupsView = document.getElementById('groupsView_Content');
 
-        async function loadContacts(page = 1) {
-            currentPage = page;
-            const offset = (page - 1) * itemsPerPage;
-
-            try {
-                // Update Pagination Info State
-                document.getElementById('paginationInfo').textContent = 'جاري التحميل...';
-
-                // First get the active WhatsApp profile
-                let clientId = 1; // default
-                try {
-                    const statusRes = await fetch('/api/status');
-                    const statusData = await statusRes.json();
-                    if (statusData.activeProfileId) {
-                        clientId = statusData.activeProfileId;
-                    }
-                } catch (e) {
-                    console.log('Could not get active profile, using default');
-                }
-
-                // Load Stats for Total Count (Filtered by Type)
-                const statsResponse = await fetch(`/api/contacts/stats?clientId=${clientId}&type=${currentType}`);
-                const statsData = await statsResponse.json();
-                if (statsData.success) {
-                    totalItems = parseInt(statsData.data.total);
-                    // Update header stat just in case, or maybe we want filtered count there? 
-                    // Let's keep the main stat as grand total, but pagination needs filtered total.
-                    // Actually, let's fetch grand total separately if needed, but for now we rely on the filtered pagination count.
-                }
-
-                // Load Contacts Page (Filtered by Type)
-                const response = await fetch(`/api/contacts?clientId=${clientId}&limit=${itemsPerPage}&offset=${offset}&type=${currentType}`);
-                const data = await response.json();
-
-                if (data.success && data.data.length > 0) {
-                    const contacts = data.data;
-
-                    // Populate Source Filter if not already populated (only on first load)
-                    const sourceFilter = document.getElementById('sourceFilter');
-                    if (sourceFilter.options.length <= 1) {
-                        const sources = [...new Set(contacts.map(c => c.source || 'unknown'))];
-                        sources.forEach(s => {
-                            if (![...sourceFilter.options].some(o => o.value === s)) {
-                                const opt = document.createElement('option');
-                                opt.value = s;
-                                opt.textContent = s === 'unknown' ? 'غير محدد' : s;
-                                sourceFilter.appendChild(opt);
-                            }
-                        });
-                    }
-
-                    renderContacts(contacts);
-                    renderPagination();
-
-                } else {
-                    document.getElementById('contactsTableBody').innerHTML = `
-                        <tr>
-                            <td colspan="6">
-                                <div class="empty-state">
-                                    <div class="empty-state-icon">
-                                        <svg viewBox="0 0 24 24" style="width: 60px; height: 60px; stroke: var(--text-muted); stroke-width: 1.5; fill: none;">
-                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                            <circle cx="9" cy="7" r="4" />
-                                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        </svg>
-                                    </div>
-                                    <h3>لا توجد جهات اتصال ${currentType === 'groups' ? 'في المجموعات' : ''}</h3>
-                                    <p>${currentType === 'groups' ? 'استخرج الأرقام من المجموعات لتظهر هنا' : 'أضف جهات اتصال لبدء إرسال الرسائل'}</p>
-                                    <button class="btn btn-primary" onclick="openAddContactModal()">
-                                        <span class="icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="22" x2="16" y1="11" y2="11" /></svg></span>
-                                        إضافة جهة اتصال
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>`;
-                    renderPagination();
-                }
-            } catch (error) {
-                console.error('Error loading contacts:', error);
+            if (type === 'history') {
+                historyView.style.display = 'block';
+                groupsView.style.display = 'none';
+                loadHistoryStats(); // Refresh stats
+            } else {
+                historyView.style.display = 'none';
+                groupsView.style.display = 'block';
             }
         }
 
-        function renderPagination() {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            const controls = document.getElementById('paginationControls');
-            const info = document.getElementById('paginationInfo');
+        // --- History View Logic ---
+        async function loadHistoryStats() {
+            try {
+                // Fetch stats (using default client or all)
+                const response = await fetch('/api/contacts/stats');
+                const data = await response.json();
 
-            const startItem = (currentPage - 1) * itemsPerPage + 1;
-            const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+                if (data.success) {
+                    const total = data.data.total || 0;
+                    document.getElementById('reportTotalCount').textContent = total;
+                    document.getElementById('totalContacts').textContent = total;
 
-            info.textContent = totalItems > 0 ? `عرض ${startItem}-${endItem} من ${totalItems}` : 'لا توجد بيانات';
+                    // Also update other cards if available in API
+                    if (document.getElementById('activeContacts')) {
+                        document.getElementById('activeContacts').textContent = data.data.business || 0; // Using business as proxy or random stat
+                    }
+                    if (document.getElementById('groupsCount')) {
+                        document.getElementById('groupsCount').textContent = data.data.blocked || 0; // Just using blocked for now or 0
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
 
-            if (totalPages <= 1) {
-                controls.innerHTML = '';
+        // --- Groups View Logic ---
+        // --- Groups View Logic ---
+        async function loadProfilesForSelect() {
+            try {
+                const response = await fetch('/api/profiles');
+                const data = await response.json();
+                const select = document.getElementById('deviceSelect');
+                const extractSelect = document.getElementById('extractDeviceSelect'); // Will add to modal HTML
+
+                // Keep the default option
+                const defaultOption = '<option value="">اختر الجهاز...</option>';
+                select.innerHTML = defaultOption;
+                if (extractSelect) extractSelect.innerHTML = defaultOption;
+
+                if (data.success && Array.isArray(data.data)) {
+                    data.data.forEach(profile => {
+                        const isConnected = profile.realtime_status?.connected || profile.status === 'connected';
+                        const statusIcon = isConnected ? '🟢' : '🔴';
+                        const name = profile.device_name || profile.push_name || `Profile ${profile.id}`;
+                        const phoneNumber = profile.phone_number || '';
+
+                        const opt = document.createElement('option');
+                        opt.value = profile.id;
+                        opt.textContent = `${statusIcon} ${name} ${phoneNumber ? '(' + phoneNumber + ')' : ''}`;
+
+                        // Disable if not connected? Actually let user try, backend will validation.
+                        // But strictly speaking, sync/extract needs connection.
+                        if (!isConnected) {
+                            opt.textContent += ' (غير متصل)';
+                            // opt.disabled = true; // Optional: disable unconnected devices
+                        }
+
+                        select.appendChild(opt.cloneNode(true));
+                        if (extractSelect && isConnected) {
+                            extractSelect.appendChild(opt.cloneNode(true));
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading profiles:', error);
+            }
+        }
+
+        async function syncGroupsWithDevice() {
+            const profileId = document.getElementById('deviceSelect').value;
+            if (!profileId) {
+                showToast('يرجى اختيار جهاز أولاً للمزامنة', 'warning');
                 return;
             }
 
-            let html = '';
+            const btn = document.getElementById('syncGroupsBtn');
+            const tbody = document.getElementById('groupsTableBody');
 
-            // Previous Button
-            html += `<button class="btn btn-secondary btn-sm" ${currentPage === 1 ? 'disabled' : ''} onclick="loadContacts(${currentPage - 1})">السابق</button>`;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="icon">⏳</span> جاري المزامنة...';
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 2rem;">جاري جلب قائمة المجموعات...</td></tr>';
 
-            // Page Numbers
-            for (let i = 1; i <= totalPages; i++) {
-                if (
-                    i === 1 ||
-                    i === totalPages ||
-                    (i >= currentPage - 1 && i <= currentPage + 1)
-                ) {
-                    const activeClass = i === currentPage ? 'btn-primary' : 'btn-secondary';
-                    html += `<button class="btn ${activeClass} btn-sm" onclick="loadContacts(${i})">${i}</button>`;
-                } else if (
-                    (i === currentPage - 2) ||
-                    (i === currentPage + 2)
-                ) {
-                    html += `<span style="padding: 0 0.5rem;">...</span>`;
+            try {
+                // Fetch groups using the profileId
+                const response = await fetch(`/api/contacts/groups?profileId=${profileId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    renderGroupsTable(data.groups);
+                    showToast(`تم العثور على ${data.groups.length} مجموعة`, 'success');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: red; padding: 2rem;">خطأ: ${data.error}</td></tr>`;
+                    showToast(data.error, 'error');
                 }
+            } catch (error) {
+                console.error('Error syncing groups:', error);
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: red; padding: 2rem;">حدث خطأ أثناء المزامنة</td></tr>';
+                showToast('حدث خطأ أثناء الاتصال', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="icon">🔄</span> مزامنة المجموعات';
             }
-
-            // Next Button
-            html += `<button class="btn btn-secondary btn-sm" ${currentPage === totalPages ? 'disabled' : ''} onclick="loadContacts(${currentPage + 1})">التالي</button>`;
-
-            controls.innerHTML = html;
         }
 
-        function renderContacts(contacts) {
-            const tbody = document.getElementById('contactsTableBody');
-            tbody.innerHTML = contacts.map((contact, index) => {
-                const sourceClass = contact.source?.includes('Group') ? 'badge-info' :
-                    contact.source?.includes('History') ? 'badge-warning' : 'badge-secondary';
+        function renderGroupsTable(groups) {
+            const tbody = document.getElementById('groupsTableBody');
 
-                return `
+            if (!groups || groups.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-muted);">لا توجد مجموعات لهذا الحساب</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = groups.map((group, index) => `
                 <tr>
                     <td>${index + 1}</td>
-                    <td>
-                        <div style="display:flex;align-items:center;gap:0.5rem;">
-                            <!-- Avatar Placeholder -->
-                            <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-muted);">
-                                ${contact.name ? contact.name.charAt(0).toUpperCase() : '#'}
-                            </div>
-                            <strong>${contact.name || contact.push_name || 'بدون اسم'}</strong>
-                        </div>
-                    </td>
-                    <td dir="ltr" style="font-family:monospace;">${contact.phone_number}</td>
-                    <td><span class="badge ${sourceClass}">${contact.source === 'unknown' ? 'غير محدد' : (contact.source || 'يدوي')}</span></td>
-                    <td style="font-size: 0.85rem; color: var(--text-muted);">${formatDate(contact.created_at)}</td>
-                    <td>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button onclick="sendToContact('${contact.phone_number}')" class="btn btn-success btn-sm" title="إرسال رسالة" style="padding:0.25rem 0.5rem;">
-                                <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
-                            </button>
-                            <button onclick="deleteContact(${contact.id})" class="btn btn-danger btn-sm" title="حذف" style="padding:0.25rem 0.5rem;">
-                                <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                            </button>
-                        </div>
-                    </td>
+                    <td style="font-weight: 500;">${group.name || 'مجموعة بدون اسم'}</td>
+                    <td style="font-family: monospace; direction: ltr;">${group.id}</td>
                 </tr>
-            `}).join('');
+            `).join('');
         }
 
-        async function addContact() {
-            const name = document.getElementById('contactName').value.trim();
-            const phone = document.getElementById('contactPhone').value.trim();
-            if (!name || !phone) { showToast('يرجى ملء جميع الحقول', 'warning'); return; }
+        // --- Logic for Modals ---
+        function openExtractModal() { document.getElementById('extractModal').classList.remove('hidden'); }
+        function closeExtractModal() { document.getElementById('extractModal').classList.add('hidden'); }
+
+        function openAddContactModal() { document.getElementById('addContactModal').classList.remove('hidden'); }
+        function closeAddContactModal() { document.getElementById('addContactModal').classList.add('hidden'); }
+
+        // === TEMPORARY EXTRACTION STATE ===
+        let extractedContacts = []; // Stored in memory only
+
+        async function extractFromWhatsApp() {
+            const btn = document.getElementById('extractWhatsAppBtn');
+            const deviceSelect = document.getElementById('extractDeviceSelect');
+            const profileId = deviceSelect ? deviceSelect.value : null;
+
+            if (!profileId) {
+                showToast('يرجى اختيار جهاز أولاً', 'warning');
+                return;
+            }
+
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="icon">⏳</span> جاري الاستخراج...';
+
             try {
-                const response = await fetch('/api/contacts', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, phone_number: phone })
-                });
+                // Use extract-live endpoint (no database storage)
+                const response = await fetch(`/api/contacts/extract-live?profileId=${profileId}`, { method: 'POST' });
                 const data = await response.json();
-                if (data.success) {
-                    showToast('تم إضافة جهة الاتصال', 'success');
-                    closeAddContactModal();
-                    loadContacts();
+
+                if (data.success && data.contacts) {
+                    extractedContacts = data.contacts;
+                    showToast(`تم استخراج ${data.count} رقم بنجاح`, 'success');
+                    closeExtractModal();
+                    renderExtractedContacts();
+                } else {
+                    showToast(data.error || 'فشل الاستخراج', 'error');
                 }
             } catch (error) {
-                showToast('حدث خطأ', 'error');
+                console.error('Extraction error:', error);
+                showToast('حدث خطأ أثناء الاستخراج', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
             }
         }
 
-        async function deleteContact(id) {
-            if (!confirm('هل أنت متأكد من حذف جهة الاتصال؟')) return;
-            try { await fetch(`/api/contacts/${id}`, { method: 'DELETE' }); loadContacts(); } catch (error) { console.error('Error:', error); }
+        function renderExtractedContacts() {
+            const emptyState = document.getElementById('extractionEmptyState');
+            const resultsView = document.getElementById('extractionResults');
+            const exportBtn = document.getElementById('exportCSVBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const countLabel = document.getElementById('extractedCountLabel');
+            const tbody = document.getElementById('extractedContactsBody');
+            const totalContactsEl = document.getElementById('totalContacts');
+
+            if (extractedContacts.length === 0) {
+                emptyState.style.display = 'block';
+                resultsView.style.display = 'none';
+                exportBtn.disabled = true;
+                clearBtn.disabled = true;
+                if (totalContactsEl) totalContactsEl.textContent = '0';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            resultsView.style.display = 'block';
+            exportBtn.disabled = false;
+            clearBtn.disabled = false;
+            countLabel.textContent = extractedContacts.length;
+            if (totalContactsEl) totalContactsEl.textContent = extractedContacts.length;
+
+            // Render first 100 for performance
+            const displayContacts = extractedContacts.slice(0, 100);
+            tbody.innerHTML = displayContacts.map((c, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${c.name || 'بدون اسم'}</td>
+                    <td style="font-family: monospace; direction: ltr;">${c.phone}</td>
+                </tr>
+            `).join('');
+
+            if (extractedContacts.length > 100) {
+                tbody.innerHTML += `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">... و ${extractedContacts.length - 100} رقم آخر</td></tr>`;
+            }
         }
 
-        function sendToContact(phone) { window.location.href = `/chats?phone=${phone}`; }
+        async function exportExtractedCSV() {
+            if (extractedContacts.length === 0) {
+                showToast('لا توجد أرقام للتصدير', 'warning');
+                return;
+            }
 
-        async function exportContacts() {
             try {
-                // Get active profile ID
-                let clientId = 1;
-                try {
-                    const statusRes = await fetch('/api/status');
-                    const statusData = await statusRes.json();
-                    if (statusData.activeProfileId) {
-                        clientId = statusData.activeProfileId;
-                    }
-                } catch (e) { }
+                const response = await fetch('/api/contacts/export-live-csv', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contacts: extractedContacts })
+                });
 
-                showToast('جاري تحميل الملف...', 'success');
-
-                // Trigger download
-                const link = document.createElement('a');
-                link.href = `/api/contacts/export-csv?clientId=${clientId}`;
-                link.download = `contacts_${new Date().toISOString().split('T')[0]}.csv`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `contacts_${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    showToast('تم التصدير بنجاح', 'success');
+                } else {
+                    showToast('فشل التصدير', 'error');
+                }
             } catch (error) {
+                console.error('Export error:', error);
                 showToast('حدث خطأ أثناء التصدير', 'error');
             }
         }
+
+        function clearExtracted() {
+            if (!confirm('هل تريد مسح الأرقام المستخرجة؟')) return;
+            extractedContacts = [];
+            renderExtractedContacts();
+            showToast('تم المسح', 'success');
+        }
+
+        // --- Helpers ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // Remove after 3s
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        async function exportContacts() {
+            // Ask user for export type (simple confirm for now, or modal)
+            // Using a simple confirm for "Recent Only?"
+            if (confirm('هل تريد تصدير جميع جهات الاتصال؟\n\nاضغط "موافق" لتصدير الكل.\nاضغط "إلغاء" لتصدير آخر العمليات فقط (آخر ساعة).')) {
+                window.location.href = '/api/contacts/export-csv?type=all';
+            } else {
+                window.location.href = '/api/contacts/export-csv?type=recent';
+            }
+        }
+
+        // Stub functions for removed features to prevent errors if referenced
+        function addContact() { }
+        function deleteContact() { }
+        function sendToContact() { }
 
         function formatDate(timestamp) { if (!timestamp) return '-'; return new Date(timestamp).toLocaleDateString('ar-EG'); }
 
@@ -992,29 +973,8 @@
             }
         }
 
-        async function extractFromWhatsApp() {
-            const btn = document.getElementById('extractWhatsAppBtn');
-            btn.disabled = true;
-            btn.innerHTML = '⏳ جاري الاستخراج من واتساب...';
+        // Duplicate function removed
 
-            try {
-                const response = await fetch('/api/contacts/extract-whatsapp', { method: 'POST' });
-                const data = await response.json();
-
-                if (data.success) {
-                    showToast(data.message, 'success');
-                    closeExtractModal();
-                    loadContacts();
-                } else {
-                    showToast(data.error || 'فشل في الاستخراج', 'error');
-                }
-            } catch (error) {
-                showToast('حدث خطأ في الاستخراج', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span class="icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg></span> استخراج من واتساب مباشرة';
-            }
-        }
 
         loadContacts();
     </script>

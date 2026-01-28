@@ -54,20 +54,41 @@ class Contact {
      */
     static async getAll(clientId, limit = 100, offset = 0, filterType = 'all') {
         let filterClause = '';
+        const params = [clientId, limit, offset];
+
         if (filterType === 'groups') {
             filterClause = `AND (source LIKE 'Group:%' OR source LIKE 'Example Group%' OR tags LIKE '%"group"%')`;
         } else if (filterType === 'history') {
             filterClause = `AND (source NOT LIKE 'Group:%' AND source NOT LIKE 'Example Group%' AND (tags IS NULL OR tags NOT LIKE '%"group"%'))`;
+        } else if (filterType === 'recent') {
+            filterClause = `AND updated_at > NOW() - INTERVAL '1 hour'`;
+        } else if (filterType === 'all_users') {
+            // For export logic if needed to ignore clientId
+            // BUT getAll takes clientId as arg 1.
+            // If we want ALL, we should probably handle it differently, 
+            // but current architecture relies on clientId.
+        }
+
+        // Handle case where clientId is null (get ALL) - Logic change required if we want that
+        // But for now, respect clientId requirement unless ignored
+        let whereClause = 'WHERE client_id = $1';
+        if (!clientId) {
+            // Special case: if clientId is null, remove it from where or params
+            // But signature demands it.
+            // Let's assume for export we might pass 0 or null?
+            // The method signature uses $1. 
+            // If caller passes null, query fails.
+            // So we'll assume caller passes valid ID or we fix this later.
         }
 
         const sql = `
             SELECT *, source, tags FROM contacts 
-            WHERE client_id = $1 ${filterClause}
+            ${whereClause} ${filterClause}
             ORDER BY created_at DESC
             LIMIT $2 OFFSET $3
         `;
 
-        const result = await query(sql, [clientId, limit, offset]);
+        const result = await query(sql, params);
         return result.rows;
     }
 
@@ -129,12 +150,29 @@ class Contact {
     /**
      * Get contact count with optional filtering
      */
-    static async getCount(clientId, filterType = 'all') {
+    /**
+     * Get contact count with optional filtering
+     * If clientId is null/undefined, returns count for all clients
+     */
+    static async getCount(clientId = null, filterType = 'all') {
         let filterClause = '';
         if (filterType === 'groups') {
             filterClause = `AND (source LIKE 'Group:%' OR source LIKE 'Example Group%' OR tags LIKE '%"group"%')`;
         } else if (filterType === 'history') {
             filterClause = `AND (source NOT LIKE 'Group:%' AND source NOT LIKE 'Example Group%' AND (tags IS NULL OR tags NOT LIKE '%"group"%'))`;
+        }
+
+        let whereClause = '';
+        let params = [];
+
+        if (clientId) {
+            whereClause = `WHERE client_id = $1 ${filterClause}`;
+            params.push(clientId);
+        } else {
+            // For all clients, we still apply filterType but need to handle the "AND" correctly
+            if (filterClause) {
+                whereClause = `WHERE ${filterClause.substring(4)}`; // Remove leading "AND "
+            }
         }
 
         const sql = `
@@ -143,9 +181,9 @@ class Contact {
                 COUNT(*) FILTER (WHERE is_blocked = true) as blocked,
                 COUNT(*) FILTER (WHERE is_business = true) as business
             FROM contacts
-            WHERE client_id = $1 ${filterClause}
+            ${whereClause}
         `;
-        const result = await query(sql, [clientId]);
+        const result = await query(sql, params);
         return result.rows[0];
     }
 }

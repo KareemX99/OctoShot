@@ -139,3 +139,48 @@ window.WWebJS.getChatModel (pptr:evaluate;Binding.%3Canonymous%3E%20(D%3A%5COcto
 [2026-01-28T16:55:01.857Z]   Trying DOM scraping method...
 [2026-01-28T16:55:01.859Z]   DOM method found 0 numbers, trying Store method...
 [2026-01-28T16:55:03.362Z] Failed: 10 total, 10 LID, 0 phone numbers
+[2026-01-28T20:59:15.850Z] [Sync] Starting contact sync for Profile 73
+[2026-01-28T20:59:16.085Z] [Sync] Found 10359 raw contacts from WhatsApp
+[2026-01-28T20:59:16.085Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"201203581871","_serialized":"201203581871@c.us"},"isUser":true,"name":"Kiko 💜","number":"201203581871"}
+[2026-01-28T20:59:16.161Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"13135550002","_serialized":"13135550002@c.us"},"isUser":true,"name":"Meta AI","number":"13135550002"}
+[2026-01-28T20:59:16.237Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"13135550005","_serialized":"13135550005@c.us"},"isUser":true,"name":"Dungeon Master","number":"13135550005"}
+[2026-01-28T21:05:29.627Z] [Sync] Starting contact sync for Profile 73
+[2026-01-28T21:05:29.918Z] [Sync] Found 10359 raw contacts from WhatsApp
+[2026-01-28T21:05:29.919Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"201203581871","_serialized":"201203581871@c.us"},"isUser":true,"name":"Kiko 💜","number":"201203581871"}
+[2026-01-28T21:05:29.997Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"13135550002","_serialized":"13135550002@c.us"},"isUser":true,"name":"Meta AI","number":"13135550002"}
+[2026-01-28T21:05:30.072Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"13135550005","_serialized":"13135550005@c.us"},"isUser":true,"name":"Dungeon Master","number":"13135550005"}
+[2026-01-28T21:14:47.940Z] [Sync] Starting contact sync for Profile 73
+[2026-01-28T21:14:48.273Z] [Sync] Found 10359 raw contacts from WhatsApp
+[2026-01-28T21:14:48.273Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"201203581871","_serialized":"201203581871@c.us"},"isUser":true,"name":"Kiko 💜","number":"201203581871"}
+[2026-01-28T21:14:48.350Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"13135550002","_serialized":"13135550002@c.us"},"isUser":true,"name":"Meta AI","number":"13135550002"}
+[2026-01-28T21:14:48.424Z] [Sync] Sample Contact: {"id":{"server":"c.us","user":"13135550005","_serialized":"13135550005@c.us"},"isUser":true,"name":"Dungeon Master","number":"13135550005"}
+[2026-01-28T21:22:10.310Z] [Extract-Live] Starting for profile 73
+[2026-01-28T21:22:10.310Z] [Extract-Live] Trying Internal Store...
+[2026-01-28T21:22:10.314Z] [Extract-Live] Store method found 379 contacts
+[2026-01-28T21:22:10.314Z] [Extract-Live] Completed. Total: 379 via WhatsApp Store
+[2026-01-28T21:24:22.304Z] [Extract-Live] Starting for profile 75
+[2026-01-28T21:24:22.304Z] [Extract-Live] Trying Internal Store...
+[2026-01-28T21:24:40.100Z] [Extract-Live] Store method found 358 contacts
+[2026-01-28T21:24:40.100Z] [Extract-Live] Completed. Total: 358 via WhatsApp Store
+[2026-01-28T21:35:24.254Z] [Extract-Live] Starting for profile 75
+[2026-01-28T21:35:24.254Z] [Extract-Live] Trying getContacts (full contact list)...
+[2026-01-28T21:35:39.480Z] [Extract-Live] getContacts found 1862 contacts
+[2026-01-28T21:35:39.481Z] [Extract-Live] Completed. Total: 1862 via WhatsApp Contacts
+[2026-01-28T21:35:53.652Z] [CSV Export] Auto-detected clientId: 73
+[2026-01-28T21:35:54.223Z] [CSV Export] Found 5782 contacts for clientId=73, type=all
+[2026-01-28T21:43:21.635Z] [Extract-Live] Starting for profile 75
+[2026-01-28T21:43:21.635Z] [Extract-Live] Trying getContacts (full contact list)...
+[2026-01-28T21:43:21.999Z] [Extract-Live] getContacts found 5901 contacts
+[2026-01-28T21:43:22.000Z] [Extract-Live] Completed. Total: 5901 via WhatsApp Contacts
+[2026-01-28T21:51:42.590Z] [Extract-Live] Starting for profile 75
+[2026-01-28T21:51:42.590Z] [Extract-Live] Trying getContacts (full contact list)...
+[2026-01-28T21:51:42.934Z] [Extract-Live] getContacts found 5901 contacts
+[2026-01-28T21:51:42.934Z] [Extract-Live] Completed. Total: 5901 via WhatsApp Contacts
+[2026-01-28T21:51:59.830Z] [Extract-Live] Starting for profile 73
+[2026-01-28T21:51:59.830Z] [Extract-Live] Trying getContacts (full contact list)...
+[2026-01-28T21:52:00.128Z] [Extract-Live] getContacts found 5255 contacts
+[2026-01-28T21:52:00.128Z] [Extract-Live] Completed. Total: 5255 via WhatsApp Contacts
+[2026-01-28T21:55:54.999Z] [Extract-Live] Starting for profile 75
+[2026-01-28T21:55:54.999Z] [Extract-Live] Trying Chat Store (actual conversations only)...
+[2026-01-28T21:56:04.138Z] [Extract-Live] Chat Store found 357 real conversation contacts
+[2026-01-28T21:56:04.138Z] [Extract-Live] Completed. Total: 357 via محادثات فعلية
