@@ -8,6 +8,25 @@ const router = express.Router();
 const Contact = require('../models/Contact');
 const whatsappManager = require('../whatsapp-manager');
 
+const fs = require('fs');
+const path = require('path');
+
+const DEBUG_LOG_PATH = path.join(__dirname, '..', 'extraction_debug.txt');
+
+function logDebug(message) {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] ${message}\n`;
+    try {
+        fs.appendFileSync(DEBUG_LOG_PATH, logMessage);
+    } catch (e) {
+        // Fallback if file write fails, though console logs are usually not seen
+        console.error('Failed to write to log file:', e);
+    }
+    console.log(logMessage.trim());
+}
+
+
+
 /**
  * GET /api/contacts
  * Get all contacts
@@ -17,8 +36,9 @@ router.get('/', async (req, res) => {
         const clientId = req.query.clientId || 1;
         const limit = parseInt(req.query.limit) || 100;
         const offset = parseInt(req.query.offset) || 0;
+        const type = req.query.type || 'all'; // 'all', 'groups', 'history'
 
-        const contacts = await Contact.getAll(clientId, limit, offset);
+        const contacts = await Contact.getAll(clientId, limit, offset, type);
         res.json({ success: true, data: contacts });
     } catch (error) {
         console.error('Error fetching contacts:', error);
@@ -33,10 +53,43 @@ router.get('/', async (req, res) => {
 router.get('/stats', async (req, res) => {
     try {
         const clientId = req.query.clientId || 1;
-        const stats = await Contact.getCount(clientId);
+        const type = req.query.type || 'all'; // Support filtering stats too
+        const stats = await Contact.getCount(clientId, type);
         res.json({ success: true, data: stats });
     } catch (error) {
         console.error('Error fetching contact stats:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * GET /api/contacts/export-csv
+ * Export contacts as CSV file
+ */
+router.get('/export-csv', async (req, res) => {
+    try {
+        const clientId = req.query.clientId || 1;
+        const contacts = await Contact.getAll(clientId, 10000, 0); // Get all contacts
+
+        // Create CSV content
+        const BOM = '\uFEFF'; // UTF-8 BOM for Arabic support in Excel
+        let csv = BOM + 'الاسم,رقم الهاتف,تاريخ الإضافة\n';
+
+        for (const contact of contacts) {
+            const name = (contact.name || contact.push_name || 'بدون اسم').replace(/,/g, ' ').replace(/"/g, "'");
+            const phone = contact.phone_number || '';
+            const date = contact.created_at ? new Date(contact.created_at).toLocaleDateString('ar-EG') : '';
+            // Use ="number" formula format - displays as text without visible prefix
+            csv += `"${name}","=""${phone}""","${date}"\n`;
+        }
+
+        // Set headers for file download
+        const filename = `contacts_${new Date().toISOString().split('T')[0]}.csv`;
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(csv);
+    } catch (error) {
+        console.error('Error exporting contacts:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -73,6 +126,48 @@ router.get('/blocked', async (req, res) => {
         res.json({ success: true, data: contacts });
     } catch (error) {
         console.error('Error fetching blocked contacts:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * GET /api/contacts/groups
+ * Get list of WhatsApp groups for extraction
+ */
+router.get('/groups', async (req, res) => {
+    try {
+        const allStatus = whatsappManager.getAllStatus();
+        const activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+
+        if (!activeProfileId) {
+            return res.status(400).json({ success: false, error: 'WhatsApp not connected' });
+        }
+
+        const waClient = whatsappManager.getClient(parseInt(activeProfileId));
+        let groups = [];
+        let method = '';
+
+        // Prioritize getContacts() for LISTING because getChats() is currently crashing in this version
+        // We filter by isGroup: true
+        try {
+            const contacts = await waClient.getContacts();
+            groups = contacts
+                .filter(c => c.isGroup)
+                .map(c => ({
+                    id: c.id._serialized,
+                    name: c.name || c.verifiedName || 'مجموعة بدون اسم',
+                    participantsCount: null
+                }));
+            method = 'getContacts';
+            console.log(`Found ${groups.length} groups via getContacts()`);
+        } catch (error) {
+            console.error('getContacts() failed:', error);
+            // Fallback (though getChats likely fails too based on recent logs)
+        }
+
+        res.json({ success: true, count: groups.length, groups, method });
+    } catch (error) {
+        console.error('Error fetching groups:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -198,6 +293,691 @@ router.post('/sync', async (req, res) => {
         res.json({ success: true, message: `Synced ${synced} contacts` });
     } catch (error) {
         console.error('Error syncing contacts:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * POST /api/contacts/extract-groups
+ * Extract contacts from selected WhatsApp groups
+ */
+router.post('/extract-groups', async (req, res) => {
+    try {
+        const { groupIds } = req.body; // Array of group IDs
+
+        if (!groupIds || !Array.isArray(groupIds) || groupIds.length === 0) {
+            return res.status(400).json({ success: false, error: 'Group IDs required' });
+        }
+
+        const allStatus = whatsappManager.getAllStatus();
+        const activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+
+        if (!activeProfileId) {
+            return res.status(400).json({ success: false, error: 'WhatsApp not connected' });
+        }
+
+        const waClient = whatsappManager.getClient(parseInt(activeProfileId));
+        let extractedCount = 0;
+        let errors = [];
+
+        for (const groupId of groupIds) {
+            try {
+                logDebug(`Extracting from Group: ${groupId}`);
+                let participants = [];
+                let groupName = 'Group';
+
+                // METHOD 1: DOM Scraping - Open group info and read phone numbers from UI
+                try {
+                    logDebug(`  Trying DOM scraping method...`);
+                    const domResult = await waClient.pupPage.evaluate(async (gId) => {
+                        try {
+                            const Store = window.Store;
+                            if (!Store) return { success: false, error: 'Store not available' };
+
+                            // Step 1: Open the chat
+                            if (Store.Cmd && Store.Cmd.openChatAt) {
+                                await Store.Cmd.openChatAt(gId);
+                            }
+                            await new Promise(r => setTimeout(r, 1000));
+
+                            // Step 2: Click on group header to open group info panel
+                            const header = document.querySelector('#main header');
+                            if (header) {
+                                header.click();
+                                await new Promise(r => setTimeout(r, 1500));
+                            }
+
+                            // Step 3: Look for "View all" or participants section and scroll
+                            let phoneNumbers = [];
+
+                            // Try to find participant elements in the side panel
+                            const tryExtractFromDOM = async () => {
+                                // Wait for side panel
+                                await new Promise(r => setTimeout(r, 500));
+
+                                // Look for participant list items
+                                const participantItems = document.querySelectorAll('[data-testid="cell-frame-container"], [data-testid="contact-info-drawer"] [role="listitem"], [data-testid="group-participant"]');
+
+                                for (const item of participantItems) {
+                                    // Look for phone number text in the item
+                                    const spans = item.querySelectorAll('span');
+                                    for (const span of spans) {
+                                        const text = span.textContent || '';
+                                        // Match phone number patterns (with or without +, spaces, dashes)
+                                        const phoneMatch = text.match(/[\+]?[\d\s\-\(\)]{10,20}/);
+                                        if (phoneMatch) {
+                                            // Clean the phone number
+                                            const cleaned = phoneMatch[0].replace(/[\s\-\(\)\+]/g, '');
+                                            if (cleaned.length >= 10 && cleaned.length <= 15 && /^\d+$/.test(cleaned)) {
+                                                phoneNumbers.push(cleaned);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Also try to find participant titles/subtitles
+                                const titles = document.querySelectorAll('[title*="+"]');
+                                for (const el of titles) {
+                                    const text = el.getAttribute('title') || '';
+                                    const phoneMatch = text.match(/[\+]?[\d\s\-\(\)]{10,20}/);
+                                    if (phoneMatch) {
+                                        const cleaned = phoneMatch[0].replace(/[\s\-\(\)\+]/g, '');
+                                        if (cleaned.length >= 10 && cleaned.length <= 15 && /^\d+$/.test(cleaned)) {
+                                            phoneNumbers.push(cleaned);
+                                        }
+                                    }
+                                }
+                            };
+
+                            await tryExtractFromDOM();
+
+                            // Look for "See all" button and click it
+                            const seeAllButtons = document.querySelectorAll('[data-testid="group-info-participants-show-all"]');
+                            for (const btn of seeAllButtons) {
+                                btn.click();
+                                await new Promise(r => setTimeout(r, 1000));
+                                await tryExtractFromDOM();
+                            }
+
+                            // Remove duplicates
+                            phoneNumbers = [...new Set(phoneNumbers)];
+
+                            // Get group name
+                            let name = 'Group';
+                            const nameEl = document.querySelector('[data-testid="conversation-info-header-chat-title"], [data-testid="group-info-drawer"] span[title]');
+                            if (nameEl) {
+                                name = nameEl.textContent || nameEl.getAttribute('title') || 'Group';
+                            }
+
+                            // Close the side panel by clicking elsewhere or pressing Escape
+                            const closeBtn = document.querySelector('[data-testid="btn-close-drawer"]');
+                            if (closeBtn) closeBtn.click();
+
+                            return {
+                                success: phoneNumbers.length > 0,
+                                participants: phoneNumbers.map(p => ({ id: p + '@c.us', user: p })),
+                                name,
+                                count: phoneNumbers.length,
+                                method: 'DOM'
+                            };
+                        } catch (err) {
+                            return { success: false, error: err.toString() };
+                        }
+                    }, groupId);
+
+                    if (domResult.success && domResult.participants && domResult.participants.length > 0) {
+                        participants = domResult.participants;
+                        groupName = domResult.name;
+                        logDebug(`  DOM Success: Found ${participants.length} phone numbers from UI`);
+                    } else {
+                        logDebug(`  DOM method found 0 numbers, trying Store method...`);
+                    }
+                } catch (domError) {
+                    logDebug(`  DOM error: ${domError.message}`);
+                }
+
+                // METHOD 2: Store-based extraction (fallback)
+                if (participants.length === 0) {
+                    try {
+                        const result = await waClient.pupPage.evaluate(async (gId) => {
+                            try {
+                                const Store = window.Store;
+                                if (!Store) {
+                                    return { error: 'Store not available' };
+                                }
+
+                                // Step 1: Try to open the chat (forces metadata load)
+                                if (Store.Cmd && Store.Cmd.openChatAt) {
+                                    try {
+                                        await Store.Cmd.openChatAt(gId);
+                                    } catch (e) {
+                                        // Ignore open errors, continue anyway
+                                    }
+                                } else if (Store.Chat && Store.Chat.find) {
+                                    try {
+                                        await Store.Chat.find(gId);
+                                    } catch (e) {
+                                        // Ignore
+                                    }
+                                }
+
+                                // Step 2: Wait a moment for metadata to sync
+                                await new Promise(r => setTimeout(r, 1500));
+
+                                // Step 3: Get participants from GroupMetadata
+                                let participants = [];
+                                let name = 'Group';
+
+                                if (Store.GroupMetadata) {
+                                    let metadata = Store.GroupMetadata.get(gId);
+
+                                    if (!metadata && Store.GroupMetadata.find) {
+                                        try {
+                                            metadata = await Store.GroupMetadata.find(gId);
+                                        } catch (e) {
+                                            // Continue
+                                        }
+                                    }
+
+                                    if (metadata) {
+                                        name = metadata.subject || 'Group';
+
+                                        if (metadata.participants) {
+                                            const parts = metadata.participants.getModelsArray
+                                                ? metadata.participants.getModelsArray()
+                                                : (Array.isArray(metadata.participants) ? metadata.participants : []);
+
+                                            const totalRaw = parts.length;
+                                            let lidCount = 0;
+                                            let resolvedFromLid = 0;
+                                            const debugInfo = {}; // For storing debug information about LID structure
+
+                                            // Process ALL participants, try to resolve LID to phone
+                                            for (const p of parts) {
+                                                const id = p.id._serialized || p.id;
+
+                                                if (id && id.includes('@c.us')) {
+                                                    // Direct phone number
+                                                    const user = p.id.user || id.split('@')[0];
+                                                    if (user && user.length <= 15) {
+                                                        participants.push({ id, user });
+                                                    }
+                                                } else if (id && id.includes('@lid')) {
+                                                    lidCount++;
+                                                    // Try to resolve LID to phone number
+                                                    try {
+                                                        // Log first LID participant's structure for debugging
+                                                        if (lidCount === 1) {
+                                                            const pKeys = Object.keys(p);
+                                                            const idKeys = p.id ? Object.keys(p.id) : [];
+                                                            debugInfo.firstLidParticipant = {
+                                                                keys: pKeys.slice(0, 20),
+                                                                idKeys: idKeys.slice(0, 20),
+                                                                id: p.id ? { _serialized: p.id._serialized, user: p.id.user } : null
+                                                            };
+                                                        }
+
+                                                        // Method 1: Try Store.Contact
+                                                        if (Store.Contact) {
+                                                            const contact = Store.Contact.get(id);
+                                                            if (contact) {
+                                                                if (lidCount === 1) {
+                                                                    debugInfo.firstLidContact = {
+                                                                        keys: Object.keys(contact).slice(0, 30),
+                                                                        phoneNumber: contact.phoneNumber,
+                                                                        number: contact.number,
+                                                                        verifiedName: contact.verifiedName,
+                                                                        pushname: contact.pushname,
+                                                                        name: contact.name,
+                                                                        formattedName: contact.formattedName
+                                                                    };
+                                                                }
+
+                                                                const phone = contact.phoneNumber || contact.number ||
+                                                                    (contact.wid && contact.wid.user) ||
+                                                                    (contact.id && contact.id.user && !contact.id._serialized?.includes('@lid') ? contact.id.user : null);
+
+                                                                if (phone && phone.length >= 10 && phone.length <= 15 && /^\d+$/.test(phone)) {
+                                                                    participants.push({
+                                                                        id: phone + '@c.us',
+                                                                        user: phone,
+                                                                        resolvedFromLid: true
+                                                                    });
+                                                                    resolvedFromLid++;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        // Method 2: Try getNumberId from Store.Wid
+                                                        if (!resolvedFromLid && Store.Wid && Store.Wid.get) {
+                                                            try {
+                                                                const wid = Store.Wid.get(id);
+                                                                if (wid && wid.user && !wid._serialized?.includes('@lid')) {
+                                                                    participants.push({
+                                                                        id: wid.user + '@c.us',
+                                                                        user: wid.user,
+                                                                        resolvedFromLid: true
+                                                                    });
+                                                                    resolvedFromLid++;
+                                                                }
+                                                            } catch (e) { }
+                                                        }
+                                                    } catch (e) {
+                                                        // Ignore contact lookup errors
+                                                    }
+                                                }
+                                            }
+
+                                            // Store debug info
+                                            return {
+                                                success: participants.length > 0,
+                                                participants,
+                                                name,
+                                                count: participants.length,
+                                                debug: {
+                                                    totalRaw,
+                                                    lidCount,
+                                                    phoneCount: participants.length,
+                                                    resolvedFromLid,
+                                                    allLid: lidCount === totalRaw && totalRaw > 0 && participants.length === 0,
+                                                    lidStructure: debugInfo // Include LID structure for debugging
+                                                }
+                                            };
+                                        }
+                                    }
+                                }
+                                // Fallback: Try Chat.participants directly
+                                if (participants.length === 0 && Store.Chat) {
+                                    const chat = Store.Chat.get(gId);
+                                    if (chat && chat.groupMetadata && chat.groupMetadata.participants) {
+                                        const parts = chat.groupMetadata.participants.getModelsArray
+                                            ? chat.groupMetadata.participants.getModelsArray()
+                                            : [];
+
+                                        const totalRaw = parts.length;
+                                        let lidCount = 0;
+                                        let resolvedFromLid = 0;
+
+                                        // Same logic: try to resolve LID to phone
+                                        for (const p of parts) {
+                                            const id = p.id._serialized || p.id;
+
+                                            if (id && id.includes('@c.us')) {
+                                                const user = p.id.user || id.split('@')[0];
+                                                if (user && user.length <= 15) {
+                                                    participants.push({ id, user });
+                                                }
+                                            } else if (id && id.includes('@lid')) {
+                                                lidCount++;
+                                                try {
+                                                    if (Store.Contact) {
+                                                        const contact = Store.Contact.get(id);
+                                                        if (contact) {
+                                                            const phone = contact.phoneNumber ||
+                                                                (contact.wid && contact.wid.user) ||
+                                                                (contact.id && contact.id.user && !contact.id._serialized.includes('@lid') ? contact.id.user : null);
+
+                                                            if (phone && phone.length >= 10 && phone.length <= 15 && /^\d+$/.test(phone)) {
+                                                                participants.push({
+                                                                    id: phone + '@c.us',
+                                                                    user: phone,
+                                                                    resolvedFromLid: true
+                                                                });
+                                                                resolvedFromLid++;
+                                                            }
+                                                        }
+                                                    }
+                                                } catch (e) { }
+                                            }
+                                        }
+
+                                        name = chat.name || name;
+
+                                        return {
+                                            success: participants.length > 0,
+                                            participants,
+                                            name,
+                                            count: participants.length,
+                                            debug: { totalRaw, lidCount, phoneCount: participants.length, resolvedFromLid }
+                                        };
+                                    }
+                                }
+
+                                return {
+                                    success: participants.length > 0,
+                                    participants,
+                                    name,
+                                    count: participants.length
+                                };
+                            } catch (err) {
+                                return { error: err.toString() };
+                            }
+                        }, groupId);
+
+
+                        if (result.success && result.participants && result.participants.length > 0) {
+                            participants = result.participants;
+                            groupName = result.name;
+                            logDebug(`Success: Found ${participants.length} phone numbers in "${groupName}"`);
+                            if (result.debug) {
+                                logDebug(`  ↳ Debug: ${result.debug.totalRaw} total, ${result.debug.lidCount} LID, ${result.debug.phoneCount} phone, ${result.debug.resolvedFromLid || 0} resolved from LID`);
+                            }
+                        } else {
+                            // Log why we didn't find any
+                            if (result.debug && result.debug.allLid) {
+                                logDebug(`Warning: Group "${result.name}" has ${result.debug.totalRaw} members but ALL are LID`);
+                                // Log LID structure for debugging
+                                if (result.debug.lidStructure) {
+                                    logDebug(`  ↳ LID Structure: ${JSON.stringify(result.debug.lidStructure, null, 0)}`);
+                                }
+                            } else if (result.debug) {
+                                logDebug(`Failed: ${result.debug.totalRaw} total, ${result.debug.lidCount} LID, ${result.debug.phoneCount} phone numbers`);
+                            } else {
+                                logDebug(`Failed: ${result.error || 'No participants found'}`);
+                            }
+                        }
+                    } catch (evalError) {
+                        logDebug(`Puppeteer error: ${evalError.message}`);
+                    }
+                } // Close: if (participants.length === 0) - Store method fallback
+
+                // Save participants to database
+                if (participants.length > 0) {
+                    for (const participant of participants) {
+                        try {
+                            await Contact.upsert({
+                                client_id: parseInt(activeProfileId),
+                                contact_id: participant.id,
+                                phone_number: participant.user,
+                                name: null,
+                                push_name: null,
+                                short_name: null,
+                                is_business: false,
+                                is_blocked: false,
+                                is_my_contact: false,
+                                source: `Group: ${groupName}`,
+                                tags: JSON.stringify(['extracted', 'group'])
+                            });
+                            extractedCount++;
+                        } catch (e) {
+                            logDebug(`Error saving ${participant.user}: ${e.message}`);
+                        }
+                    }
+                } else {
+                    errors.push({ groupId, error: 'Could not extract participants' });
+                }
+            } catch (groupError) {
+                logDebug(`Error for group ${groupId}: ${groupError.message}`);
+                errors.push({ groupId, error: groupError.message });
+            }
+        }
+
+        res.json({
+            success: true,
+            message: `تم استخراج ${extractedCount} جهة اتصال من ${groupIds.length} مجموعة`,
+            extractedCount,
+            errors: errors.length > 0 ? errors : undefined
+        });
+    } catch (error) {
+        logDebug(`Fatal error: ${error.message}`);
+        console.error('Error extracting from groups:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * POST /api/contacts/send-group-message
+ * Send a message to multiple groups
+ */
+router.post('/send-group-message', async (req, res) => {
+    try {
+        const { groupIds, message } = req.body;
+
+        if (!groupIds || !Array.isArray(groupIds) || groupIds.length === 0) {
+            return res.status(400).json({ success: false, error: 'No groups selected' });
+        }
+
+        if (!message) {
+            return res.status(400).json({ success: false, error: 'Message content is required' });
+        }
+
+        const allStatus = whatsappManager.getAllStatus();
+        const activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+
+        if (!activeProfileId) {
+            return res.status(400).json({ success: false, error: 'WhatsApp not connected' });
+        }
+
+        const waClient = whatsappManager.getClient(activeProfileId);
+        if (!waClient || !waClient.client) {
+            return res.status(500).json({ success: false, error: 'WhatsApp client not ready' });
+        }
+
+        let sentCount = 0;
+        let errors = [];
+
+        logDebug(`Broadcasting message to ${groupIds.length} groups...`);
+
+        for (const groupId of groupIds) {
+            try {
+                // Determine format
+                const chatId = groupId.includes('@') ? groupId : `${groupId}@g.us`;
+
+                await waClient.client.sendMessage(chatId, message);
+                sentCount++;
+
+                // Add explicit delay between sends to avoid spam flagging
+                await new Promise(r => setTimeout(r, 1000 + Math.random() * 2000));
+
+            } catch (err) {
+                logDebug(`Error sending to group ${groupId}: ${err.message}`);
+                errors.push({ groupId, error: err.message });
+            }
+        }
+
+        res.json({
+            success: true,
+            message: `تم إرسال الرسالة إلى ${sentCount} مجموعة من أصل ${groupIds.length}`,
+            sentCount,
+            errors: errors.length > 0 ? errors : undefined
+        });
+    } catch (error) {
+        logDebug(`Fatal error in broadcast: ${error.message}`);
+        console.error('Error broadcasting to groups:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * POST /api/contacts/extract-history
+ * Extract contacts from message history (people who messaged before)
+ */
+router.post('/extract-history', async (req, res) => {
+    try {
+        const allStatus = whatsappManager.getAllStatus();
+        const activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+
+        if (!activeProfileId) {
+            return res.status(400).json({ success: false, error: 'WhatsApp not connected' });
+        }
+
+        const { pool } = require('../config/database');
+
+        // Get unique phone numbers from messages that are NOT from me (incoming messages)
+        const result = await pool.query(`
+            SELECT DISTINCT 
+                from_number as phone,
+                MAX(from_name) as name,
+                chat_id
+            FROM messages 
+            WHERE client_id = $1 
+              AND is_from_me = false 
+              AND from_number IS NOT NULL
+              AND chat_id NOT LIKE '%@g.us'
+            GROUP BY from_number, chat_id
+        `, [parseInt(activeProfileId)]);
+
+        let extractedCount = 0;
+
+        for (const row of result.rows) {
+            try {
+                const phoneNumber = row.phone.replace('@c.us', '').replace('@s.whatsapp.net', '');
+                const contactId = row.phone.includes('@') ? row.phone : `${phoneNumber}@c.us`;
+
+                await Contact.upsert({
+                    client_id: parseInt(activeProfileId),
+                    contact_id: contactId,
+                    phone_number: phoneNumber,
+                    name: row.name,
+                    push_name: row.name,
+                    short_name: null,
+                    is_business: false,
+                    is_blocked: false,
+                    is_my_contact: false,
+                    source: 'Chat History',
+                    tags: JSON.stringify(['extracted', 'history'])
+                });
+                extractedCount++;
+            } catch (e) {
+                // Skip individual errors
+            }
+        }
+
+        res.json({
+            success: true,
+            message: `تم استخراج ${extractedCount} جهة اتصال من سجل المحادثات`,
+            extractedCount
+        });
+    } catch (error) {
+        console.error('Error extracting from history:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * POST /api/contacts/extract-whatsapp
+ * Extract ALL contacts from WhatsApp directly (tries multiple methods)
+ */
+router.post('/extract-whatsapp', async (req, res) => {
+    try {
+        const allStatus = whatsappManager.getAllStatus();
+        const activeProfileId = Object.keys(allStatus).find(pid => allStatus[pid].connected);
+
+        if (!activeProfileId) {
+            return res.status(400).json({ success: false, error: 'WhatsApp not connected' });
+        }
+
+        const waClient = whatsappManager.getClient(parseInt(activeProfileId));
+        let extractedCount = 0;
+        let method = '';
+        let chatIds = [];
+
+        // Method 1: Try to get chats via internal store (pupPage.evaluate)
+        try {
+            console.log('Trying Method 1: Internal WhatsApp Store...');
+            const storeChats = await waClient.pupPage.evaluate(() => {
+                if (window.Store && window.Store.Chat) {
+                    return window.Store.Chat.getModelsArray().map(chat => ({
+                        id: chat.id._serialized,
+                        name: chat.name || chat.formattedTitle || chat.contact?.pushname || null,
+                        isGroup: chat.isGroup
+                    }));
+                }
+                return [];
+            });
+
+            if (storeChats && storeChats.length > 0) {
+                method = 'WhatsApp Internal Store';
+                for (const chat of storeChats) {
+                    if (!chat.isGroup && chat.id) {
+                        chatIds.push({ id: chat.id, name: chat.name });
+                    }
+                }
+            }
+        } catch (e) {
+            console.log('Method 1 failed:', e.message);
+        }
+
+        // Method 2: If Method 1 failed, try getContacts and filter those with chats
+        if (chatIds.length === 0) {
+            try {
+                console.log('Trying Method 2: getContacts...');
+                const contacts = await waClient.getContacts();
+                method = 'WhatsApp Contacts';
+
+                // Get contacts that are users (not groups, not broadcast)
+                for (const contact of contacts) {
+                    if (contact.isUser && !contact.isGroup && contact.id._serialized) {
+                        chatIds.push({
+                            id: contact.id._serialized,
+                            name: contact.name || contact.pushname || null
+                        });
+                    }
+                }
+            } catch (e) {
+                console.log('Method 2 failed:', e.message);
+            }
+        }
+
+        // Method 3: Last resort - try getChats (might fail but worth trying)
+        if (chatIds.length === 0) {
+            try {
+                console.log('Trying Method 3: getChats...');
+                const chats = await waClient.getChats();
+                method = 'WhatsApp Chats';
+
+                for (const chat of chats) {
+                    if (!chat.isGroup) {
+                        chatIds.push({
+                            id: chat.id._serialized,
+                            name: chat.name || null
+                        });
+                    }
+                }
+            } catch (e) {
+                console.log('Method 3 failed:', e.message);
+            }
+        }
+
+        // Save extracted contacts
+        console.log(`Found ${chatIds.length} potential contacts via ${method}`);
+
+        for (const chat of chatIds) {
+            try {
+                const phoneNumber = chat.id.replace('@c.us', '').replace('@s.whatsapp.net', '');
+
+                // Skip if it looks like a group or broadcast
+                if (chat.id.includes('@g.us') || chat.id.includes('@broadcast')) {
+                    continue;
+                }
+
+                await Contact.upsert({
+                    client_id: parseInt(activeProfileId),
+                    contact_id: chat.id,
+                    phone_number: phoneNumber,
+                    name: chat.name,
+                    push_name: chat.name,
+                    short_name: null,
+                    is_business: false,
+                    is_blocked: false,
+                    is_my_contact: false,
+                    source: `WhatsApp Import (${method})`,
+                    tags: JSON.stringify(['imported'])
+                });
+                extractedCount++;
+            } catch (e) {
+                // Skip individual errors
+            }
+        }
+
+        res.json({
+            success: true,
+            message: `تم استخراج ${extractedCount} جهة اتصال من واتساب (${method})`,
+            extractedCount,
+            method
+        });
+    } catch (error) {
+        console.error('Error extracting from WhatsApp:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });

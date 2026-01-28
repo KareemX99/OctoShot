@@ -23,7 +23,7 @@
             direction: rtl;
         }
 
-        /* Right Main Sidebar - Fixed */
+        /* Right Main Sidebar - Fixed (Always Dark) */
         .sidebar {
             position: fixed;
             right: 0;
@@ -31,6 +31,66 @@
             height: 100vh;
             width: 220px;
             z-index: 100;
+            background: #16213e;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-item {
+            color: #bdc3c7;
+        }
+
+        .sidebar .nav-item:hover {
+            background: rgba(102, 126, 234, 0.15);
+            color: #7f8ff3;
+        }
+
+        .sidebar .nav-item.active {
+            background: rgba(127, 143, 243, 0.15);
+            color: #7f8ff3;
+        }
+
+        .sidebar .nav-section-title {
+            color: #94a3b8;
+        }
+
+        .sidebar-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-footer .theme-row>span {
+            color: #bdc3c7;
+        }
+
+        .sidebar-footer .theme-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-footer .theme-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: rotate(15deg);
+        }
+
+        .sidebar-footer .theme-btn .theme-icon {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #bdc3c7;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         /* Main Content Area */
@@ -402,38 +462,59 @@
             font-size: 0.9rem;
         }
 
-        /* Dark Mode */
-        body.dark-mode .doc-sidebar,
-        body.dark-mode .doc-content {
-            background: #1e293b;
+        /* Dark Theme Support */
+        .dark-theme .doc-sidebar {
+            background: #16213e;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
         }
 
-        body.dark-mode .doc-sidebar h3,
-        body.dark-mode .doc-nav a {
-            color: #cbd5e1;
+        .dark-theme .doc-content {
+            background: #1a1a2e;
         }
 
-        body.dark-mode .doc-nav a:hover {
-            background: #334155;
-        }
-
-        body.dark-mode .doc-section h2,
-        body.dark-mode .doc-section h3 {
-            color: white;
-        }
-
-        body.dark-mode .doc-section p {
+        .dark-theme .doc-sidebar h3 {
             color: #94a3b8;
         }
 
-        body.dark-mode .doc-table th {
-            background: #334155;
-            color: #e2e8f0;
+        .dark-theme .doc-nav a {
+            color: #bdc3c7;
         }
 
-        body.dark-mode .doc-table td {
-            color: #e2e8f0;
-            border-color: #334155;
+        .dark-theme .doc-nav a:hover {
+            background: rgba(102, 126, 234, 0.15);
+            color: #7f8ff3;
+        }
+
+        .dark-theme .doc-nav .nav-section {
+            color: #94a3b8;
+        }
+
+        .dark-theme .doc-section h2,
+        .dark-theme .doc-section h3 {
+            color: #ecf0f1;
+        }
+
+        .dark-theme .doc-section p {
+            color: #bdc3c7;
+        }
+
+        .dark-theme .doc-section {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-theme .doc-table th {
+            background: #16213e;
+            color: #ecf0f1;
+        }
+
+        .dark-theme .doc-table td {
+            color: #bdc3c7;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-theme .doc-table code {
+            background: rgba(102, 126, 234, 0.15);
+            color: #7f8ff3;
         }
 
         /* Responsive */
@@ -2136,6 +2217,40 @@
                         }
                     });
                 });
+
+                // ===== THEME TOGGLE =====
+                const themeToggle = document.getElementById('themeToggle');
+                const themeIcon = themeToggle?.querySelector('.theme-icon');
+
+                // Check for saved theme preference or system preference
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                    document.body.classList.add('dark-theme');
+                }
+
+                // Update icon based on current theme
+                function updateThemeIcon() {
+                    if (themeIcon) {
+                        if (document.body.classList.contains('dark-theme')) {
+                            themeIcon.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="m12 2v2m0 16v2m-10-10h2m16 0h2m-4.93-7.07 1.41-1.42M4.93 19.07l1.41-1.41m12.73 0 1.41 1.41M4.93 4.93l1.41 1.41"/>';
+                        } else {
+                            themeIcon.innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';
+                        }
+                    }
+                }
+                updateThemeIcon();
+
+                // Toggle theme on click
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', () => {
+                        document.body.classList.toggle('dark-theme');
+                        const isDark = document.body.classList.contains('dark-theme');
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                        updateThemeIcon();
+                    });
+                }
             });
         </script>
 </body>

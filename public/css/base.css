@@ -30,7 +30,8 @@
     /* Light Theme (Default) */
     --bg-primary: #f5f7fa;
     --bg-secondary: #ffffff;
-    --bg-card: rgba(255, 255, 255, 0.9);
+    --bg-card: rgba(255, 255, 255, 0.95);
+    --bg-color: #f5f7fa;
     --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 
     --text-primary: #2c3e50;
@@ -40,6 +41,15 @@
     --border-color: #e1e8ed;
     --hover-bg: rgba(102, 126, 234, 0.08);
     --primary-light: rgba(102, 126, 234, 0.1);
+    --primary-color: #667eea;
+
+    /* Sidebar - Always Dark */
+    --sidebar-bg: #16213e;
+    --sidebar-text: #bdc3c7;
+    --sidebar-text-hover: #7f8ff3;
+    --sidebar-hover-bg: rgba(102, 126, 234, 0.15);
+    --sidebar-active-bg: rgba(127, 143, 243, 0.15);
+    --sidebar-border: rgba(255, 255, 255, 0.1);
 }
 
 /* ===================================
@@ -48,7 +58,8 @@
 .dark-theme {
     --bg-primary: #1a1a2e;
     --bg-secondary: #16213e;
-    --bg-card: rgba(22, 33, 62, 0.9);
+    --bg-card: rgba(22, 33, 62, 0.95);
+    --bg-color: #1a1a2e;
     --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 
     --text-primary: #ecf0f1;
@@ -58,6 +69,7 @@
     --border-color: rgba(255, 255, 255, 0.1);
     --hover-bg: rgba(102, 126, 234, 0.15);
     --primary-light: rgba(127, 143, 243, 0.15);
+    --primary-color: #7f8ff3;
 }
 
 /* ===================================

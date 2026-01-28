@@ -1,35 +1,14 @@
 /* ===================================
    Dashboard & Sidebar Styles
+   Note: Main variables defined in base.css
    =================================== */
 
-/* Additional CSS Variables for Dashboard */
+/* Dashboard-specific color aliases */
 :root {
-    --card-bg: rgba(255, 255, 255, 0.9);
-    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    --bg-color: #f5f7fa;
-    --text-primary: #2c3e50;
-    --text-secondary: #7f8c8d;
-    --text-muted: #95a5a6;
-    --border-color: #e1e8ed;
-    --hover-bg: rgba(102, 126, 234, 0.08);
-    --primary-color: #667eea;
-    --primary-light: rgba(102, 126, 234, 0.1);
-    --success-color: #27ae60;
-    --danger-color: #e74c3c;
-    --warning-color: #f39c12;
-}
-
-.dark-theme {
-    --card-bg: rgba(22, 33, 62, 0.9);
-    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --bg-color: #1a1a2e;
-    --text-primary: #ecf0f1;
-    --text-secondary: #bdc3c7;
-    --text-muted: #7f8c8d;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --hover-bg: rgba(102, 126, 234, 0.15);
-    --primary-color: #7f8ff3;
-    --primary-light: rgba(127, 143, 243, 0.15);
+    --success-color: var(--accent-success);
+    --danger-color: var(--accent-error);
+    --warning-color: var(--accent-warning);
+    --card-bg: var(--bg-card);
 }
 
 /* ===================================
@@ -41,13 +20,13 @@
 }
 
 /* ===================================
-   Sidebar
+   Sidebar - Always Dark Theme
    =================================== */
 .sidebar {
     width: 240px;
     min-width: 240px;
-    background: var(--card-bg);
-    border-left: 1px solid var(--border-color);
+    background: #16213e;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -61,7 +40,7 @@
 
 .sidebar-header {
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-header .logo {
@@ -107,7 +86,7 @@
     align-items: center;
     gap: 0.875rem;
     padding: 0.875rem 1.5rem;
-    color: var(--text-secondary);
+    color: #bdc3c7;
     text-decoration: none;
     transition: all 0.3s ease;
     border-right: 3px solid transparent;
@@ -115,14 +94,19 @@
 }
 
 .nav-item:hover {
-    background: var(--hover-bg);
-    color: var(--text-primary);
+    background: rgba(102, 126, 234, 0.15);
+    color: #7f8ff3;
+    border-right-color: #7f8ff3;
+}
+
+.nav-item:hover .nav-icon {
+    color: #7f8ff3;
 }
 
 .nav-item.active {
-    background: var(--primary-light);
-    color: var(--primary-color);
-    border-right-color: var(--primary-color);
+    background: rgba(127, 143, 243, 0.15);
+    color: #7f8ff3;
+    border-right-color: #7f8ff3;
 }
 
 .nav-icon {
@@ -137,7 +121,16 @@
 
 .sidebar-footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-footer .theme-row>span {
+    color: #bdc3c7;
+}
+
+.sidebar-footer .theme-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .connection-badge {

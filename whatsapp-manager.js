@@ -237,7 +237,13 @@ class WhatsAppManager {
 
         client.on('authenticated', async () => {
             console.log(`🔐 Profile ${profileId} authenticated`);
-            this._updateStatus(profileId, 'authenticated');
+
+            // Treat authenticated as connected for UI purposes
+            const clientData = this.clients.get(profileId);
+            if (clientData) {
+                clientData.connected = true;
+            }
+            this._updateStatus(profileId, 'connected');
 
             // Update database immediately - don't wait for ready event
             try {
@@ -254,6 +260,9 @@ class WhatsAppManager {
                 profileId,
                 info: { phoneNumber: 'جاري التحميل...' }
             });
+
+            // Also emit status connected explicitly
+            this._emitToProfile(profileId, 'status', { profileId, status: 'connected' });
 
             await ProfileLogger.connection(profileId, 'authenticated');
         });
