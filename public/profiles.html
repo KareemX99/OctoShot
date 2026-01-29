@@ -486,43 +486,66 @@
                 </div>
             </div>
 
-            <!-- Devices Table -->
-            <div class="card table-container hidden">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <span class="icon"><svg viewBox="0 0 24 24">
-                                <rect width="18" height="18" x="3" y="3" rx="2" />
-                                <path d="M3 9h18" />
-                                <path d="M9 21V9" />
-                            </svg></span>
-                        قائمة الأجهزة (<span id="deviceCount">0</span>)
-                    </h2>
-                    <input type="text" class="form-control" placeholder="بحث..."
-                        style="width: 250px; padding: 0.5rem 1rem;" id="searchInput">
+            <!-- Stats Cards -->
+            <div class="profiles-stats" id="statsSection">
+                <div class="profile-stat-card">
+                    <div class="stat-icon total">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                            <path d="M12 18h.01" />
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalDevices">0</div>
+                        <div class="stat-label">إجمالي الأجهزة</div>
+                    </div>
                 </div>
-                <div class="card-body" style="padding: 0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>UUID</th>
-                                <th>اسم الجهاز</th>
-                                <th>رقم الهاتف</th>
-                                <th>الحالة</th>
-                                <th>المستوى</th>
-                                <th>الاستخدام</th>
-                                <th>Webhook</th>
-                                <th>إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="profilesTableBody">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
+                <div class="profile-stat-card">
+                    <div class="stat-icon connected">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="connectedDevices">0</div>
+                        <div class="stat-label">متصل الآن</div>
+                    </div>
+                </div>
+                <div class="profile-stat-card">
+                    <div class="stat-icon disconnected">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m15 9-6 6" />
+                            <path d="m9 9 6 6" />
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="disconnectedDevices">0</div>
+                        <div class="stat-label">غير متصل</div>
+                    </div>
                 </div>
             </div>
 
+            <!-- Toolbar -->
+            <div class="devices-toolbar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="ابحث عن جهاز...">
+                </div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">الكل</button>
+                    <button class="filter-tab" data-filter="connected">متصل</button>
+                    <button class="filter-tab" data-filter="disconnected">غير متصل</button>
+                </div>
+            </div>
+
+            <!-- Devices Grid -->
+            <div class="devices-grid" id="devicesGrid">
+                <!-- Populated by JS -->
+            </div>
+
             <!-- Empty State -->
-            <div id="emptyState" class="empty-state">
+            <div id="emptyState" class="empty-state hidden">
                 <div class="empty-state-icon">
                     <svg viewBox="0 0 24 24">
                         <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />

@@ -7,13 +7,13 @@
 let profiles = [];
 let currentProfileId = null;
 let socket = null;
+let currentFilter = 'all';
 
 // DOM Elements
-const profilesTableBody = document.getElementById('profilesTableBody');
-const deviceCount = document.getElementById('deviceCount');
+const devicesGrid = document.getElementById('devicesGrid');
 const searchInput = document.getElementById('searchInput');
 const emptyState = document.getElementById('emptyState');
-const tableContainer = document.querySelector('.table-container');
+const statsSection = document.getElementById('statsSection');
 
 // Modals
 const deviceModal = document.getElementById('deviceModal');
@@ -90,6 +90,16 @@ function setupEventListeners() {
     // Search
     searchInput.addEventListener('input', debounce(handleSearch, 300));
 
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentFilter = tab.dataset.filter;
+            renderProfiles();
+        });
+    });
+
     // Theme toggle - Handled by theme.js
     // document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 }
@@ -105,8 +115,8 @@ async function loadProfiles(search = '') {
 
         if (data.success) {
             profiles = data.data;
+            updateStats();
             renderProfiles();
-            deviceCount.textContent = data.count;
         }
     } catch (error) {
         console.error('Error loading profiles:', error);
@@ -115,86 +125,184 @@ async function loadProfiles(search = '') {
 }
 
 /**
- * Render profiles table
+ * Update stats cards
+ */
+function updateStats() {
+    const total = profiles.length;
+    const connected = profiles.filter(p => p.status === 'connected').length;
+    const disconnected = total - connected;
+
+    document.getElementById('totalDevices').textContent = total;
+    document.getElementById('connectedDevices').textContent = connected;
+    document.getElementById('disconnectedDevices').textContent = disconnected;
+}
+
+/**
+ * Render profiles as cards
  */
 function renderProfiles() {
-    if (profiles.length === 0) {
-        tableContainer.classList.add('hidden');
-        emptyState.classList.remove('hidden');
+    // Filter profiles
+    let filteredProfiles = profiles;
+    if (currentFilter === 'connected') {
+        filteredProfiles = profiles.filter(p => p.status === 'connected');
+    } else if (currentFilter === 'disconnected') {
+        filteredProfiles = profiles.filter(p => p.status !== 'connected');
+    }
+
+    if (filteredProfiles.length === 0) {
+        devicesGrid.innerHTML = '';
+        if (profiles.length === 0) {
+            statsSection.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+        } else {
+            statsSection.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            devicesGrid.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">لا توجد أجهزة تطابق الفلتر المحدد</p>';
+        }
         return;
     }
 
-    tableContainer.classList.remove('hidden');
+    statsSection.classList.remove('hidden');
     emptyState.classList.add('hidden');
 
-    profilesTableBody.innerHTML = profiles.map(profile => `
-        <tr data-id="${profile.id}">
-            <td class="uuid-cell">${profile.uuid || '-'}</td>
-            <td>${profile.device_name || profile.name || '-'}</td>
-            <td>${profile.phone_number || '-'}</td>
-            <td>${getStatusBadge(profile.status)}</td>
-            <td>${getTrustBadge(profile.trust_level || 1)}</td>
-            <td>${getUsageLevelBadge(profile)}</td>
-            <td class="webhook-cell">${profile.webhook_url || ''}</td>
-            <td>
-                <div class="actions-cell">
-                    ${profile.status !== 'connected' ? `
-                        <button class="action-btn connect" onclick="connectProfileWithCheck(${profile.id})" title="Connect">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
-                                <path d="M12 18h.01"/>
-                            </svg>
-                        </button>
-                        ${profile.status === 'disconnected' && profile.questionnaire_completed ? `
-                            <button class="action-btn report-ban" onclick="reportBan(${profile.id})" title="Report Ban">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <path d="m4.9 4.9 14.2 14.2"/>
-                                </svg>
-                            </button>
-                        ` : ''}
-                    ` : `
-                        <button class="action-btn disconnect" onclick="openDisconnectModal(${profile.id})" title="Disconnect">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18.36 6.64A9 9 0 0 1 20.77 15"/>
-                                <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"/>
-                                <path d="M12 2v4"/>
-                                <path d="m2 2 20 20"/>
-                            </svg>
-                        </button>
-                    `}
-                    <button class="action-btn details" onclick="openDetails(${profile.id})" title="Details">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
-                    </button>
-                    <button class="action-btn edit" onclick="openEditModal(${profile.id})" title="Edit">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                        </svg>
-                    </button>
-                    <button class="action-btn copy" onclick="copyUUID('${profile.uuid}')" title="Copy UUID">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                        </svg>
-                    </button>
-                    <button class="action-btn delete" onclick="deleteProfile(${profile.id})" title="Delete">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 6h18"/>
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                        </svg>
-                    </button>
+    devicesGrid.innerHTML = filteredProfiles.map(profile => `
+        <div class="device-card ${profile.status === 'connected' ? 'connected' : 'disconnected'}" data-id="${profile.id}">
+            <div class="device-card-header">
+                <div class="device-avatar ${profile.status === 'connected' ? 'connected' : 'disconnected'}">
+                    ${getDeviceInitials(profile.device_name || profile.name || 'D')}
                 </div>
-            </td>
-        </tr>
+                <div class="device-info">
+                    <div class="device-name">
+                        ${profile.device_name || profile.name || 'جهاز غير مسمى'}
+                        <span class="device-status ${profile.status === 'connected' ? 'connected' : profile.status === 'qr' || profile.status === 'initializing' ? 'connecting' : 'disconnected'}">
+                            ${getStatusText(profile.status)}
+                        </span>
+                    </div>
+                    <div class="device-phone">${profile.phone_number || 'غير متصل'}</div>
+                </div>
+            </div>
+            <div class="device-card-body">
+                <div class="device-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">المستوى</span>
+                        <span class="meta-value">${getTrustBadgeSimple(profile.trust_level || 1)}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">الاستخدام</span>
+                        <span class="meta-value">${getUsageBadgeSimple(profile)}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Webhook</span>
+                        <span class="meta-value">
+                            <span class="webhook-indicator ${profile.webhook_url ? 'active' : 'inactive'}">
+                                ${profile.webhook_url ? '✓ مفعل' : '○ غير مفعل'}
+                            </span>
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">UUID</span>
+                        <span class="meta-value uuid">${(profile.uuid || '-').substring(0, 8)}...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="device-card-footer">
+                ${profile.status !== 'connected' ? `
+                    <button class="device-action connect" onclick="connectProfileWithCheck(${profile.id})" title="اتصال">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+                            <path d="M12 18h.01"/>
+                        </svg>
+                        اتصال
+                    </button>
+                ` : `
+                    <button class="device-action disconnect" onclick="openDisconnectModal(${profile.id})" title="قطع الاتصال">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18.36 6.64A9 9 0 0 1 20.77 15"/>
+                            <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"/>
+                            <path d="M12 2v4"/>
+                            <path d="m2 2 20 20"/>
+                        </svg>
+                        فصل
+                    </button>
+                `}
+                <button class="device-action details" onclick="openDetails(${profile.id})" title="التفاصيل">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+                <button class="device-action edit" onclick="openEditModal(${profile.id})" title="تعديل">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                    </svg>
+                </button>
+                <button class="device-action copy" onclick="copyUUID('${profile.uuid}')" title="نسخ UUID">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </svg>
+                </button>
+                <button class="device-action delete" onclick="deleteProfile(${profile.id})" title="حذف">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18"/>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
     `).join('');
 }
 
 /**
- * Get status badge HTML
+ * Get device initials for avatar
+ */
+function getDeviceInitials(name) {
+    if (!name) return 'D';
+    return name.substring(0, 2).toUpperCase();
+}
+
+/**
+ * Get simple status text
+ */
+function getStatusText(status) {
+    const texts = {
+        'connected': 'متصل',
+        'disconnected': 'غير متصل',
+        'qr': 'في انتظار QR',
+        'initializing': 'جاري التهيئة...',
+        'authenticated': 'تم المصادقة',
+        'error': 'خطأ',
+        'auth_failure': 'فشل المصادقة'
+    };
+    return texts[status] || 'غير متصل';
+}
+
+/**
+ * Get simple trust badge
+ */
+function getTrustBadgeSimple(level) {
+    const badges = {
+        1: '<span class="trust-badge warning">⚠️ المستوى 1</span>',
+        2: '<span class="trust-badge normal">✓ المستوى 2</span>',
+        3: '<span class="trust-badge good">⭐ المستوى 3</span>',
+        4: '<span class="trust-badge excellent">🌟 المستوى 4</span>'
+    };
+    return badges[level] || badges[1];
+}
+
+/**
+ * Get simple usage badge
+ */
+function getUsageBadgeSimple(profile) {
+    if (profile.questionnaire_completed) {
+        return '<span class="usage-badge configured">✓ مُهيأ</span>';
+    }
+    return `<span class="usage-badge unconfigured" onclick="openQuestionnaireForProfile(${profile.id})">⚙️ تهيئة</span>`;
+}
+
+/**
+ * Get status badge HTML (for compatibility)
  */
 function getStatusBadge(status) {
     const badges = {
@@ -210,7 +318,7 @@ function getStatusBadge(status) {
 }
 
 /**
- * Get trust level badge HTML
+ * Get trust level badge HTML (for compatibility)
  */
 function getTrustBadge(level) {
     const badges = {
@@ -223,15 +331,13 @@ function getTrustBadge(level) {
 }
 
 /**
- * Update profile status in table
+ * Update profile status in card
  */
 function updateProfileStatus(profileId, status) {
-    const row = profilesTableBody.querySelector(`tr[data-id="${profileId}"]`);
-    if (row) {
-        const statusCell = row.querySelector('td:nth-child(4)');
-        if (statusCell) {
-            statusCell.innerHTML = getStatusBadge(status);
-        }
+    const card = devicesGrid.querySelector(`.device-card[data-id="${profileId}"]`);
+    if (card) {
+        // Re-render on status change
+        loadProfiles();
     }
 }
 
