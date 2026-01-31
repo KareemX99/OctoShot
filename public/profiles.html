@@ -341,6 +341,170 @@
             background: rgba(239, 68, 68, 0.1);
             color: #ef4444;
         }
+
+        /* Glassy Modal Styles */
+
+        /* Glassy Modal Styles - THEME AWARE */
+
+        /* Light Theme (Default) */
+        .glassy-modal {
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+            color: var(--text-primary);
+        }
+
+        .dark-theme .glassy-modal {
+            background: rgba(30, 41, 59, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+            color: #ecf0f1;
+        }
+
+        .glassy-header {
+            border-bottom: 1px solid rgba(139, 92, 246, 0.1) !important;
+            background: rgba(139, 92, 246, 0.03);
+        }
+
+        .dark-theme .glassy-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .glassy-close {
+            background: rgba(0, 0, 0, 0.05);
+            /* Light mode bg */
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .dark-theme .glassy-close {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ecf0f1;
+        }
+
+        .glassy-close:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444 !important;
+        }
+
+        /* Detail Items Styling */
+        .detail-item {
+            background: rgba(255, 255, 255, 0.6);
+            /* Light mode item bg */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .dark-theme .detail-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+        }
+
+        .detail-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(139, 92, 246, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .dark-theme .detail-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .detail-value {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            word-break: break-all;
+            direction: ltr;
+            /* Force LTR for codes/numbers */
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .dark-theme .detail-value {
+            color: #ecf0f1;
+        }
+
+        .copy-btn-mini {
+            background: rgba(0, 0, 0, 0.05);
+            /* Light mode button */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .dark-theme .copy-btn-mini {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
+        }
+
+        .copy-btn-mini:hover {
+            background: var(--brand-primary);
+            color: white !important;
+            border-color: var(--brand-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .api-key-container {
+            background: rgba(0, 0, 0, 0.05);
+            /* Light mode code bg */
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: var(--brand-secondary);
+            letter-spacing: 0.5px;
+            width: 100%;
+            border: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-theme .api-key-container {
+            background: rgba(0, 0, 0, 0.2);
+            color: #bdc3c7;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 
@@ -665,42 +829,97 @@
     <!-- Details Modal -->
     <div id="detailsModal" class="modal hidden">
         <div class="modal-backdrop" onclick="closeDetailsModal()"></div>
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content glassy-modal">
+            <div class="modal-header glassy-header">
                 <h3 class="modal-title">تفاصيل الجهاز</h3>
-                <button class="modal-close" onclick="closeDetailsModal()">✕</button>
+                <button class="modal-close glassy-close" onclick="closeDetailsModal()">✕</button>
             </div>
             <div class="modal-body">
-                <div class="detail-row">
-                    <strong>اسم الجهاز:</strong>
-                    <span id="detailDeviceName"></span>
-                </div>
-                <div class="detail-row">
-                    <strong>المعرف (UUID):</strong>
-                    <code id="detailUUID"
-                        style="background:var(--bg-secondary); padding:2px 5px; border-radius:4px;"></code>
-                </div>
-                <div class="detail-row">
-                    <strong>مفتاح API:</strong>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <code id="detailAPIKey"
-                            style="background:var(--bg-secondary); padding:2px 5px; border-radius:4px; word-break:break-all;"></code>
-                        <button onclick="regenerateAPIKey()" class="btn btn-sm btn-danger"
-                            title="تجديد المفتاح">🔄</button>
+
+                <div class="detail-item">
+                    <span class="detail-label">اسم الجهاز</span>
+                    <div class="detail-value-container">
+                        <span id="detailDeviceName" class="detail-value" style="font-weight: 600;"></span>
+                        <button class="copy-btn-mini" onclick="copyText('detailDeviceName')" title="نسخ">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
-                <div class="detail-row">
-                    <strong>رقم الهاتف:</strong>
-                    <span id="detailPhone" dir="ltr"></span>
+
+                <div class="detail-item">
+                    <span class="detail-label">المعرف (UUID)</span>
+                    <div class="detail-value-container">
+                        <span id="detailUUID" class="detail-value" style="font-size: 0.85rem; opacity: 0.9;"></span>
+                        <button class="copy-btn-mini" onclick="copyText('detailUUID')" title="نسخ">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <strong>الحالة:</strong>
-                    <span id="detailStatus"></span>
+
+                <div class="detail-item">
+                    <span class="detail-label">مفتاح API</span>
+                    <div class="detail-value-container"
+                        style="flex-direction: column; align-items: flex-end; gap: 8px;">
+                        <div class="api-key-container" id="detailAPIKey" style="word-break: break-all;"></div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="copy-btn-mini" onclick="copyText('detailAPIKey')" title="نسخ">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                </svg>
+                            </button>
+                            <button onclick="regenerateAPIKey()" class="btn btn-sm btn-danger" title="تجديد المفتاح"
+                                style="padding: 4px 12px; font-size: 0.8rem;">
+                                🔄 تجديد
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <strong>Webhook الرئيسي:</strong>
-                    <span id="detailWebhook" style="word-break:break-all;"></span>
+
+                <div class="detail-item">
+                    <span class="detail-label">رقم الهاتف</span>
+                    <div class="detail-value-container">
+                        <span id="detailPhone" class="detail-value" dir="ltr"></span>
+                        <button class="copy-btn-mini" onclick="copyText('detailPhone')" title="نسخ">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">الحالة</span>
+                    <div class="detail-value-container">
+                        <span id="detailStatus"></span>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Webhook الرئيسي</span>
+                    <div class="detail-value-container">
+                        <span id="detailWebhook" class="detail-value" style="color: var(--brand-primary);"></span>
+                        <button class="copy-btn-mini" onclick="copyText('detailWebhook')" title="نسخ">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

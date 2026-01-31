@@ -58,7 +58,16 @@ function initSocket() {
         if (data.profileId === currentProfileId) {
             showConnected(data.info);
         }
-        loadProfiles(); // Refresh list
+        // Update local profile's phone number immediately (before loadProfiles)
+        if (data.phone_number && data.profileId) {
+            const profile = profiles.find(p => p.id === data.profileId);
+            if (profile) {
+                profile.phone_number = data.phone_number;
+                console.log(`📱 Phone updated for profile ${data.profileId}: ${data.phone_number}`);
+                renderProfiles(); // Re-render immediately with new phone
+            }
+        }
+        loadProfiles(); // Also refresh from server for complete data
     });
 
     socket.on('status', (data) => {
@@ -178,7 +187,7 @@ function renderProfiles() {
                             ${getStatusText(profile.status)}
                         </span>
                     </div>
-                    <div class="device-phone">${profile.phone_number || 'غير متصل'}</div>
+                    <div class="device-phone">${profile.phone_number || (profile.status === 'connected' ? 'جاري التحميل...' : 'غير متصل')}</div>
                 </div>
             </div>
             <div class="device-card-body">
@@ -593,19 +602,56 @@ function copyUUID(uuid) {
 /**
  * Copy to clipboard
  */
+/**
+ * Copy to clipboard (Generic)
+ */
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showToast('تم النسخ!', 'success');
-    }).catch(() => {
-        // Fallback
-        const input = document.createElement('input');
-        input.value = text;
-        document.body.appendChild(input);
-        input.select();
+    if (!text) return;
+
+    // Try modern API
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('تم النسخ!', 'success');
+        }).catch(() => {
+            fallbackCopy(text);
+        });
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+/**
+ * Fallback copy method
+ */
+function fallbackCopy(text) {
+    const input = document.createElement('textarea');
+    input.value = text;
+    input.style.position = 'fixed';
+    input.style.left = '-9999px';
+    document.body.appendChild(input);
+    input.focus();
+    input.select();
+    try {
         document.execCommand('copy');
-        document.body.removeChild(input);
         showToast('تم النسخ!', 'success');
-    });
+    } catch (err) {
+        console.error('Copy failed:', err);
+        showToast('فشل النسخ', 'error');
+    }
+    document.body.removeChild(input);
+}
+
+/**
+ * Copy text from element ID (Used by modal)
+ */
+function copyText(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        // If it's a code block or div, get textContent
+        // If it uses .api-key-container, it might have extra whitespace, so trim
+        const text = element.textContent.trim();
+        copyToClipboard(text);
+    }
 }
 
 /**
@@ -1034,11 +1080,15 @@ function copyDisconnectId() {
  * Validate if pasted ID matches
  */
 function validateDisconnectId() {
-    const expectedId = document.getElementById('disconnectProfileId').textContent;
+    const expectedId = document.getElementById('disconnectProfileId').textContent.trim();
     const enteredId = document.getElementById('confirmProfileId').value.trim();
 
+    console.log('🔍 Validating:', { expectedId, enteredId, match: enteredId === expectedId });
+
     const isMatch = enteredId === expectedId;
-    document.getElementById('confirmDisconnectBtn').disabled = !isMatch;
+    const btn = document.getElementById('confirmDisconnectBtn');
+    btn.disabled = !isMatch;
+    console.log('🔘 Button disabled:', btn.disabled);
 
     // Visual feedback
     const input = document.getElementById('confirmProfileId');
@@ -1053,7 +1103,11 @@ function validateDisconnectId() {
  * Execute the disconnect
  */
 async function executeDisconnect() {
-    if (!disconnectTargetId) return;
+    console.log('🔌 executeDisconnect called, targetId:', disconnectTargetId);
+    if (!disconnectTargetId) {
+        console.error('❌ No disconnectTargetId set!');
+        return;
+    }
 
     const btn = document.getElementById('confirmDisconnectBtn');
     btn.disabled = true;

@@ -265,6 +265,37 @@ class WhatsAppManager {
             this._emitToProfile(profileId, 'status', { profileId, status: 'connected' });
 
             await ProfileLogger.connection(profileId, 'authenticated');
+
+            // Fallback: Poll for client.info if ready doesn't fire within 10 seconds
+            const pollForInfo = async () => {
+                for (let i = 0; i < 20; i++) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    if (client.info?.wid?.user) {
+                        console.log(`📱 Phone number fetched via polling for profile ${profileId}: ${client.info.wid.user}`);
+                        try {
+                            await ClientModel.updateConnection(profileId, {
+                                phone_number: client.info.wid.user,
+                                name: client.info.pushname,
+                                push_name: client.info.pushname,
+                                platform: client.info.platform,
+                                status: 'connected'
+                            });
+                            // Emit updated info to frontend
+                            this._emitToProfile(profileId, 'ready', {
+                                profileId,
+                                connected: true,
+                                info: client.info,
+                                phone_number: client.info.wid.user
+                            });
+                        } catch (err) {
+                            console.error(`❌ Error saving polled phone for ${profileId}:`, err.message);
+                        }
+                        return;
+                    }
+                }
+                console.log(`⏳ Timeout waiting for client.info for profile ${profileId}`);
+            };
+            pollForInfo().catch(console.error);
         });
 
         client.on('ready', async () => {
@@ -303,7 +334,8 @@ class WhatsAppManager {
             this._emitToProfile(profileId, 'ready', {
                 profileId,
                 connected: true,
-                info: client.info
+                info: client.info,
+                phone_number: client.info?.wid?.user // Include phone for immediate UI update
             });
             this._emitToProfile(profileId, 'status', { profileId, status: 'connected' });
         });

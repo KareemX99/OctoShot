@@ -3,7 +3,7 @@
  * Manages pg-boss job queue for campaign message scheduling
  */
 
-const { PgBoss } = require('pg-boss');
+const PgBoss = require('pg-boss');
 const { pool } = require('../config/database');
 const { DateTime } = require('luxon');
 const Campaign = require('../models/Campaign');
