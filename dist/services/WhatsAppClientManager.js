@@ -225,12 +225,61 @@ class WhatsAppClientManager {
         // Authenticated event
         client.on('authenticated', async () => {
             logger_1.logger.connection(profileId, 'authenticated');
-            this.updateStatus(profileId, 'authenticated');
-            await ClientModel.updateStatus(profileId, 'connected');
+            // Treat authenticated as connected for UI purposes
+            const clientData = this.clients.get(profileId);
+            if (clientData) {
+                clientData.connected = true;
+            }
+            this.updateStatus(profileId, 'connected');
+            await ClientModel.updateConnection(profileId, {
+                status: 'connected'
+            });
+            logger_1.logger.info(`Database updated: Profile ${profileId} → connected`, profileId);
             this.emitToProfile(profileId, 'authenticated', {
                 info: { phoneNumber: 'جاري التحميل...' }
             });
             this.emitToProfile(profileId, 'status', { status: 'connected' });
+            // Fallback: Poll for client.info if ready doesn't fire within 10 seconds
+            const pollForInfo = async () => {
+                for (let i = 0; i < 20; i++) {
+                    await (0, validators_1.sleep)(500);
+                    if (client.info?.wid?.user) {
+                        logger_1.logger.info(`Phone number fetched via polling: ${client.info.wid.user}`, profileId);
+                        try {
+                            await ClientModel.updateConnection(profileId, {
+                                phone_number: client.info.wid.user,
+                                name: client.info.pushname,
+                                push_name: client.info.pushname,
+                                platform: client.info.platform,
+                                status: 'connected'
+                            });
+                            // Update local client data
+                            const data = this.clients.get(profileId);
+                            if (data) {
+                                data.connectedAt = Date.now();
+                                data.info = {
+                                    pushname: client.info.pushname,
+                                    platform: client.info.platform,
+                                    phoneNumber: client.info.wid.user,
+                                    wid: client.info.wid
+                                };
+                            }
+                            // Emit updated info to frontend
+                            this.emitToProfile(profileId, 'ready', {
+                                connected: true,
+                                info: client.info,
+                                phone_number: client.info.wid.user
+                            });
+                        }
+                        catch (err) {
+                            logger_1.logger.error(`Error saving polled phone: ${err}`, profileId);
+                        }
+                        return;
+                    }
+                }
+                logger_1.logger.warn(`Timeout waiting for client.info`, profileId);
+            };
+            pollForInfo().catch(err => logger_1.logger.error(`Poll error: ${err}`, profileId));
         });
         // Ready event
         client.on('ready', async () => {
