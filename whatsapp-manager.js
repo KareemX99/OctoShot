@@ -956,6 +956,39 @@ class WhatsAppManager {
         console.log(`🗑️ Client ${profileId} destroyed`);
     }
 
+    /**
+     * Send data to webhook URL
+     * @param {string} webhookUrl - The webhook URL to send data to
+     * @param {object} data - The data to send
+     */
+    async _sendToWebhook(webhookUrl, data) {
+        try {
+            const fetch = (await import('node-fetch')).default;
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'OctoSHOT-WhatsApp/1.0'
+                },
+                body: JSON.stringify(data),
+                timeout: 10000 // 10 second timeout
+            });
+
+            if (response.ok) {
+                const responseText = await response.text();
+                console.log(`✅ Webhook delivered successfully to ${webhookUrl}`);
+                console.log(`📥 Webhook response: ${responseText.substring(0, 200)}`);
+                return { success: true, status: response.status };
+            } else {
+                console.error(`❌ Webhook failed: ${response.status} ${response.statusText}`);
+                return { success: false, status: response.status, error: response.statusText };
+            }
+        } catch (error) {
+            console.error(`❌ Webhook error for ${webhookUrl}:`, error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
     getAllStatus() {
         const statuses = {};
         for (const [profileId, clientData] of this.clients) {

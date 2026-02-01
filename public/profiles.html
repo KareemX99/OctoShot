@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="/css/animations.css">
     <link rel="stylesheet" href="/css/premium.css">
     <link rel="stylesheet" href="/css/icons.css">
-    <link rel="stylesheet" href="/css/profiles.css">
+    <link rel="stylesheet" href="/css/profiles.css?v=6">
     <style>
         .hidden {
             display: none !important;
@@ -505,6 +505,125 @@
             color: #bdc3c7;
             border: 1px dashed rgba(255, 255, 255, 0.1);
         }
+
+        /* Progress Tracker Styles */
+        .progress-tracker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 450px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            position: relative;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background: rgba(139, 92, 246, 0.2);
+            z-index: -1;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.active {
+            opacity: 1;
+        }
+
+        .progress-step.active .step-icon {
+            background: var(--brand-primary);
+            color: white;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .progress-step.completed {
+            opacity: 1;
+        }
+
+        .progress-step.completed .step-icon {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .progress-step.completed::after {
+            background: #22c55e;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-primary);
+            transition: all 0.3s ease;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .progress-step.active .step-label,
+        .progress-step.completed .step-label {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .status-message {
+            text-align: center;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+
+        .status-message #statusText {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .status-message #statusDetail {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
     </style>
 </head>
 
@@ -761,65 +880,172 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="webhookUrl">رابط Webhook (رئيسي)</label>
-                        <input type="url" id="webhookUrl" class="form-control"
-                            placeholder="https://example.com/webhook">
-                        <small style="color: var(--text-muted);">رابط لاستقبال جميع الأحداث (اختياري)</small>
-                    </div>
 
-                    <!-- Webhook Tabs Section (For Editing) -->
-                    <div id="webhookTabsSection"
-                        style="display: none; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-                        <div class="tab-buttons">
-                            <button type="button" class="webhook-tab active" onclick="switchWebhookTab('unread')"
-                                data-tab="unread">🔔 رسائل غير مقروءة <span id="unreadWebhookCount"
-                                    class="badge">0</span></button>
-                            <button type="button" class="webhook-tab" onclick="switchWebhookTab('noReply')"
-                                data-tab="noReply">💬 قراءة بدون رد <span id="noReplyWebhookCount"
-                                    class="badge">0</span></button>
-                        </div>
-
-                        <!-- Unread Webhooks Tab -->
-                        <div id="unreadTab" class="webhook-tab-content active">
-                            <div class="add-webhook-form">
-                                <input type="url" id="newUnreadWebhookUrl" placeholder="رابط Webhook" style="flex: 2;">
-                                <input type="number" id="newUnreadWebhookTimer" placeholder="وقت" style="width: 60px;"
-                                    min="1">
-                                <select id="newUnreadWebhookUnit" style="width: 80px;">
-                                    <option value="minutes">دقيقة</option>
-                                    <option value="hours">ساعة</option>
-                                </select>
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="addUnreadWebhook()">+
-                                    إضافة</button>
-                            </div>
-                            <div id="unreadWebhooksList">
-                                <!-- List populated by JS -->
-                            </div>
-                        </div>
-
-                        <!-- No Reply Webhooks Tab -->
-                        <div id="noReplyTab" class="webhook-tab-content">
-                            <div class="add-webhook-form">
-                                <input type="url" id="newNoReplyWebhookUrl" placeholder="رابط Webhook" style="flex: 2;">
-                                <input type="number" id="newNoReplyWebhookTimer" placeholder="وقت" style="width: 60px;"
-                                    min="1">
-                                <select id="newNoReplyWebhookUnit" style="width: 80px;">
-                                    <option value="minutes">دقيقة</option>
-                                    <option value="hours">ساعة</option>
-                                </select>
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="addNoReplyWebhook()">+
-                                    إضافة</button>
-                            </div>
-                            <div id="noReplyWebhooksList">
-                                <!-- List populated by JS -->
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
                         <button type="submit" class="btn btn-primary" id="saveBtn">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Webhooks Management Modal -->
+    <div id="webhookModal" class="modal hidden">
+        <div class="modal-backdrop" onclick="closeWebhooksModal()"></div>
+        <div class="modal-content glassy-modal" style="max-width: 600px;">
+            <div class="modal-header glassy-header">
+                <h3 class="modal-title">⚡ إدارة الروابط (Webhooks)</h3>
+                <button class="modal-close glassy-close" onclick="closeWebhooksModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <input type="hidden" id="webhookProfileId">
+
+                <!-- Main Webhook Section -->
+                <div class="webhook-section main-webhook">
+                    <div class="webhook-header">
+                        <div class="webhook-icon main">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="webhook-info">
+                            <h4>الرسائل الواردة (Incoming Messages)</h4>
+                            <p>استقبال جميع الرسائل الجديدة والأحداث لحظياً</p>
+                        </div>
+                    </div>
+                    <div class="webhook-input-group">
+                        <input type="url" id="mainWebhookUrl" class="webhook-input"
+                            placeholder="https://example.com/webhook" dir="ltr">
+                        <button class="btn btn-primary" onclick="saveMainWebhook()">حفظ</button>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Advanced Webhooks Grid -->
+                <h4 style="margin-bottom: 15px; color: var(--text-muted); font-size: 0.9rem;">الروابط المتقدمة (Advanced
+                    Webhooks)</h4>
+                <div class="webhooks-grid">
+
+                    <!-- Unread Messages Webhook Card -->
+                    <div class="webhook-option-card unread" onclick="toggleWebhookPanel('unread')">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <h5>رسائل غير مقروءة</h5>
+                            <span id="unreadWebhookCountBadge" class="status-badge">0 مفعل</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- No-Reply Webhook Card -->
+                    <div class="webhook-option-card noreply" onclick="toggleWebhookPanel('noreply')">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <h5>قراءة بدون رد</h5>
+                            <span id="noReplyWebhookCountBadge" class="status-badge">0 مفعل</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unread Panel -->
+                <div id="unreadPanel" class="webhook-panel hidden">
+                    <div class="panel-header">
+                        <h5>🔔 إعدادات الرسائل غير المقروءة</h5>
+                    </div>
+                    <div class="add-webhook-form">
+                        <input type="url" id="newUnreadWebhookUrl" placeholder="رابط Webhook" style="flex: 2;">
+                        <input type="number" id="newUnreadWebhookTimer" placeholder="وقت" style="width: 70px;" min="1">
+                        <select id="newUnreadWebhookUnit" style="width: 80px;">
+                            <option value="minutes">دقيقة</option>
+                            <option value="hours">ساعة</option>
+                        </select>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="addUnreadWebhook()">+
+                            إضافة</button>
+                    </div>
+                    <div id="unreadWebhooksList" class="webhooks-list"></div>
+                </div>
+
+                <!-- No-Reply Panel -->
+                <div id="noreplyPanel" class="webhook-panel hidden">
+                    <div class="panel-header">
+                        <h5>💬 إعدادات القراءة بدون رد</h5>
+                    </div>
+                    <div class="add-webhook-form">
+                        <input type="url" id="newNoReplyWebhookUrl" placeholder="رابط Webhook" style="flex: 2;">
+                        <input type="number" id="newNoReplyWebhookTimer" placeholder="وقت" style="width: 70px;" min="1">
+                        <select id="newNoReplyWebhookUnit" style="width: 80px;">
+                            <option value="minutes">دقيقة</option>
+                            <option value="hours">ساعة</option>
+                        </select>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="addNoReplyWebhook()">+
+                            إضافة</button>
+                    </div>
+                    <div id="noReplyWebhooksList" class="webhooks-list"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Device Add/Edit Modal -->
+    <div id="deviceModal" class="modal hidden">
+        <div class="modal-backdrop" onclick="closeDeviceModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="modal-title">إضافة جهاز جديد</h3>
+                <button class="modal-close" onclick="closeDeviceModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="deviceForm">
+                    <input type="hidden" id="deviceId">
+
+                    <div class="form-group">
+                        <label for="deviceName">اسم الجهاز</label>
+                        <input type="text" id="deviceName" class="form-control" placeholder="مثال: جهاز المبيعات"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone">المنطقة الزمنية</label>
+                        <select id="timezone" class="form-control">
+                            <option value="Africa/Cairo">القاهرة (Africa/Cairo)</option>
+                            <option value="Asia/Riyadh">الرياض (Asia/Riyadh)</option>
+                            <option value="Asia/Dubai">دبي (Asia/Dubai)</option>
+                            <option value="Europe/London">لندن (Europe/London)</option>
+                            <option value="America/New_York">نيويورك (America/New_York)</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer" style="padding: 0; border: none; margin-top: 20px;">
+                        <button type="button" class="btn btn-secondary" onclick="closeDeviceModal()">إلغاء</button>
+                        <button type="submit" id="saveBtn" class="btn btn-primary">إضافة</button>
                     </div>
                 </form>
             </div>
@@ -934,15 +1160,76 @@
             </div>
             <div class="modal-body"
                 style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px;">
-                <div id="qrLoading" class="hidden">
-                    <div class="spinner"></div>
-                    <p style="margin-top: 15px;">جاري إنشاء QR Code...</p>
+
+                <!-- Progress Tracker -->
+                <div id="progressTracker" class="progress-tracker">
+                    <div class="progress-step" data-step="initializing">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                                <path d="M12 18h.01" />
+                            </svg>
+                        </div>
+                        <span class="step-label">تهيئة المتصفح</span>
+                    </div>
+                    <div class="progress-step" data-step="qr">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect width="5" height="5" x="3" y="3" rx="1" />
+                                <rect width="5" height="5" x="16" y="3" rx="1" />
+                                <rect width="5" height="5" x="3" y="16" rx="1" />
+                            </svg>
+                        </div>
+                        <span class="step-label">توليد رمز QR</span>
+                    </div>
+                    <div class="progress-step" data-step="scanning">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 2v20" />
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
+                        </div>
+                        <span class="step-label">في انتظار المسح</span>
+                    </div>
+                    <div class="progress-step" data-step="authenticating">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                                <path d="m9 12 2 2 4-4" />
+                            </svg>
+                        </div>
+                        <span class="step-label">جاري المصادقة</span>
+                    </div>
+                    <div class="progress-step" data-step="connected">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <span class="step-label">تم الاتصال</span>
+                    </div>
                 </div>
+
+                <!-- Status Message -->
+                <div id="statusMessage" class="status-message">
+                    <p id="statusText">جاري تهيئة المتصفح...</p>
+                    <p id="statusDetail" class="status-detail"></p>
+                </div>
+
+                <!-- QR Code Display -->
                 <div id="qrDisplay" class="hidden">
-                    <img id="qrImage" src="" alt="Scan QR Code" style="width: 250px; height: 250px;">
-                    <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">افتح واتساب > الأجهزة
-                        المرتبطة > ربط جهاز</p>
+                    <img id="qrImage" src="" alt="Scan QR Code"
+                        style="width: 250px; height: 250px; border-radius: 12px;">
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">امسح الرمز باستخدام واتساب
+                        → الأجهزة المرتبطة</p>
                 </div>
+
+                <!-- Connected State -->
                 <div id="qrConnected" class="hidden">
                     <div
                         style="width: 80px; height: 80px; background: rgba(34, 197, 94, 0.1); color: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">

@@ -200,6 +200,13 @@ class Client {
      * Delete a client
      */
     static async delete(id) {
+        // First, clear any campaign enrollment references to this device
+        await query(`
+            UPDATE campaign_enrollments 
+            SET assigned_device_id = NULL 
+            WHERE assigned_device_id = $1
+        `, [id]);
+
         const sql = `DELETE FROM clients WHERE id = $1 RETURNING *`;
         const result = await query(sql, [id]);
         return result.rows[0];

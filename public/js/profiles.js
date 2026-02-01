@@ -41,7 +41,23 @@ function initSocket() {
     socket.on('qr', (data) => {
         console.log('📱 QR received for profile:', data.profileId);
         if (data.profileId === currentProfileId) {
+            updateProgress('scanning');
+            updateStatusMessage('في انتظار المسح', 'امسح رمز QR باستخدام تطبيق واتساب على هاتفك');
             showQRCode(data.qrCode);
+        }
+    });
+
+    // Loading screen event
+    socket.on('loading', (data) => {
+        console.log('⏳ Loading:', data.percent + '%', data.message);
+        if (data.profileId === currentProfileId) {
+            if (data.percent < 50) {
+                updateProgress('initializing');
+                updateStatusMessage('جاري تهيئة المتصفح...', `${data.percent}% - ${data.message || 'جاري تنظيف الملفات المؤقتة...'}`);
+            } else {
+                updateProgress('qr');
+                updateStatusMessage('جاري إنشاء رمز QR...', `${data.percent}%`);
+            }
         }
     });
 
@@ -49,13 +65,20 @@ function initSocket() {
     socket.on('authenticated', (data) => {
         console.log('🔐 Profile authenticated:', data.profileId);
         if (data.profileId === currentProfileId) {
-            showConnected(data.info || { phoneNumber: 'جاري التحميل...' });
+            updateProgress('authenticating');
+            updateStatusMessage('جاري المصادقة...', 'يتم التحقق من الاتصال وتهيئة الجلسة');
+            // Wait a bit to show the authentication step, then show connected
+            setTimeout(() => {
+                updateProgress('connected');
+                showConnected(data.info || { phoneNumber: 'جاري التحميل...' });
+            }, 1500);
         }
     });
 
     socket.on('ready', (data) => {
         console.log('✅ Profile ready:', data.profileId);
         if (data.profileId === currentProfileId) {
+            updateProgress('connected');
             showConnected(data.info);
         }
         // Update local profile's phone number immediately (before loadProfiles)
@@ -111,6 +134,68 @@ function setupEventListeners() {
 
     // Theme toggle - Handled by theme.js
     // document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+}
+
+/**
+ * Open modal to add a new device
+ * Note: This function is defined once and used for both the header button and empty state button
+ */
+// openAddModal is defined below at line ~428
+
+/**
+ * Close device add/edit modal
+ */
+function closeDeviceModal() {
+    deviceModal.classList.add('hidden');
+    document.getElementById('deviceForm').reset();
+}
+
+/**
+ * Handle device form submission (add or edit)
+ */
+async function handleFormSubmit(e) {
+    e.preventDefault();
+
+    const deviceId = document.getElementById('deviceId').value;
+    const deviceName = document.getElementById('deviceName').value;
+    const timezone = document.getElementById('timezone').value;
+
+    const data = {
+        device_name: deviceName,
+        timezone: timezone
+    };
+
+    try {
+        let response;
+        if (deviceId) {
+            // Edit existing device
+            response = await fetch(`/api/profiles/${deviceId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        } else {
+            // Add new device
+            response = await fetch('/api/profiles', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            showToast(deviceId ? 'تم تحديث الجهاز بنجاح' : 'تم إضافة الجهاز بنجاح', 'success');
+            closeDeviceModal();
+            loadProfiles();
+        } else {
+            showToast(result.message || 'حدث خطأ', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving device:', error);
+        showToast('خطأ في حفظ الجهاز', 'error');
+    }
 }
 
 /**
@@ -245,10 +330,9 @@ function renderProfiles() {
                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
                     </svg>
                 </button>
-                <button class="device-action copy" onclick="copyUUID('${profile.uuid}')" title="نسخ UUID">
+                <button class="device-action webhooks" onclick="openWebhooksModal(${profile.id})" title="إدارة الروابط (Webhooks)">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                     </svg>
                 </button>
                 <button class="device-action delete" onclick="deleteProfile(${profile.id})" title="حذف">
@@ -359,8 +443,11 @@ function openAddModal() {
     document.getElementById('deviceId').value = '';
     document.getElementById('saveBtn').textContent = 'حفظ الجهاز';
 
-    // Hide webhook tabs section for new devices
-    document.getElementById('webhookTabsSection').style.display = 'none';
+    // Hide webhook tabs section for new devices (if exists)
+    const webhookTabsSection = document.getElementById('webhookTabsSection');
+    if (webhookTabsSection) {
+        webhookTabsSection.style.display = 'none';
+    }
     currentWebhooks = [];
     currentNoReplyWebhooks = [];
 
@@ -379,17 +466,8 @@ function openEditModal(id) {
     document.getElementById('modalTitle').textContent = 'تعديل الجهاز';
     document.getElementById('deviceId').value = id;
     document.getElementById('deviceName').value = profile.device_name || '';
-    document.getElementById('webhookUrl').value = profile.webhook_url || '';
     document.getElementById('timezone').value = profile.timezone || 'Africa/Cairo';
     document.getElementById('saveBtn').textContent = 'تحديث الجهاز';
-
-    // Show webhook tabs section and load both webhook types
-    document.getElementById('webhookTabsSection').style.display = 'block';
-    loadUnreadWebhooks(id);
-    loadNoReplyWebhooks(id);
-
-    // Reset to first tab
-    switchWebhookTab('unread');
 
     deviceModal.classList.remove('hidden');
 }
@@ -410,7 +488,6 @@ async function handleFormSubmit(e) {
     const id = document.getElementById('deviceId').value;
     const data = {
         device_name: document.getElementById('deviceName').value,
-        webhook_url: document.getElementById('webhookUrl').value || null,
         timezone: document.getElementById('timezone').value
     };
 
@@ -457,7 +534,11 @@ async function connectProfile(id) {
     currentProfileId = id;
     qrModal.classList.remove('hidden');
 
-    document.getElementById('qrLoading').classList.remove('hidden');
+    // Initialize progress tracker
+    resetProgress();
+    updateProgress('initializing');
+    updateStatusMessage('جاري تهيئة المتصفح...', 'يتم بدء عملية الاتصال بخادم واتساب');
+
     document.getElementById('qrDisplay').classList.add('hidden');
     document.getElementById('qrConnected').classList.add('hidden');
 
@@ -482,7 +563,6 @@ async function connectProfile(id) {
  * Show QR code
  */
 function showQRCode(qrDataUrl) {
-    document.getElementById('qrLoading').classList.add('hidden');
     document.getElementById('qrDisplay').classList.remove('hidden');
     document.getElementById('qrImage').src = qrDataUrl;
 }
@@ -864,26 +944,7 @@ async function deleteUnreadWebhook(webhookId) {
 /**
  * Switch between webhook tabs
  */
-function switchWebhookTab(tabName) {
-    // Update tab buttons
-    document.querySelectorAll('.webhook-tab').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.dataset.tab === tabName) {
-            tab.classList.add('active');
-        }
-    });
 
-    // Update tab contents
-    document.querySelectorAll('.webhook-tab-content').forEach(content => {
-        content.classList.remove('active');
-    });
-
-    if (tabName === 'unread') {
-        document.getElementById('unreadTab').classList.add('active');
-    } else if (tabName === 'noReply') {
-        document.getElementById('noReplyTab').classList.add('active');
-    }
-}
 
 // ============================================
 // READ NO-REPLY WEBHOOKS
@@ -1354,3 +1415,144 @@ async function reportBan(profileId) {
     }
 }
 
+
+/* ================================
+   WEBHOOKS MODAL LOGIC
+   ================================ */
+
+const webhookModal = document.getElementById('webhookModal');
+
+/**
+ * Open Webhooks Management Modal
+ */
+function openWebhooksModal(id) {
+    const profile = profiles.find(p => p.id === id);
+    if (!profile) return;
+
+    currentProfileId = id;
+    document.getElementById('webhookProfileId').value = id;
+
+    // Set Main Webhook
+    document.getElementById('mainWebhookUrl').value = profile.webhook_url || '';
+
+    // Load Advanced Webhooks
+    loadUnreadWebhooks(id);
+    loadNoReplyWebhooks(id);
+
+    // Reset Panels
+    document.querySelectorAll('.webhook-option-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.webhook-panel').forEach(p => p.classList.add('hidden'));
+
+    webhookModal.classList.remove('hidden');
+}
+
+/**
+ * Close Webhooks Modal
+ */
+function closeWebhooksModal() {
+    webhookModal.classList.add('hidden');
+}
+
+/**
+ * Save Main Webhook
+ */
+async function saveMainWebhook() {
+    const id = document.getElementById('webhookProfileId').value;
+    const url = document.getElementById('mainWebhookUrl').value;
+
+    try {
+        const response = await fetch(`/api/profiles/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ webhook_url: url || null })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showToast('تم تحديث Webhook الرئيسي بنجاح', 'success');
+            loadProfiles(); // Refresh to update indicator
+        } else {
+            showToast(result.error || 'خطأ في حفظ Webhook', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving main webhook:', error);
+        showToast('خطأ في حفظ Webhook', 'error');
+    }
+}
+
+/**
+ * Toggle Webhook Panels (Accordion Style)
+ */
+function toggleWebhookPanel(type) {
+    const card = document.querySelector(`.webhook-option-card.${type}`);
+    const panel = document.getElementById(`${type}Panel`);
+
+    let wasActive = false;
+    if (card && card.classList.contains('active')) {
+        wasActive = true;
+    }
+
+    // Close all first
+    document.querySelectorAll('.webhook-option-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.webhook-panel').forEach(p => p.classList.add('hidden'));
+
+    if (!wasActive && card && panel) {
+        card.classList.add('active');
+        panel.classList.remove('hidden');
+    }
+}
+
+// ============================================
+// PROGRESS TRACKER FUNCTIONS
+// ============================================
+
+/**
+ * Reset all progress steps to inactive state
+ */
+function resetProgress() {
+    const steps = document.querySelectorAll('.progress-step');
+    steps.forEach(step => {
+        step.classList.remove('active', 'completed');
+    });
+}
+
+/**
+ * Update progress tracker to show current connection stage
+ * @param {string} stage - One of: 'initializing', 'qr', 'scanning', 'authenticating', 'connected'
+ */
+function updateProgress(stage) {
+    const steps = document.querySelectorAll('.progress-step');
+    const stageOrder = ['initializing', 'qr', 'scanning', 'authenticating', 'connected'];
+    const currentIndex = stageOrder.indexOf(stage);
+
+    steps.forEach((step, index) => {
+        const stepStage = step.getAttribute('data-step');
+        const stepIndex = stageOrder.indexOf(stepStage);
+
+        step.classList.remove('active', 'completed');
+
+        if (stepIndex < currentIndex) {
+            step.classList.add('completed');
+        } else if (stepIndex === currentIndex) {
+            step.classList.add('active');
+        }
+    });
+}
+
+/**
+ * Update status message displayed to user
+ * @param {string} mainText - Primary status message
+ * @param {string} detailText - Optional detailed explanation
+ */
+function updateStatusMessage(mainText, detailText = '') {
+    const statusTextEl = document.getElementById('statusText');
+    const statusDetailEl = document.getElementById('statusDetail');
+
+    if (statusTextEl) {
+        statusTextEl.textContent = mainText;
+    }
+    if (statusDetailEl) {
+        statusDetailEl.textContent = detailText;
+    }
+}

@@ -31,5 +31,11 @@
         "octobot"
     ],
     "author": "",
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.1.0",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.9.3"
+    }
 }
