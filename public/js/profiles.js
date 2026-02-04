@@ -53,7 +53,7 @@ function initSocket() {
         if (data.profileId === currentProfileId) {
             if (data.percent < 50) {
                 updateProgress('initializing');
-                updateStatusMessage('جاري تهيئة المتصفح...', `${data.percent}% - ${data.message || 'جاري تنظيف الملفات المؤقتة...'}`);
+                updateStatusMessage('جاري تهيئة الجهاز...', `${data.percent}% - ${data.message || 'جاري تنظيف الملفات المؤقتة...'}`);;
             } else {
                 updateProgress('qr');
                 updateStatusMessage('جاري إنشاء رمز QR...', `${data.percent}%`);
@@ -537,7 +537,7 @@ async function connectProfile(id) {
     // Initialize progress tracker
     resetProgress();
     updateProgress('initializing');
-    updateStatusMessage('جاري تهيئة المتصفح...', 'يتم بدء عملية الاتصال بخادم واتساب');
+    updateStatusMessage('جاري تهيئة الجهاز...', 'يتم بدء عملية الاتصال بخادم واتساب');
 
     document.getElementById('qrDisplay').classList.add('hidden');
     document.getElementById('qrConnected').classList.add('hidden');
@@ -571,10 +571,13 @@ function showQRCode(qrDataUrl) {
  * Show connected state
  */
 function showConnected(info) {
-    document.getElementById('qrLoading').classList.add('hidden');
-    document.getElementById('qrDisplay').classList.add('hidden');
-    document.getElementById('qrConnected').classList.remove('hidden');
-    document.getElementById('connectedPhone').textContent = info?.wid?.user || 'Connected';
+    const qrDisplay = document.getElementById('qrDisplay');
+    const qrConnected = document.getElementById('qrConnected');
+    const connectedPhone = document.getElementById('connectedPhone');
+
+    if (qrDisplay) qrDisplay.classList.add('hidden');
+    if (qrConnected) qrConnected.classList.remove('hidden');
+    if (connectedPhone) connectedPhone.textContent = info?.wid?.user || 'Connected';
 
     setTimeout(() => {
         closeQRModal();
@@ -1369,9 +1372,16 @@ function proceedToQRCode(id) {
     currentProfileId = id;
     qrModal.classList.remove('hidden');
 
-    document.getElementById('qrLoading').classList.remove('hidden');
-    document.getElementById('qrDisplay').classList.add('hidden');
-    document.getElementById('qrConnected').classList.add('hidden');
+    // Show modal and reset state (qrLoading doesn't exist - using status message instead)
+    const qrDisplay = document.getElementById('qrDisplay');
+    const qrConnected = document.getElementById('qrConnected');
+
+    if (qrDisplay) qrDisplay.classList.add('hidden');
+    if (qrConnected) qrConnected.classList.add('hidden');
+
+    // Reset progress to initializing step
+    updateProgress('initializing');
+    updateStatusMessage('جاري تهيئة الجهاز...', 'يتم بدء عملية الاتصال');
 
     fetch(`/api/profiles/${id}/connect`, { method: 'POST' })
         .then(response => response.json())
