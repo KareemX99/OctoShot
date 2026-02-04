@@ -192,11 +192,11 @@ class UnreadMessageProcessor {
                     id: message.id,
                     from: message.recipient,
                     messageId: message.whatsapp_message_id,
-                    receivedAt: message.sent_at,
+                    receivedAt: this.formatLocalTimestampFromDate(message.sent_at),
                     body: message.body || '',
                     type: message.type || 'text'
                 },
-                triggeredAt: new Date().toISOString()
+                triggeredAt: this.formatLocalTimestampFromDate(new Date())
             };
 
             console.log(`📤 Sending incoming unreplied webhook for message ${message.id} to ${webhook.webhook_url}`);
@@ -234,7 +234,7 @@ class UnreadMessageProcessor {
                 type: 'direct_message_unread',
                 recipient: message.recipient?.replace('@c.us', '').replace('@g.us', ''),
                 message_id: message.whatsapp_message_id,
-                sent_at: message.sent_at,
+                sent_at: this.formatLocalTimestampFromDate(message.sent_at),
                 unread_duration_minutes: timerMinutes,
                 timer_setting: `${webhook.timer_value} ${webhook.timer_unit}`,
                 device_id: clientId,

@@ -154,6 +154,17 @@ class IncomingUnrepliedProcessor {
     }
 
     /**
+     * Format timestamp with Cairo timezone (UTC+2) from Date object or ISO string
+     */
+    formatLocalTimestampFromDate(dateValue) {
+        if (!dateValue) return null;
+        const date = new Date(dateValue);
+        const cairoOffset = 2 * 60 * 60 * 1000; // UTC+2
+        const cairoDate = new Date(date.getTime() + cairoOffset);
+        return cairoDate.toISOString().replace('Z', '+02:00');
+    }
+
+    /**
      * Send webhook notification
      */
     async sendNotification(webhook, message, timerMinutes, clientId) {
@@ -173,13 +184,13 @@ class IncomingUnrepliedProcessor {
                 device_id: clientId,
                 customer_phone: senderNumber,
                 message_id: message.whatsapp_message_id,
-                received_at: message.received_at,
+                received_at: this.formatLocalTimestampFromDate(message.received_at),
                 unreplied_duration_minutes: timerMinutes,
                 timer_setting: `${webhook.timer_value} ${webhook.timer_unit}`,
                 message_body: message.body || '',
                 message_type: message.type || 'text',
                 chat_history: chatHistory,
-                triggered_at: new Date().toISOString()
+                triggered_at: this.formatLocalTimestampFromDate(new Date())
             };
 
             console.log(`📨 Sending waiting_for_reply webhook for message ${message.id} to ${webhook.webhook_url}`);
