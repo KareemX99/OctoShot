@@ -95,8 +95,8 @@ class UnreadMessageProcessor {
 
                 console.log(`🔍 Checking webhook for client ${clientId}: timer=${timerMinutes} minutes`);
 
-                // Find all delivered messages that haven't been notified
-                const result = await pool.query(`
+                // PART 1: Check API message queue (outgoing messages delivered but not read)
+                const apiResult = await pool.query(`
                     SELECT id, recipient, whatsapp_message_id, sent_at, status
                     FROM api_message_queue
                     WHERE device_id = $1
@@ -105,32 +105,118 @@ class UnreadMessageProcessor {
                     AND sent_at IS NOT NULL
                 `, [clientId]);
 
-                // Filter in JavaScript to handle timezone properly
+                // PART 2: Check incoming messages that haven't been replied to
+                // Find incoming messages where the last message in the chat is from them (not replied)
+                const incomingResult = await pool.query(`
+                    SELECT DISTINCT ON (from_number) 
+                        id, from_number as recipient, message_id as whatsapp_message_id, 
+                        timestamp as sent_at, body, type
+                    FROM messages
+                    WHERE client_id = $1
+                    AND is_from_me = false
+                    AND COALESCE(unread_notified, false) = false
+                    AND timestamp IS NOT NULL
+                    ORDER BY from_number, timestamp DESC
+                `, [clientId]);
+
+                // Combine and filter by timer
                 const now = new Date();
-                const eligibleMessages = result.rows.filter(msg => {
+
+                // Filter API messages
+                const eligibleApiMessages = apiResult.rows.filter(msg => {
+                    const sentAt = new Date(msg.sent_at);
+                    const elapsedMs = now.getTime() - sentAt.getTime();
+                    const elapsedMinutes = elapsedMs / 1000 / 60;
+                    return elapsedMinutes >= timerMinutes;
+                });
+
+                // Filter incoming messages - check if no reply was sent after
+                const eligibleIncomingMessages = [];
+                for (const msg of incomingResult.rows) {
                     const sentAt = new Date(msg.sent_at);
                     const elapsedMs = now.getTime() - sentAt.getTime();
                     const elapsedMinutes = elapsedMs / 1000 / 60;
 
-                    console.log(`  📊 Message ${msg.id}: elapsed=${Math.round(elapsedMinutes)}min, need=${timerMinutes}min`);
+                    if (elapsedMinutes >= timerMinutes) {
+                        // Check if we replied after this message
+                        const replyCheck = await pool.query(`
+                            SELECT id FROM messages 
+                            WHERE client_id = $1 
+                            AND to_number = $2 
+                            AND is_from_me = true 
+                            AND timestamp > $3
+                            LIMIT 1
+                        `, [clientId, msg.recipient?.replace('@c.us', '').replace('@g.us', ''), sentAt]);
 
-                    return elapsedMinutes >= timerMinutes;
-                });
+                        if (replyCheck.rows.length === 0) {
+                            // No reply sent, include this message
+                            eligibleIncomingMessages.push(msg);
+                        }
+                    }
+                }
 
-                console.log(`🔍 Query result: ${eligibleMessages.length} eligible messages (of ${result.rows.length} delivered) for client ${clientId}`);
+                const totalEligible = eligibleApiMessages.length + eligibleIncomingMessages.length;
+                console.log(`🔍 Query result: ${totalEligible} eligible messages (${eligibleApiMessages.length} API + ${eligibleIncomingMessages.length} incoming) for client ${clientId}`);
 
-                if (eligibleMessages.length === 0) continue;
+                if (totalEligible === 0) continue;
 
-                console.log(`📢 Found ${eligibleMessages.length} unread messages for webhook (${webhook.timer_value} ${webhook.timer_unit})`);
+                console.log(`📢 Found ${totalEligible} unread/unreplied messages for webhook (${webhook.timer_value} ${webhook.timer_unit})`);
 
-                // Send each message to the webhook
-                for (const message of eligibleMessages) {
+                // Send API messages to the webhook
+                for (const message of eligibleApiMessages) {
                     await this.sendWebhookNotification(webhook, message, timerMinutes, clientId);
+                }
+
+                // Send incoming messages to the webhook
+                for (const message of eligibleIncomingMessages) {
+                    await this.sendIncomingUnrepliedNotification(webhook, message, timerMinutes, clientId);
                 }
             } catch (error) {
                 console.error(`Error processing webhook ${webhook.id}:`, error.message);
                 ProfileLogger.error(clientId, error.message, { webhookId: webhook.id }, 'unread_webhook');
             }
+        }
+    }
+
+    /**
+     * Send notification for incoming unreplied message
+     */
+    async sendIncomingUnrepliedNotification(webhook, message, timerMinutes, clientId) {
+        try {
+            const payload = {
+                type: 'incoming_unreplied',
+                clientId: clientId,
+                timerMinutes: timerMinutes,
+                message: {
+                    id: message.id,
+                    from: message.recipient,
+                    messageId: message.whatsapp_message_id,
+                    receivedAt: message.sent_at,
+                    body: message.body || '',
+                    type: message.type || 'text'
+                },
+                triggeredAt: new Date().toISOString()
+            };
+
+            console.log(`📤 Sending incoming unreplied webhook for message ${message.id} to ${webhook.webhook_url}`);
+
+            const response = await fetch(webhook.webhook_url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                // Mark as notified
+                await pool.query(`
+                    UPDATE messages SET unread_notified = true WHERE id = $1
+                `, [message.id]);
+                console.log(`✅ Incoming unreplied webhook sent successfully for message ${message.id}`);
+            } else {
+                console.error(`❌ Webhook failed with status ${response.status}`);
+            }
+        } catch (error) {
+            console.error(`Error sending incoming unreplied webhook:`, error.message);
         }
     }
 

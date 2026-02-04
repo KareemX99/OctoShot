@@ -99,6 +99,53 @@
             background: var(--danger-light);
         }
 
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            display: inline-block;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(100, 100, 100, 0.3);
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+
+        .toggle-switch input:checked+.toggle-slider:before {
+            transform: translateX(22px);
+        }
+
         .add-webhook-form {
             display: flex;
             gap: 8px;
@@ -727,6 +774,14 @@
                             </svg></span>
                         <span class="nav-text">سجل الرسائل</span>
                     </a>
+                    <a href="/webhook-logs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
+                                <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06" />
+                                <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8" />
+                            </svg></span>
+                        <span class="nav-text">سجل الويبـــهوك</span>
+                    </a>
                 </div>
             </nav>
 
@@ -920,6 +975,29 @@
                         <input type="url" id="mainWebhookUrl" class="webhook-input"
                             placeholder="https://example.com/webhook" dir="ltr">
                         <button class="btn btn-primary" onclick="saveMainWebhook()">حفظ</button>
+                    </div>
+
+                    <!-- Echo Toggle -->
+                    <div class="echo-toggle-section"
+                        style="margin-top: 15px; display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: rgba(139, 92, 246, 0.05); border-radius: 10px; border: 1px solid rgba(139, 92, 246, 0.15);">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2" style="color: var(--brand-primary);">
+                                <polyline points="17 1 21 5 17 9"></polyline>
+                                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                                <polyline points="7 23 3 19 7 15"></polyline>
+                                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                            </svg>
+                            <div>
+                                <span style="font-weight: 600; font-size: 0.9rem;">Echo Mode</span>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">إرسال الرسائل
+                                    الصادرة أيضاً للـ Webhook</p>
+                            </div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="webhookEchoEnabled" onchange="saveEchoSetting()">
+                            <span class="toggle-slider"></span>
+                        </label>
                     </div>
                 </div>
 

@@ -840,16 +840,21 @@ function renderWebhooks() {
  * Update webhook count display
  */
 function updateWebhookCount() {
-    document.getElementById('unreadWebhookCount').textContent = currentWebhooks.length;
+    const countEl = document.getElementById('unreadWebhookCount');
+    if (countEl) {
+        countEl.textContent = currentWebhooks.length;
+    }
 
     // Disable add if at max
     const addBtn = document.querySelector('#unreadTab .add-webhook-form button');
-    if (currentWebhooks.length >= 5) {
-        addBtn.disabled = true;
-        addBtn.textContent = 'اكتمل الحد';
-    } else {
-        addBtn.disabled = false;
-        addBtn.textContent = '+ إضافة';
+    if (addBtn) {
+        if (currentWebhooks.length >= 5) {
+            addBtn.disabled = true;
+            addBtn.textContent = 'اكتمل الحد';
+        } else {
+            addBtn.disabled = false;
+            addBtn.textContent = '+ إضافة';
+        }
     }
 }
 
@@ -999,15 +1004,20 @@ function renderNoReplyWebhooks() {
  * Update read-no-reply webhook count
  */
 function updateNoReplyWebhookCount() {
-    document.getElementById('noReplyWebhookCount').textContent = currentNoReplyWebhooks.length;
+    const countEl = document.getElementById('noReplyWebhookCount');
+    if (countEl) {
+        countEl.textContent = currentNoReplyWebhooks.length;
+    }
 
     const addBtn = document.querySelector('#noReplyTab .add-webhook-form button');
-    if (currentNoReplyWebhooks.length >= 5) {
-        addBtn.disabled = true;
-        addBtn.textContent = 'اكتمل الحد';
-    } else {
-        addBtn.disabled = false;
-        addBtn.textContent = '+ إضافة';
+    if (addBtn) {
+        if (currentNoReplyWebhooks.length >= 5) {
+            addBtn.disabled = true;
+            addBtn.textContent = 'اكتمل الحد';
+        } else {
+            addBtn.disabled = false;
+            addBtn.textContent = '+ إضافة';
+        }
     }
 }
 
@@ -1445,6 +1455,9 @@ function openWebhooksModal(id) {
     // Set Main Webhook
     document.getElementById('mainWebhookUrl').value = profile.webhook_url || '';
 
+    // Set Echo Checkbox
+    document.getElementById('webhookEchoEnabled').checked = profile.webhook_echo_enabled || false;
+
     // Load Advanced Webhooks
     loadUnreadWebhooks(id);
     loadNoReplyWebhooks(id);
@@ -1488,6 +1501,38 @@ async function saveMainWebhook() {
     } catch (error) {
         console.error('Error saving main webhook:', error);
         showToast('خطأ في حفظ Webhook', 'error');
+    }
+}
+
+/**
+ * Save Echo Setting
+ */
+async function saveEchoSetting() {
+    const id = document.getElementById('webhookProfileId').value;
+    const echoEnabled = document.getElementById('webhookEchoEnabled').checked;
+
+    try {
+        const response = await fetch(`/api/profiles/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ webhook_echo_enabled: echoEnabled })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showToast(echoEnabled ? 'تم تفعيل Echo Mode' : 'تم إلغاء Echo Mode', 'success');
+            loadProfiles(); // Refresh
+        } else {
+            showToast(result.error || 'خطأ في حفظ الإعداد', 'error');
+            // Revert checkbox
+            document.getElementById('webhookEchoEnabled').checked = !echoEnabled;
+        }
+    } catch (error) {
+        console.error('Error saving echo setting:', error);
+        showToast('خطأ في حفظ الإعداد', 'error');
+        // Revert checkbox
+        document.getElementById('webhookEchoEnabled').checked = !echoEnabled;
     }
 }
 

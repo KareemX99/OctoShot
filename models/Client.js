@@ -122,11 +122,18 @@ class Client {
                 device_name = COALESCE($1, device_name),
                 webhook_url = COALESCE($2, webhook_url),
                 timezone = COALESCE($3, timezone),
+                webhook_echo_enabled = COALESCE($4, webhook_echo_enabled),
                 updated_at = CURRENT_TIMESTAMP 
-            WHERE id = $4
+            WHERE id = $5
             RETURNING *
         `;
-        const result = await query(sql, [data.device_name, data.webhook_url, data.timezone, id]);
+        const result = await query(sql, [
+            data.device_name,
+            data.webhook_url,
+            data.timezone,
+            data.webhook_echo_enabled,
+            id
+        ]);
         return result.rows[0];
     }
 

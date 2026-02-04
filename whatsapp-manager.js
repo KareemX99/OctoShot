@@ -12,6 +12,7 @@ const ClientModel = require('./models/Client');
 const AutoReply = require('./models/AutoReply');
 const Message = require('./models/Message');
 const ProfileLogger = require('./services/ProfileLogger');
+const WebhookLog = require('./models/WebhookLog');
 // LocalAuth is now imported from whatsapp-web.js directly
 
 class WhatsAppManager {
@@ -548,6 +549,86 @@ class WhatsAppManager {
                 } catch (error) {
                     console.error(`Error saving sent message for profile ${profileId}:`, error.message);
                 }
+
+                // ECHO WEBHOOK: Send outgoing messages to webhook if echo mode is enabled
+                try {
+                    const profile = await ClientModel.getById(profileId);
+
+                    if (profile?.webhook_url && profile?.webhook_echo_enabled) {
+                        // Determine if group
+                        const isGroup = msg.to?.endsWith('@g.us');
+
+                        // Get recipient info
+                        let recipientName = '';
+                        try {
+                            const contact = await msg.getContact();
+                            recipientName = contact?.pushname || contact?.name || '';
+                        } catch (e) { }
+
+                        // Handle media if present
+                        let mediaUrl = null;
+                        let detectedType = msg.type || 'chat';
+                        if (msg.hasMedia) {
+                            try {
+                                const media = await msg.downloadMedia();
+                                if (media) {
+                                    const uploadsDir = path.join(__dirname, 'uploads');
+                                    if (!fs.existsSync(uploadsDir)) {
+                                        fs.mkdirSync(uploadsDir, { recursive: true });
+                                    }
+                                    const ext = media.mimetype.split('/')[1]?.split(';')[0] || 'bin';
+                                    const filename = `echo_${Date.now()}_${msg.id.id}.${ext}`;
+                                    const filepath = path.join(uploadsDir, filename);
+                                    fs.writeFileSync(filepath, Buffer.from(media.data, 'base64'));
+                                    mediaUrl = `${BASE_URL}/uploads/${filename}`;
+
+                                    if (media.mimetype.startsWith('image/')) detectedType = 'image';
+                                    else if (media.mimetype.startsWith('video/')) detectedType = 'video';
+                                    else if (media.mimetype.startsWith('audio/')) detectedType = 'audio';
+                                    else detectedType = 'document';
+                                }
+                            } catch (mediaError) {
+                                console.log(`⚠️ Could not download echo media: ${mediaError.message}`);
+                            }
+                        }
+
+                        // Build echo webhook data
+                        const echoWebhookData = {
+                            deviceId: profile.id,
+                            userId: profile.id,
+                            from: msg.from?.replace('@c.us', '@s.whatsapp.net').replace('@g.us', '@g.us'),
+                            to: msg.to?.replace('@c.us', '@s.whatsapp.net').replace('@g.us', '@g.us'),
+                            messageId: msg.id.id,
+                            type: detectedType === 'chat' ? 'text' : detectedType,
+                            content: msg.body || '',
+                            mediaUrl: mediaUrl,
+                            timestamp: String(msg.timestamp),
+                            recipientName: recipientName,
+                            isEcho: true,
+                            isGroup: isGroup,
+                            profile: {
+                                id: profile.id,
+                                uuid: profile.uuid,
+                                device_name: profile.device_name,
+                                phone_number: profile.phone_number
+                            },
+                            msg: {
+                                id: msg.id._serialized,
+                                body: msg.body || '',
+                                type: msg.type,
+                                timestamp: msg.timestamp,
+                                fromMe: true,
+                                hasMedia: msg.hasMedia,
+                                isForwarded: msg.isForwarded || false
+                            }
+                        };
+
+                        await this._sendToWebhook(profile.webhook_url, echoWebhookData, profileId, 'echo_message');
+                        console.log(`📤 Echo webhook sent for profile ${profileId}`);
+                    }
+                } catch (echoError) {
+                    console.error(`Error sending echo webhook for profile ${profileId}:`, echoError.message);
+                }
             }
             // Note: Incoming messages are handled by the 'message' event, not here
         });
@@ -687,18 +768,48 @@ class WhatsAppManager {
                 try {
                     const quotedMsg = await msg.getQuotedMessage();
                     if (quotedMsg) {
+                        let quotedMediaUrl = null;
+                        let quotedMediaType = null;
+
+                        // Download media from quoted message if it has media
+                        if (quotedMsg.hasMedia) {
+                            try {
+                                const quotedMedia = await quotedMsg.downloadMedia();
+                                if (quotedMedia) {
+                                    const uploadsDir = path.join(__dirname, 'uploads');
+                                    if (!fs.existsSync(uploadsDir)) {
+                                        fs.mkdirSync(uploadsDir, { recursive: true });
+                                    }
+
+                                    const ext = quotedMedia.mimetype.split('/')[1]?.split(';')[0] || 'bin';
+                                    const filename = `quoted_${Date.now()}_${quotedMsg.id.id}.${ext}`;
+                                    const filepath = path.join(uploadsDir, filename);
+
+                                    fs.writeFileSync(filepath, Buffer.from(quotedMedia.data, 'base64'));
+                                    quotedMediaUrl = `${BASE_URL}/uploads/${filename}`;
+                                    quotedMediaType = quotedMedia.mimetype;
+                                    console.log(`📎 Quoted media saved: ${filename}`);
+                                }
+                            } catch (mediaError) {
+                                console.log(`⚠️ Could not download quoted media: ${mediaError.message}`);
+                            }
+                        }
+
                         replyInfo = {
                             type: quotedMsg.type,
                             messageId: quotedMsg.id._serialized,
                             from: quotedMsg.from,
                             content: quotedMsg.body || '[Unsupported reply content]',
-                            hasMedia: quotedMsg.hasMedia
+                            hasMedia: quotedMsg.hasMedia,
+                            mediaUrl: quotedMediaUrl,
+                            mediaType: quotedMediaType
                         };
                     }
                 } catch (e) {
-                    console.log(`ΓÜá∩╕Å Could not get quoted message: ${e.message}`);
+                    console.log(`⚠️ Could not get quoted message: ${e.message}`);
                 }
             }
+
 
             // Get profile info
             const profile = await ClientModel.getById(profileId);
@@ -736,6 +847,7 @@ class WhatsAppManager {
                 deviceId: profile?.id || profileId,
                 userId: profile?.id || profileId,
                 from: msg.from.replace('@c.us', '@s.whatsapp.net').replace('@g.us', '@g.us'),
+                to: msg.to ? msg.to.replace('@c.us', '@s.whatsapp.net').replace('@g.us', '@g.us') : null,
                 sender: isGroup ? (msg.author || msg.from) : null,
                 messageId: msg.id.id,
                 type: detectedType === 'chat' ? 'text' : detectedType,
@@ -748,6 +860,7 @@ class WhatsAppManager {
                 profilePicUrl: profilePicUrl,
                 reply: replyInfo,
                 source: 'regular',
+                isEcho: msg.fromMe,
                 isFromAdvertisement: false,
                 rawParticipant: isGroup ? (msg.author || '') : '',
                 rawRemoteJid: msg.from.replace('@c.us', '@s.whatsapp.net'),
@@ -778,12 +891,15 @@ class WhatsAppManager {
             };
 
             // Send to webhook if configured
-            if (profile?.webhook_url) {
-                await this._sendToWebhook(profile.webhook_url, webhookData);
-                console.log(`≡ƒôñ Webhook sent for profile ${profileId}`);
+            // For outgoing messages (fromMe), only send if webhook_echo_enabled is true
+            const shouldSendWebhook = profile?.webhook_url && (!msg.fromMe || profile?.webhook_echo_enabled);
+
+            if (shouldSendWebhook) {
+                await this._sendToWebhook(profile.webhook_url, webhookData, profileId, msg.fromMe ? 'echo_message' : 'incoming_message');
+                console.log(`📤 Webhook sent for profile ${profileId}${msg.fromMe ? ' (echo)' : ''}`);
                 // Log webhook with full details
                 ProfileLogger.log(profileId, ProfileLogger.LOG_TYPES.WEBHOOK_INCOMING, ProfileLogger.LOG_LEVELS.INFO,
-                    `Incoming message ${isGroup ? `from group: ${groupName}` : `from: ${pushName}`}`,
+                    `${msg.fromMe ? 'Echo' : 'Incoming'} message ${isGroup ? `from group: ${groupName}` : `from: ${pushName}`}`,
                     {
                         from: msg.from,
                         isGroup: isGroup,
@@ -795,7 +911,8 @@ class WhatsAppManager {
                         hasMedia: msg.hasMedia,
                         mediaUrl: mediaUrl,
                         webhookUrl: profile.webhook_url,
-                        timestamp: localTimestamp
+                        timestamp: localTimestamp,
+                        isEcho: msg.fromMe
                     }
                 );
             }
@@ -970,8 +1087,15 @@ class WhatsAppManager {
      * Send data to webhook URL
      * @param {string} webhookUrl - The webhook URL to send data to
      * @param {object} data - The data to send
+     * @param {number} profileId - The profile ID for logging
+     * @param {string} webhookType - Type of webhook: 'incoming_message', 'unread_message', 'read_no_reply'
      */
-    async _sendToWebhook(webhookUrl, data) {
+    async _sendToWebhook(webhookUrl, data, profileId = null, webhookType = 'incoming_message') {
+        let responseCode = null;
+        let responseBody = null;
+        let status = 'pending';
+        let errorMessage = null;
+
         try {
             const fetch = (await import('node-fetch')).default;
             const response = await fetch(webhookUrl, {
@@ -984,19 +1108,50 @@ class WhatsAppManager {
                 timeout: 10000 // 10 second timeout
             });
 
+            responseCode = response.status;
+            responseBody = await response.text();
+
             if (response.ok) {
-                const responseText = await response.text();
-                console.log(`Γ£à Webhook delivered successfully to ${webhookUrl}`);
-                console.log(`≡ƒôÑ Webhook response: ${responseText.substring(0, 200)}`);
-                return { success: true, status: response.status };
+                console.log(`✅ Webhook delivered successfully to ${webhookUrl}`);
+                console.log(`📥 Webhook response: ${responseBody.substring(0, 200)}`);
+                status = 'success';
             } else {
-                console.error(`Γ¥î Webhook failed: ${response.status} ${response.statusText}`);
-                return { success: false, status: response.status, error: response.statusText };
+                console.error(`❌ Webhook failed: ${response.status} ${response.statusText}`);
+                status = 'failed';
+                errorMessage = response.statusText;
             }
         } catch (error) {
-            console.error(`Γ¥î Webhook error for ${webhookUrl}:`, error.message);
-            return { success: false, error: error.message };
+            console.error(`❌ Webhook error for ${webhookUrl}:`, error.message);
+            status = 'failed';
+            errorMessage = error.message;
         }
+
+        // Log webhook to database
+        try {
+            await WebhookLog.create({
+                profile_id: profileId,
+                webhook_type: webhookType,
+                webhook_url: webhookUrl,
+                payload: data,
+                status: status,
+                response_code: responseCode,
+                response_body: responseBody,
+                error_message: errorMessage
+            });
+
+            // Emit to socket for live updates
+            if (this.io) {
+                this.io.emit('webhook_log', {
+                    profile_id: profileId,
+                    webhook_type: webhookType,
+                    status: status
+                });
+            }
+        } catch (logError) {
+            console.error('Error logging webhook:', logError.message);
+        }
+
+        return { success: status === 'success', status: responseCode, error: errorMessage };
     }
 
     getAllStatus() {

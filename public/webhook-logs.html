@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل الويبـــهوك | اكــتوشــوت واتساب</title>
+
+    <!-- Fonts - Modern -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/premium.css">
+    <link rel="stylesheet" href="/css/icons.css">
+</head>
+
+<body>
+    <!-- Aurora Background -->
+    <div class="aurora-bg"></div>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="logo">
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 12a4 4 0 1 0 8 0 4 4 0 1 0-8 0" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="m4.93 4.93 1.41 1.41" />
+                            <path d="m17.66 17.66 1.41 1.41" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                        </svg>
+                    </span>
+                    <span class="logo-text">OctoSHOT</span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">الرئيسية</div>
+                    <a href="/dashboard" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="7" height="9" x="3" y="3" rx="1" />
+                                <rect width="7" height="5" x="14" y="3" rx="1" />
+                                <rect width="7" height="9" x="14" y="12" rx="1" />
+                                <rect width="7" height="5" x="3" y="16" rx="1" />
+                            </svg></span>
+                        <span class="nav-text">لوحة التحكم</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">واتساب</div>
+                    <a href="/profiles" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                                <path d="M12 18h.01" />
+                            </svg></span>
+                        <span class="nav-text">الأجهزة</span>
+                    </a>
+                    <a href="/chats" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
+                            </svg></span>
+                        <span class="nav-text">المحادثات</span>
+                    </a>
+                    <a href="/campaigns" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="m3 11 18-5v12L3 13v-2z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                            </svg></span>
+                        <span class="nav-text">الحملات</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">الأدوات</div>
+                    <a href="/contacts" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg></span>
+                        <span class="nav-text">جهات الاتصال</span>
+                    </a>
+                    <a href="/spintax" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg></span>
+                        <span class="nav-text">مولد الرسائل</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">للمطورين</div>
+                    <a href="/api-docs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                <path d="m9 9.5 2 2-2 2" />
+                                <path d="M13 13.5h3" />
+                            </svg></span>
+                        <span class="nav-text">دليل API</span>
+                    </a>
+                    <a href="/api-logs" class="nav-item">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                            </svg></span>
+                        <span class="nav-text">سجل الرسائل</span>
+                    </a>
+                    <a href="/webhook-logs" class="nav-item active">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24">
+                                <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
+                                <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06" />
+                                <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8" />
+                            </svg></span>
+                        <span class="nav-text">سجل الويبـــهوك</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="theme-row">
+                    <span>الوضع المظلم</span>
+                    <button class="theme-btn" id="themeToggle" title="تبديل الوضع">
+                        <svg class="theme-icon" viewBox="0 0 24 24">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-row">
+                    <div>
+                        <h1>
+                            <span class="icon"><svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
+                                    <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06" />
+                                    <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8" />
+                                </svg></span>
+                            سجل الويبـــهوك
+                        </h1>
+                        <p>سجل جميع طلبات الويب هوك المرسلة خلال آخر 48 ساعة</p>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <select id="profileFilter" class="form-control" style="min-width: 200px;">
+                            <option value="">جميع الأجهزة</option>
+                        </select>
+                        <select id="typeFilter" class="form-control" style="min-width: 160px;">
+                            <option value="">جميع الأنواع</option>
+                            <option value="incoming_message">رسالة واردة</option>
+                            <option value="unread_message">رسالة غير مقروءة</option>
+                            <option value="read_no_reply">مقروءة بدون رد</option>
+                        </select>
+                        <div id="liveIndicator" class="badge badge-success"
+                            style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="pulse-dot"></span>
+                            مباشر
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <!-- Total Stats Card -->
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">إجمالي الويب هوك</span>
+                        <div class="stat-card-icon purple">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
+                                <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06" />
+                                <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="totalWebhooks">0</div>
+                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                        <span class="stat-change positive"><span id="successCount">0</span> ناجح</span>
+                        <span class="stat-change negative"><span id="failedCount">0</span> فاشل</span>
+                    </div>
+                </div>
+
+                <!-- By Type Cards -->
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">رسائل واردة</span>
+                        <div class="stat-card-icon green">
+                            <svg viewBox="0 0 24 24">
+                                <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="incomingCount">0</div>
+                    <div class="stat-change" style="color: var(--text-muted);">incoming_message</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">غير مقروءة</span>
+                        <div class="stat-card-icon orange">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="unreadCount">0</div>
+                    <div class="stat-change" style="color: var(--text-muted);">unread_message</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">مقروءة بدون رد</span>
+                        <div class="stat-card-icon blue">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="readNoReplyCount">0</div>
+                    <div class="stat-change" style="color: var(--text-muted);">read_no_reply</div>
+                </div>
+            </div>
+
+            <!-- Profile Stats Cards -->
+            <div id="profileStatsContainer" style="margin-bottom: 1.5rem;"></div>
+
+            <!-- Webhook Logs Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="icon"><svg viewBox="0 0 24 24">
+                                <rect width="20" height="16" x="2" y="4" rx="2" />
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                            </svg></span>
+                        سجل الطلبات
+                    </h2>
+                    <span class="badge badge-info" id="logsCount">0 طلب</span>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">#</th>
+                                <th>الجهاز</th>
+                                <th>النوع</th>
+                                <th>رابط الويب هوك</th>
+                                <th style="text-align: center;">الحالة</th>
+                                <th style="text-align: center;">الوقت</th>
+                                <th style="width: 80px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state" style="padding: 3rem;">
+                                        <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">📡</div>
+                                        <p style="color: var(--text-muted);">لا توجد طلبات ويب هوك حتى الآن</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Payload Modal -->
+    <div id="payloadModal" class="modal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content" style="max-width: 800px; max-height: 80vh;">
+            <div class="modal-header">
+                <h3>تفاصيل الويب هوك</h3>
+                <button class="modal-close" onclick="closePayloadModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;">
+                <div style="margin-bottom: 1rem;">
+                    <strong>رابط الويب هوك:</strong>
+                    <code id="modalWebhookUrl"
+                        style="display: block; margin-top: 0.5rem; word-break: break-all;"></code>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>الحالة:</strong>
+                    <span id="modalStatus"></span>
+                    <span id="modalResponseCode" style="margin-right: 1rem;"></span>
+                </div>
+                <div>
+                    <strong>البيانات المرسلة (Payload):</strong>
+                    <pre id="modalPayload"
+                        style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-top: 0.5rem; direction: ltr; text-align: left; font-size: 0.85rem; max-height: 400px; overflow-y: auto;"></pre>
+                </div>
+                <div id="modalResponse" style="margin-top: 1rem; display: none;">
+                    <strong>الاستجابة:</strong>
+                    <pre id="modalResponseBody"
+                        style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-top: 0.5rem; direction: ltr; text-align: left; font-size: 0.85rem;"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+
+        if (isDarkTheme) {
+            document.body.classList.add('dark-theme');
+            themeToggle.innerHTML = '<svg class="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            themeToggle.innerHTML = isDarkTheme
+                ? '<svg class="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>'
+                : '<svg class="theme-icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        });
+
+        // Socket.IO for live updates
+        const socket = io();
+        let refreshInterval = null;
+        let isPageVisible = true;
+
+        // Load profiles for filter dropdown
+        async function loadProfiles() {
+            try {
+                const response = await fetch('/api/webhook-logs/profiles/list');
+                const data = await response.json();
+
+                if (data.success) {
+                    const select = document.getElementById('profileFilter');
+                    data.data.forEach(profile => {
+                        const option = document.createElement('option');
+                        option.value = profile.id;
+                        option.textContent = profile.device_name || profile.phone_number || `جهاز ${profile.id}`;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading profiles:', error);
+            }
+        }
+
+        // Load webhook stats
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/webhook-logs/stats');
+                const data = await response.json();
+
+                if (data.success) {
+                    const { totals, byProfile } = data.data;
+
+                    // Update total stats
+                    document.getElementById('totalWebhooks').textContent = totals.total || 0;
+                    document.getElementById('successCount').textContent = totals.success || 0;
+                    document.getElementById('failedCount').textContent = totals.failed || 0;
+                    document.getElementById('incomingCount').textContent = totals.incoming || 0;
+                    document.getElementById('unreadCount').textContent = totals.unread || 0;
+                    document.getElementById('readNoReplyCount').textContent = totals.read_no_reply || 0;
+
+                    // Build profile stats cards
+                    const container = document.getElementById('profileStatsContainer');
+                    if (byProfile.length > 0) {
+                        container.innerHTML = `
+                            <h3 style="margin-bottom: 1rem; color: var(--text-primary);">
+                                <span class="icon" style="font-size: 1.2rem;">📊</span>
+                                إحصائيات حسب الجهاز
+                            </h3>
+                            <div class="stats-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+                                ${byProfile.map(p => `
+                                    <div class="stat-card" style="cursor: pointer;" onclick="filterByProfile(${p.profile_id})">
+                                        <div class="stat-card-header">
+                                            <span class="stat-card-title">${p.profile_name || p.phone_number || 'جهاز ' + p.profile_id}</span>
+                                            <div class="stat-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
+                                                <svg viewBox="0 0 24 24">
+                                                    <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                                                    <path d="M12 18h.01" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="stat-value">${p.total_webhooks}</div>
+                                        <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                                            <span class="badge badge-success" style="font-size: 0.75rem;">${p.incoming_count} واردة</span>
+                                            <span class="badge badge-warning" style="font-size: 0.75rem;">${p.unread_count} غير مقروءة</span>
+                                            <span class="badge badge-info" style="font-size: 0.75rem;">${p.read_no_reply_count} بدون رد</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = '';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load webhook logs
+        async function loadLogs() {
+            try {
+                const profileId = document.getElementById('profileFilter').value;
+                const webhookType = document.getElementById('typeFilter').value;
+
+                let url = '/api/webhook-logs?limit=100';
+                if (profileId) url += `&profile_id=${profileId}`;
+                if (webhookType) url += `&webhook_type=${webhookType}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success) {
+                    const tbody = document.getElementById('logsTableBody');
+                    document.getElementById('logsCount').textContent = `${data.data.length} طلب`;
+
+                    if (data.data.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state" style="padding: 3rem;">
+                                        <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">📡</div>
+                                        <p style="color: var(--text-muted);">لا توجد طلبات ويب هوك</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    tbody.innerHTML = data.data.map((log, index) => `
+                        <tr>
+                            <td style="font-family: monospace; color: var(--text-muted);">#${log.id}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-weight: 600;">${log.profile_name || 'جهاز ' + log.profile_id}</span>
+                                    ${log.phone_number ? `<span style="font-size: 0.8rem; color: var(--text-muted); direction: ltr;">${log.phone_number}</span>` : ''}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge ${getTypeBadgeClass(log.webhook_type)}">${getTypeLabel(log.webhook_type)}</span>
+                            </td>
+                            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: ltr; font-size: 0.85rem;">
+                                ${log.webhook_url}
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="badge ${log.status === 'success' ? 'badge-success' : 'badge-error'}">
+                                    ${log.status === 'success' ? 'ناجح' : 'فاشل'}
+                                    ${log.response_code ? ` (${log.response_code})` : ''}
+                                </span>
+                            </td>
+                            <td style="text-align: center; font-size: 0.85rem; color: var(--text-muted); direction: ltr;">
+                                ${formatDateTime(log.created_at)}
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary btn-sm" onclick="viewPayload(${log.id})" title="عرض التفاصيل">
+                                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+
+        function getTypeBadgeClass(type) {
+            switch (type) {
+                case 'incoming_message': return 'badge-success';
+                case 'unread_message': return 'badge-warning';
+                case 'read_no_reply': return 'badge-info';
+                default: return 'badge-secondary';
+            }
+        }
+
+        function getTypeLabel(type) {
+            switch (type) {
+                case 'incoming_message': return 'رسالة واردة';
+                case 'unread_message': return 'غير مقروءة';
+                case 'read_no_reply': return 'بدون رد';
+                default: return type;
+            }
+        }
+
+        function formatDateTime(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            return `${day}/${month} ${hours}:${minutes}:${seconds}`;
+        }
+
+        function filterByProfile(profileId) {
+            document.getElementById('profileFilter').value = profileId;
+            loadLogs();
+        }
+
+        // View payload modal
+        async function viewPayload(logId) {
+            try {
+                const response = await fetch(`/api/webhook-logs/${logId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const log = data.data;
+                    document.getElementById('modalWebhookUrl').textContent = log.webhook_url;
+                    document.getElementById('modalStatus').innerHTML = `<span class="badge ${log.status === 'success' ? 'badge-success' : 'badge-error'}">${log.status === 'success' ? 'ناجح' : 'فاشل'}</span>`;
+                    document.getElementById('modalResponseCode').textContent = log.response_code ? `HTTP ${log.response_code}` : '';
+
+                    try {
+                        const payload = typeof log.payload === 'string' ? JSON.parse(log.payload) : log.payload;
+                        document.getElementById('modalPayload').textContent = JSON.stringify(payload, null, 2);
+                    } catch (e) {
+                        document.getElementById('modalPayload').textContent = log.payload || 'لا توجد بيانات';
+                    }
+
+                    if (log.response_body) {
+                        document.getElementById('modalResponse').style.display = 'block';
+                        document.getElementById('modalResponseBody').textContent = log.response_body;
+                    } else {
+                        document.getElementById('modalResponse').style.display = 'none';
+                    }
+
+                    document.getElementById('payloadModal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Error loading payload:', error);
+            }
+        }
+
+        function closePayloadModal() {
+            document.getElementById('payloadModal').style.display = 'none';
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('payloadModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-backdrop')) {
+                closePayloadModal();
+            }
+        });
+
+        // Live refresh control
+        function startLiveRefresh() {
+            if (!refreshInterval && isPageVisible) {
+                refreshInterval = setInterval(() => {
+                    loadStats();
+                    loadLogs();
+                }, 5000);
+                document.getElementById('liveIndicator').style.display = 'flex';
+                console.log('🔄 Live refresh started');
+            }
+        }
+
+        function stopLiveRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+                document.getElementById('liveIndicator').style.display = 'none';
+                console.log('⏹️ Live refresh stopped');
+            }
+        }
+
+        // Page visibility API
+        document.addEventListener('visibilitychange', () => {
+            isPageVisible = !document.hidden;
+            if (isPageVisible) {
+                loadStats();
+                loadLogs();
+                startLiveRefresh();
+            } else {
+                stopLiveRefresh();
+            }
+        });
+
+        // Filter change handlers
+        document.getElementById('profileFilter').addEventListener('change', loadLogs);
+        document.getElementById('typeFilter').addEventListener('change', loadLogs);
+
+        // Socket.IO events for real-time updates
+        socket.on('webhook_log', (data) => {
+            console.log('📡 New webhook log:', data);
+            loadStats();
+            loadLogs();
+        });
+
+        // Initial load
+        loadProfiles();
+        loadStats();
+        loadLogs();
+        startLiveRefresh();
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', stopLiveRefresh);
+    </script>
+
+    <style>
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: var(--bg-primary);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 800px;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        code {
+            background: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .header-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</body>
+
+</html>

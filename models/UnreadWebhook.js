@@ -51,8 +51,8 @@ class UnreadWebhook {
         }
 
         const result = await pool.query(
-            `INSERT INTO unread_webhooks (client_id, webhook_url, timer_value, timer_unit)
-             VALUES ($1, $2, $3, $4)
+            `INSERT INTO unread_webhooks (client_id, webhook_url, timer_value, timer_unit, is_active)
+             VALUES ($1, $2, $3, $4, true)
              RETURNING *`,
             [clientId, webhookUrl, timerValue, timerUnit]
         );

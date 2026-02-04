@@ -39,10 +39,12 @@ const profilesRoutes = require('./routes/profiles');
 const spintaxRoutes = require('./routes/spintax');
 const adminLogsRoutes = require('./routes/admin-logs.routes');
 const campaignsRoutes = require('./routes/campaigns');
+const webhookLogsRoutes = require('./routes/webhookLogs');
 
 // Services
 const ProfileLogger = require('./services/ProfileLogger');
 const CampaignQueue = require('./services/campaignQueue');
+const WebhookLog = require('./models/WebhookLog');
 
 const app = express();
 const server = http.createServer(app);
@@ -104,6 +106,9 @@ app.use('/api/admin', adminLogsRoutes);
 
 // Campaigns Routes
 app.use('/api/campaigns', campaignsRoutes);
+
+// Webhook Logs Routes
+app.use('/api/webhook-logs', webhookLogsRoutes);
 
 // Initialize WhatsApp Manager with Socket.IO (already imported at top)
 whatsappManager.setSocketIO(io);
@@ -616,6 +621,10 @@ app.get('/campaign-detail', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'campaign-detail.html'));
 });
 
+app.get('/webhook-logs', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'webhook-logs.html'));
+});
+
 // Start server
 async function startServer() {
     console.log('--- Force Restart Triggered ---');
@@ -625,6 +634,16 @@ async function startServer() {
 
     if (!dbConnected) {
         console.warn('⚠️ Database connection failed, continuing without database...');
+    } else {
+        // Initialize database schema updates
+        try {
+            const { query } = require('./config/database');
+            await query('ALTER TABLE clients ADD COLUMN IF NOT EXISTS webhook_echo_enabled BOOLEAN DEFAULT false');
+            await query('ALTER TABLE messages ADD COLUMN IF NOT EXISTS unread_notified BOOLEAN DEFAULT false');
+            console.log('✅ Database schema updated');
+        } catch (err) {
+            console.log('ℹ️ Schema update skipped:', err.message);
+        }
     }
 
     server.listen(PORT, async () => {
@@ -653,6 +672,13 @@ async function startServer() {
                 console.log('🔄 Initializing Campaign Queue (pg-boss)...');
                 await CampaignQueue.start(io);
                 console.log('📬 Campaign Queue started successfully');
+
+                // Initialize WebhookLog table
+                await WebhookLog.initTable();
+
+                // Add webhook_echo_enabled column if not exists
+                const { query } = require('./config/database');
+                await query('ALTER TABLE clients ADD COLUMN IF NOT EXISTS webhook_echo_enabled BOOLEAN DEFAULT false');
 
                 // Auto-fix any stuck campaigns from previous runs
                 await CampaignQueue.fixStuckCampaigns();
