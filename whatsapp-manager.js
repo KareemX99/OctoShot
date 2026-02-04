@@ -271,7 +271,15 @@ class WhatsAppManager {
                 for (let i = 0; i < 20; i++) {
                     await new Promise(resolve => setTimeout(resolve, 500));
                     if (client.info?.wid?.user) {
-                        console.log(`≡ƒô▒ Phone number fetched via polling for profile ${profileId}: ${client.info.wid.user}`);
+                        console.log(`📱 Phone number fetched via polling for profile ${profileId}: ${client.info.wid.user}`);
+
+                        // IMPORTANT: Set connectedAt here since ready event may not fire
+                        const clientData = this.clients.get(profileId);
+                        if (clientData && !clientData.connectedAt) {
+                            clientData.connectedAt = Date.now();
+                            console.log(`⏰ [DEBUG] Set connectedAt for profile ${profileId}: ${clientData.connectedAt}`);
+                        }
+
                         try {
                             await ClientModel.updateConnection(profileId, {
                                 phone_number: client.info.wid.user,
@@ -288,7 +296,7 @@ class WhatsAppManager {
                                 phone_number: client.info.wid.user
                             });
                         } catch (err) {
-                            console.error(`Γ¥î Error saving polled phone for ${profileId}:`, err.message);
+                            console.error(`❌ Error saving polled phone for ${profileId}:`, err.message);
                         }
                         return;
                     }
@@ -520,6 +528,7 @@ class WhatsAppManager {
         // Message sent event - track all outgoing messages for dashboard
         client.on('message_create', async (msg) => {
             if (msg.fromMe) {
+                // Outgoing message - save to database
                 try {
                     await Message.create({
                         client_id: profileId,
@@ -535,11 +544,12 @@ class WhatsAppManager {
                         timestamp: new Date(msg.timestamp * 1000),
                         ack: msg.ack || 0
                     });
-                    console.log(`≡ƒôñ Sent message saved to database for profile ${profileId}`);
+                    console.log(`📤 Sent message saved to database for profile ${profileId}`);
                 } catch (error) {
                     console.error(`Error saving sent message for profile ${profileId}:`, error.message);
                 }
             }
+            // Note: Incoming messages are handled by the 'message' event, not here
         });
     }
 
