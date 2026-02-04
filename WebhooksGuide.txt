@@ -1,0 +1,240 @@
+Here is a guide of webhooks sent to the notifier link, with issues and updates: 
+------------
+[
+  {
+    "headers": {
+      "connection": "Keep-Alive",
+      "content-type": "application/json",
+      "accept": "*/*",
+      "accept-encoding": "gzip,deflate",
+      "host": "n8n.octobot.it.com",
+      "max-forwards": "10",
+      "user-agent": "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)",
+      "x-original-url": "/webhook/octoshot-unread-notifier-1min",
+      "x-forwarded-for": "102.46.159.240",
+      "x-arr-ssl": "3072|256|C=US, O=Let's Encrypt, CN=R12|CN=octobot.it.com",
+      "x-arr-log-id": "262fd20e-7bc2-492f-b1b0-0133ee951535",
+      "content-length": "1726"
+    },
+    "params": {},
+    "query": {},
+    "body": {
+      "type": "direct_message_unread",// this is a directly from whatsapp it's true here.
+      "recipient": "201118180845",
+      "message_id": "true_201118180845@c.us_2AB7036AF21B1D579676",
+      "sent_at": "2026-02-04T06:03:50.000Z",
+      "unread_duration_minutes": 1,
+      "timer_setting": "1 minutes",
+      "device_id": 79,
+      "message_body": "كممممممممممممم",
+      "message_type": "chat",
+      "chat_history": [
+        {
+          "body": "طيزييي",
+          "from_me": true,
+          "timestamp": "2026-02-04T04:41:00.000Z",
+          "local_timestamp": "2026-02-04T06:41:00.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "عاااا",
+          "from_me": true,
+          "timestamp": "2026-02-04T04:41:41.000Z",
+          "local_timestamp": "2026-02-04T06:41:41.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "عهاا",
+          "from_me": true,
+          "timestamp": "2026-02-04T04:43:30.000Z",
+          "local_timestamp": "2026-02-04T06:43:30.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "اااااا",
+          "from_me": true,
+          "timestamp": "2026-02-04T04:48:14.000Z",
+          "local_timestamp": "2026-02-04T06:48:14.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "بيو بيو",
+          "from_me": true,
+          "timestamp": "2026-02-04T05:01:33.000Z",
+          "local_timestamp": "2026-02-04T07:01:33.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "اهو",
+          "from_me": true,
+          "timestamp": "2026-02-04T05:22:04.000Z",
+          "local_timestamp": "2026-02-04T07:22:04.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "زري",
+          "from_me": true,
+          "timestamp": "2026-02-04T05:29:46.000Z",
+          "local_timestamp": "2026-02-04T07:29:46.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "ميو",
+          "from_me": true,
+          "timestamp": "2026-02-04T05:53:51.000Z",
+          "local_timestamp": "2026-02-04T07:53:51.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "االلعرو",
+          "from_me": true,
+          "timestamp": "2026-02-04T05:59:13.000Z",
+          "local_timestamp": "2026-02-04T07:59:13.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "كممممممممممممم",
+          "from_me": true,
+          "timestamp": "2026-02-04T06:03:50.000Z",
+          "local_timestamp": "2026-02-04T08:03:50.000+02:00",
+          "type": "text"
+        }
+      ]
+    },
+    "webhookUrl": "https://n8n.octobot.it.com/webhook/octoshot-unread-notifier-1min",
+    "executionMode": "production"
+  }
+]
+------------
+THIS WILL BE A NEW OPTION WILL BE MADE NOW WHICH IS : 
+IF THERE IS ANYONE SENT A MESSAGE TO THE PROFILE AND THE PROFILE DIDN'T REPLY TO HIM, SO THERE IS A NEW WEBHOOK PROVIDER FOR IT, WITH TIMER AND THE SAME OPTIONS OF UNREAD AND READ NOT REPLIERS.
+------------
+I FOUND THIS EMPTY ONE ! 
+[
+  {
+    "headers": {
+      "connection": "Keep-Alive",
+      "content-type": "application/json",
+      "accept": "*/*",
+      "accept-encoding": "gzip,deflate",
+      "host": "n8n.octobot.it.com",
+      "max-forwards": "10",
+      "user-agent": "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)",
+      "x-original-url": "/webhook/octoshot-unread-notifier-1min",
+      "x-forwarded-for": "178.63.34.211",
+      "x-arr-ssl": "3072|256|C=US, O=Let's Encrypt, CN=R12|CN=octobot.it.com",
+      "x-arr-log-id": "78969541-aac0-436f-9580-1099b2a22386",
+      "content-length": "245"
+    },
+    "params": {},
+    "query": {},
+    "body": {
+      "type": "unread_message",
+      "recipient": "201505354810",
+      "message_id": "true_35640309756102@lid_3EB0AE562A4DAA03821CB3",
+      "sent_at": "2026-02-04T08:07:19.096+02:00",
+      "unread_duration_minutes": 1,
+      "timer_setting": "1 minutes",
+      "device_id": 79,
+      "chat_history": []
+    },
+    "webhookUrl": "https://n8n.octobot.it.com/webhook/octoshot-unread-notifier-1min",
+    "executionMode": "production"
+  }
+]
+THIS IS AN ISSUE? IF THIS HAS A CONCEPT TELL ME THE CONCEPT FIRST BEFORE REMOVING ANYTHING.
+------------
+
+[
+  {
+    "headers": {
+      "connection": "Keep-Alive",
+      "content-type": "application/json",
+      "accept": "*/*",
+      "accept-encoding": "gzip,deflate",
+      "host": "n8n.octobot.it.com",
+      "max-forwards": "10",
+      "user-agent": "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)",
+      "x-original-url": "/webhook/octoshot-unread-notifier-1min",
+      "x-forwarded-for": "102.46.159.240",
+      "x-arr-ssl": "3072|256|C=US, O=Let's Encrypt, CN=R12|CN=octobot.it.com",
+      "x-arr-log-id": "c72894af-6acb-4902-83e0-95167aa6b613",
+      "content-length": "3196"
+    },
+    "params": {},
+    "query": {},
+    "body": {
+      "type": "direct_message_unread",// THIS IS AN API_MESSAGE NOT DIRECT MESSAGE, THE DIRECT ONE MEANS HAS BEEN SENT FROM THE WHATSAPP OR WITHOUT OUR API
+      "recipient": "35640309756102@lid",
+      "message_id": "true_35640309756102@lid_3EB0AE562A4DAA03821CB3",
+      "sent_at": "2026-02-04T06:07:19.000Z",
+      "unread_duration_minutes": 1,
+      "timer_setting": "1 minutes",
+      "device_id": 79,
+      "message_body": "مرحباً بيك يا فندم! متقلقش أبدًا، رقمك مش هيحصله أي حاجة",
+      "message_type": "chat",
+      "chat_history": [
+        {
+          "body": "",
+          "from_me": false,
+          "timestamp": "2026-02-04T06:07:13.000Z",
+          "local_timestamp": "2026-02-04T08:07:13.000+02:00",
+          "type": "e2e_notification"// WHAT DOES THIS MEANING?
+        },
+        {
+          "body": "مرحباً بيك يا فندم! متقلقش أبدًا، رقمك مش هيحصله أي حاجة",
+          "from_me": true,
+          "timestamp": "2026-02-04T06:07:19.000Z",
+          "local_timestamp": "2026-02-04T08:07:19.000+02:00",
+          "type": "text"
+        },
+        {
+          "body": "أهلاً بيك! 👋 أنا أوكتوبوت، صديقك الذكي اللي هدفه يزود أرباحك ويوفر وقتك. ممكن أعرف نوع شغلك أو البيزنس اللي بتديره؟ مطعم، متجر أونلاين، خدمة تانية؟ عشان أقولك إزاي أقدر أفيدك فعليًا؟\n\nوأحب أعرفك بسرعة كل الخدمات اللي بقدمها:\n\n💬 رد تلقائي ذكي على رسايل عملاءك على كل المنصات (واتساب – فيسبوك – إنستجرام – تليجرام – موقعك)\n\n🎤 أسمع وأشوف وأفهم الفويسات والصور وأرد عليها باحترافية من خلال الواتساب\n\n📦 إدارة كاملة للأوردرات من الألف للياء: تأكيد الأوردرات قبل الشحن، متابعة حتى التسليم، وتوفير 100% من تكاليف الشحن الضايعة\n\n🔄 متابعة ذكية للعملاء بعد الشراء، إرسال عروض حصرية، تذكير بالكارت المهجور، وزيادة مبيعاتك لحد 40%\n\n📅 ضبط الحجوزات أوتوماتيك لأي بيزنس (مطاعم، عيادات، صالونات، استشارات) بتكامل مع Google Calendar\n\n📊 تسجيل تلقائي لبيانات العملاء والأوردرات والحجوزات في Google Sheets لمتابعة دقيقة\n\n🌍 دعم كل اللهجات العربية (مصري، سعودي، كويتي، سوري) وبتكلم زي موظف مبيعات محترف\n\n🤖 فهم ذكي لأي سؤال أو مشكلة مهما كانت الصيغة، والرد عليها فورًا باحترافية\n\n🎯 لوحة تحكم بالذكاء الاصطناعي (قريبًا جدًا – لايف): راقب كل موظفينك وعملاءك ومحادثاتك لايف على كل المنصات، شوف الإشعارات والأوردرات والحجوزات، وتواصل مع دعم أكتبوت مباشرة من اللوحة. قريبًا: تحليلات ذكية بالأرقام والرسوم لتطوير بيزنسك\n\nإيه أكتر خدمة حاسس إنها هتحدث ثورة في شغلك وعايز تعرف تفاصيلها أكتر؟",
+          "from_me": false,
+          "timestamp": "2026-02-04T06:08:01.000Z",
+          "local_timestamp": "2026-02-04T08:08:01.000+02:00",
+          "type": "text"
+        }
+      ]
+    },
+    "webhookUrl": "https://n8n.octobot.it.com/webhook/octoshot-unread-notifier-1min",
+    "executionMode": "production"
+  }
+]
+------------
+[
+  {
+    "headers": {
+      "connection": "Keep-Alive",
+      "content-type": "application/json",
+      "accept": "*/*",
+      "accept-encoding": "gzip,deflate",
+      "host": "n8n.octobot.it.com",
+      "max-forwards": "10",
+      "user-agent": "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)",
+      "x-original-url": "/webhook/octoshot-unread-notifier-1min",
+      "x-forwarded-for": "102.46.159.240",
+      "x-arr-ssl": "3072|256|C=US, O=Let's Encrypt, CN=R12|CN=octobot.it.com",
+      "x-arr-log-id": "3cb476f2-b9b6-4d57-a637-3df06443deca",
+      "content-length": "2575"
+    },
+    "params": {},
+    "query": {},
+    "body": {
+      "type": "incoming_unreplied",// WHAT DOES THIS MEAN, AND WHEN IT WILL BE SENT TO THE NOTIFIER? AND WHAT IS THE CONCEPT OF IT?
+      "clientId": 79,
+      "timerMinutes": 1,
+      "message": {
+        "id": 5798,
+        "from": "35640309756102@lid",
+        "messageId": "false_35640309756102@lid_3EB0FDCF50D08D449FC0D4",
+        "receivedAt": "2026-02-04T06:08:01.000Z",
+        "body": "أهلاً بيك! 👋 أنا أوكتوبوت، صديقك الذكي اللي هدفه يزود أرباحك ويوفر وقتك. ممكن أعرف نوع شغلك أو البيزنس اللي بتديره؟ مطعم، متجر أونلاين، خدمة تانية؟ عشان أقولك إزاي أقدر أفيدك فعليًا؟\n\nوأحب أعرفك بسرعة كل الخدمات اللي بقدمها:\n\n💬 رد تلقائي ذكي على رسايل عملاءك على كل المنصات (واتساب – فيسبوك – إنستجرام – تليجرام – موقعك)\n\n🎤 أسمع وأشوف وأفهم الفويسات والصور وأرد عليها باحترافية من خلال الواتساب\n\n📦 إدارة كاملة للأوردرات من الألف للياء: تأكيد الأوردرات قبل الشحن، متابعة حتى التسليم، وتوفير 100% من تكاليف الشحن الضايعة\n\n🔄 متابعة ذكية للعملاء بعد الشراء، إرسال عروض حصرية، تذكير بالكارت المهجور، وزيادة مبيعاتك لحد 40%\n\n📅 ضبط الحجوزات أوتوماتيك لأي بيزنس (مطاعم، عيادات، صالونات، استشارات) بتكامل مع Google Calendar\n\n📊 تسجيل تلقائي لبيانات العملاء والأوردرات والحجوزات في Google Sheets لمتابعة دقيقة\n\n🌍 دعم كل اللهجات العربية (مصري، سعودي، كويتي، سوري) وبتكلم زي موظف مبيعات محترف\n\n🤖 فهم ذكي لأي سؤال أو مشكلة مهما كانت الصيغة، والرد عليها فورًا باحترافية\n\n🎯 لوحة تحكم بالذكاء الاصطناعي (قريبًا جدًا – لايف): راقب كل موظفينك وعملاءك ومحادثاتك لايف على كل المنصات، شوف الإشعارات والأوردرات والحجوزات، وتواصل مع دعم أكتبوت مباشرة من اللوحة. قريبًا: تحليلات ذكية بالأرقام والرسوم لتطوير بيزنسك\n\nإيه أكتر خدمة حاسس إنها هتحدث ثورة في شغلك وعايز تعرف تفاصيلها أكتر؟",
+        "type": "chat"
+      },
+      "triggeredAt": "2026-02-04T06:09:10.564Z"
+    },
+    "webhookUrl": "https://n8n.octobot.it.com/webhook/octoshot-unread-notifier-1min",
+    "executionMode": "production"
+  }
+]

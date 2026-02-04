@@ -105,36 +105,30 @@ class UnreadMessageProcessor {
                     AND sent_at IS NOT NULL
                 `, [clientId]);
 
-                // PART 2: Check incoming messages that haven't been replied to
-                // Find incoming messages where the last message in the chat is from them (not replied)
-                const incomingResult = await pool.query(`
-                    SELECT DISTINCT ON (from_number) 
-                        id, from_number as recipient, message_id as whatsapp_message_id, 
-                        timestamp as sent_at, body, type
-                    FROM messages
-                    WHERE client_id = $1
-                    AND is_from_me = false
-                    AND COALESCE(unread_notified, false) = false
-                    AND timestamp IS NOT NULL
-                    ORDER BY from_number, timestamp DESC
-                `, [clientId]);
-
-                // PART 3: Check direct WhatsApp messages (if toggle is enabled)
+                // PART 2: Check direct WhatsApp messages (if toggle is enabled)
                 // Outgoing messages sent directly from WhatsApp that are delivered but not read
+                // Exclude messages that were sent via API (check if message_id exists in api_message_queue)
                 let directMessagesResult = { rows: [] };
                 if (webhook.include_direct_messages) {
                     directMessagesResult = await pool.query(`
                         SELECT DISTINCT ON (to_number) 
-                            id, to_number as recipient, message_id as whatsapp_message_id, 
-                            timestamp as sent_at, body, type, ack
-                        FROM messages
-                        WHERE client_id = $1
-                        AND is_from_me = true
-                        AND ack >= 2
-                        AND ack < 3
-                        AND COALESCE(unread_notified, false) = false
-                        AND timestamp IS NOT NULL
-                        ORDER BY to_number, timestamp DESC
+                            m.id, m.to_number as recipient, m.message_id as whatsapp_message_id, 
+                            m.timestamp as sent_at, m.body, m.type, m.ack
+                        FROM messages m
+                        WHERE m.client_id = $1
+                        AND m.is_from_me = true
+                        AND m.ack >= 2
+                        AND m.ack < 3
+                        AND COALESCE(m.unread_notified, false) = false
+                        AND m.timestamp IS NOT NULL
+                        AND m.to_number NOT LIKE '%@g.us'
+                        AND m.body IS NOT NULL AND m.body != ''
+                        AND NOT EXISTS (
+                            SELECT 1 FROM api_message_queue amq 
+                            WHERE amq.whatsapp_message_id = m.message_id 
+                            AND amq.device_id = m.client_id
+                        )
+                        ORDER BY m.to_number, m.timestamp DESC
                     `, [clientId]);
                 }
 
@@ -149,31 +143,6 @@ class UnreadMessageProcessor {
                     return elapsedMinutes >= timerMinutes;
                 });
 
-                // Filter incoming messages - check if no reply was sent after
-                const eligibleIncomingMessages = [];
-                for (const msg of incomingResult.rows) {
-                    const sentAt = new Date(msg.sent_at);
-                    const elapsedMs = now.getTime() - sentAt.getTime();
-                    const elapsedMinutes = elapsedMs / 1000 / 60;
-
-                    if (elapsedMinutes >= timerMinutes) {
-                        // Check if we replied after this message
-                        const replyCheck = await pool.query(`
-                            SELECT id FROM messages 
-                            WHERE client_id = $1 
-                            AND to_number = $2 
-                            AND is_from_me = true 
-                            AND timestamp > $3
-                            LIMIT 1
-                        `, [clientId, msg.recipient?.replace('@c.us', '').replace('@g.us', ''), sentAt]);
-
-                        if (replyCheck.rows.length === 0) {
-                            // No reply sent, include this message
-                            eligibleIncomingMessages.push(msg);
-                        }
-                    }
-                }
-
                 // Filter direct messages by timer
                 const eligibleDirectMessages = directMessagesResult.rows.filter(msg => {
                     const sentAt = new Date(msg.sent_at);
@@ -182,21 +151,16 @@ class UnreadMessageProcessor {
                     return elapsedMinutes >= timerMinutes;
                 });
 
-                const totalEligible = eligibleApiMessages.length + eligibleIncomingMessages.length + eligibleDirectMessages.length;
-                console.log(`🔍 Query result: ${totalEligible} eligible messages (${eligibleApiMessages.length} API + ${eligibleIncomingMessages.length} incoming + ${eligibleDirectMessages.length} direct) for client ${clientId}`);
+                const totalEligible = eligibleApiMessages.length + eligibleDirectMessages.length;
+                console.log(`🔍 Query result: ${totalEligible} eligible messages (${eligibleApiMessages.length} API + ${eligibleDirectMessages.length} direct) for client ${clientId}`);
 
                 if (totalEligible === 0) continue;
 
-                console.log(`📢 Found ${totalEligible} unread/unreplied messages for webhook (${webhook.timer_value} ${webhook.timer_unit})`);
+                console.log(`📢 Found ${totalEligible} unread messages for webhook (${webhook.timer_value} ${webhook.timer_unit})`);
 
                 // Send API messages to the webhook
                 for (const message of eligibleApiMessages) {
                     await this.sendWebhookNotification(webhook, message, timerMinutes, clientId);
-                }
-
-                // Send incoming messages to the webhook
-                for (const message of eligibleIncomingMessages) {
-                    await this.sendIncomingUnrepliedNotification(webhook, message, timerMinutes, clientId);
                 }
 
                 // Send direct WhatsApp messages to the webhook

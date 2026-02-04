@@ -547,6 +547,92 @@ router.put('/:id/unread-webhooks/:webhookId/direct-messages', async (req, res) =
 });
 
 // ==========================================
+// INCOMING UNREPLIED WEBHOOKS (NEW - 4th type)
+// ==========================================
+
+const IncomingUnrepliedWebhook = require('../models/IncomingUnrepliedWebhook');
+
+/**
+ * GET /api/profiles/:id/incoming-unreplied-webhooks
+ * Get all incoming unreplied webhooks for a profile
+ */
+router.get('/:id/incoming-unreplied-webhooks', async (req, res) => {
+    try {
+        const webhooks = await IncomingUnrepliedWebhook.getByClientId(req.params.id);
+        res.json({
+            success: true,
+            data: webhooks
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/profiles/:id/incoming-unreplied-webhooks
+ * Create a new incoming unreplied webhook
+ */
+router.post('/:id/incoming-unreplied-webhooks', async (req, res) => {
+    try {
+        const { webhook_url, timer_value, timer_unit } = req.body;
+
+        if (!webhook_url) {
+            return res.status(400).json({
+                success: false,
+                error: 'Webhook URL is required'
+            });
+        }
+
+        const webhook = await IncomingUnrepliedWebhook.create(
+            req.params.id,
+            webhook_url,
+            timer_value || 5,
+            timer_unit || 'minutes'
+        );
+
+        res.json({
+            success: true,
+            data: webhook
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * DELETE /api/profiles/:id/incoming-unreplied-webhooks/:webhookId
+ * Delete an incoming unreplied webhook
+ */
+router.delete('/:id/incoming-unreplied-webhooks/:webhookId', async (req, res) => {
+    try {
+        const webhook = await IncomingUnrepliedWebhook.delete(req.params.webhookId);
+
+        if (!webhook) {
+            return res.status(404).json({
+                success: false,
+                error: 'Webhook not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Incoming unreplied webhook deleted successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// ==========================================
 // READ NO-REPLY WEBHOOKS
 // ==========================================
 

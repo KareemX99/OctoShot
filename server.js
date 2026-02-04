@@ -126,6 +126,10 @@ unreadMessageProcessor.start();
 const readNoReplyProcessor = require('./services/readNoReplyProcessor');
 readNoReplyProcessor.start();
 
+// Initialize Incoming Unreplied Processor (for webhook notifications when customer messages but profile doesn't reply)
+const incomingUnrepliedProcessor = require('./services/incomingUnrepliedProcessor');
+incomingUnrepliedProcessor.start();
+
 // NOTE: Legacy WhatsApp Client auto-initialization REMOVED
 // WhatsApp clients now only start when user explicitly clicks "Connect" on profiles page
 // This prevents background QR code generation and saves resources
@@ -640,7 +644,22 @@ async function startServer() {
             const { query } = require('./config/database');
             await query('ALTER TABLE clients ADD COLUMN IF NOT EXISTS webhook_echo_enabled BOOLEAN DEFAULT false');
             await query('ALTER TABLE messages ADD COLUMN IF NOT EXISTS unread_notified BOOLEAN DEFAULT false');
+            await query('ALTER TABLE messages ADD COLUMN IF NOT EXISTS incoming_notified BOOLEAN DEFAULT false');
             await query('ALTER TABLE unread_webhooks ADD COLUMN IF NOT EXISTS include_direct_messages BOOLEAN DEFAULT false');
+
+            // Create incoming_unreplied_webhooks table if not exists
+            await query(`
+                CREATE TABLE IF NOT EXISTS incoming_unreplied_webhooks (
+                    id SERIAL PRIMARY KEY,
+                    client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
+                    webhook_url TEXT NOT NULL,
+                    timer_value INTEGER DEFAULT 5,
+                    timer_unit VARCHAR(20) DEFAULT 'minutes',
+                    is_active BOOLEAN DEFAULT true,
+                    created_at TIMESTAMP DEFAULT NOW()
+                )
+            `);
+
             console.log('✅ Database schema updated');
         } catch (err) {
             console.log('ℹ️ Schema update skipped:', err.message);

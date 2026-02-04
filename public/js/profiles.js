@@ -1168,6 +1168,160 @@ async function deleteNoReplyWebhook(webhookId) {
 }
 
 // ============================================
+// INCOMING UNREPLIED WEBHOOKS (NEW - 4th type)
+// ============================================
+
+let currentIncomingUnrepliedWebhooks = [];
+
+/**
+ * Load incoming unreplied webhooks for a profile
+ */
+async function loadIncomingUnrepliedWebhooks(profileId) {
+    try {
+        const response = await fetch(`/api/profiles/${profileId}/incoming-unreplied-webhooks`);
+        const data = await response.json();
+
+        if (data.success) {
+            currentIncomingUnrepliedWebhooks = data.data;
+            renderIncomingUnrepliedWebhooks();
+            updateIncomingUnrepliedWebhookCount();
+        }
+    } catch (error) {
+        console.error('Error loading incoming unreplied webhooks:', error);
+    }
+}
+
+/**
+ * Render incoming unreplied webhooks list
+ */
+function renderIncomingUnrepliedWebhooks() {
+    const container = document.getElementById('incomingUnrepliedWebhooksList');
+    if (!container) return;
+
+    if (currentIncomingUnrepliedWebhooks.length === 0) {
+        container.innerHTML = '<p style="color: #64748b; font-size: 0.85rem; text-align: center;">لا يوجد webhooks بعد</p>';
+        return;
+    }
+
+    container.innerHTML = currentIncomingUnrepliedWebhooks.map(webhook => `
+        <div class="webhook-card" data-id="${webhook.id}">
+            <div class="webhook-info">
+                <div class="webhook-url" title="${webhook.webhook_url}">${webhook.webhook_url}</div>
+                <div class="webhook-timer">📨 بعد ${webhook.timer_value} ${getArabicUnit(webhook.timer_unit)} بدون رد</div>
+            </div>
+            <button type="button" class="webhook-delete-btn" onclick="deleteIncomingUnrepliedWebhook(${webhook.id})">🗑️ حذف</button>
+        </div>
+    `).join('');
+}
+
+/**
+ * Update incoming unreplied webhook count display
+ */
+function updateIncomingUnrepliedWebhookCount() {
+    const badge = document.getElementById('incomingUnrepliedWebhookCountBadge');
+    if (!badge) return;
+
+    const count = currentIncomingUnrepliedWebhooks.length;
+    badge.textContent = count > 0 ? `${count} مفعل` : '0';
+
+    // Dynamic badge styling
+    if (count > 0) {
+        badge.style.background = 'linear-gradient(135deg, #8b5cf6, #a78bfa)';
+        badge.style.color = 'white';
+    } else {
+        badge.style.background = 'rgba(100, 116, 139, 0.1)';
+        badge.style.color = 'var(--text-muted)';
+    }
+}
+
+/**
+ * Add a new incoming unreplied webhook
+ */
+async function addIncomingUnrepliedWebhook() {
+    const url = document.getElementById('newIncomingUnrepliedWebhookUrl')?.value?.trim();
+    const timer = document.getElementById('newIncomingUnrepliedWebhookTimer')?.value || 5;
+    const unit = document.getElementById('newIncomingUnrepliedWebhookUnit')?.value || 'minutes';
+
+    if (!url) {
+        showToast('الرجاء إدخال رابط Webhook', 'error');
+        return;
+    }
+
+    if (!currentProfileId) {
+        showToast('خطأ: لم يتم تحديد الجهاز', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/profiles/${currentProfileId}/incoming-unreplied-webhooks`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                webhook_url: url,
+                timer_value: parseInt(timer),
+                timer_unit: unit
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('تم إضافة Webhook بنجاح', 'success');
+
+            // Clear inputs
+            document.getElementById('newIncomingUnrepliedWebhookUrl').value = '';
+            document.getElementById('newIncomingUnrepliedWebhookTimer').value = '';
+
+            // Reload webhooks
+            await loadIncomingUnrepliedWebhooks(currentProfileId);
+        } else {
+            showToast(data.error || 'فشل في إضافة Webhook', 'error');
+        }
+    } catch (error) {
+        showToast('خطأ في إضافة Webhook', 'error');
+    }
+}
+
+/**
+ * Delete an incoming unreplied webhook
+ */
+async function deleteIncomingUnrepliedWebhook(webhookId) {
+    console.log('🗑️ Delete incoming unreplied webhook clicked, webhookId:', webhookId, 'currentProfileId:', currentProfileId);
+
+    if (!currentProfileId) {
+        showToast('خطأ: لم يتم تحديد الجهاز', 'error');
+        console.error('currentProfileId is null or undefined');
+        return;
+    }
+
+    if (!confirm('هل أنت متأكد من حذف هذا الـ Webhook؟')) {
+        return;
+    }
+
+    try {
+        const url = `/api/profiles/${currentProfileId}/incoming-unreplied-webhooks/${webhookId}`;
+        console.log('🗑️ Deleting incoming unreplied webhook at:', url);
+
+        const response = await fetch(url, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+        console.log('🗑️ Delete response:', data);
+
+        if (data.success) {
+            showToast('تم حذف Webhook', 'success');
+            await loadIncomingUnrepliedWebhooks(currentProfileId);
+        } else {
+            showToast(data.error || 'فشل في حذف Webhook', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting incoming unreplied webhook:', error);
+        showToast('خطأ في حذف Webhook', 'error');
+    }
+}
+
+// ============================================
 // DISCONNECT PROFILE
 // ============================================
 
@@ -1520,6 +1674,7 @@ function openWebhooksModal(id) {
     // Load Advanced Webhooks
     loadUnreadWebhooks(id);
     loadNoReplyWebhooks(id);
+    loadIncomingUnrepliedWebhooks(id);
 
     // Reset Panels
     document.querySelectorAll('.webhook-option-card').forEach(c => c.classList.remove('active'));

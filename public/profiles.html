@@ -1050,6 +1050,28 @@
                             </svg>
                         </div>
                     </div>
+
+                    <!-- Incoming Unreplied Webhook Card (NEW) -->
+                    <div class="webhook-option-card incoming" onclick="toggleWebhookPanel('incoming')">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <h5>رسائل واردة بدون رد</h5>
+                            <span id="incomingUnrepliedWebhookCountBadge" class="status-badge">0 مفعل</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Unread Panel -->
@@ -1086,6 +1108,29 @@
                             إضافة</button>
                     </div>
                     <div id="noReplyWebhooksList" class="webhooks-list"></div>
+                </div>
+
+                <!-- Incoming Unreplied Panel (NEW) -->
+                <div id="incomingPanel" class="webhook-panel hidden">
+                    <div class="panel-header">
+                        <h5>📨 إعدادات الرسائل الواردة بدون رد</h5>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
+                        تنبيه عندما يرسل عميل رسالة ولا ترد عليه خلال الوقت المحدد
+                    </p>
+                    <div class="add-webhook-form">
+                        <input type="url" id="newIncomingUnrepliedWebhookUrl" placeholder="رابط Webhook"
+                            style="flex: 2;">
+                        <input type="number" id="newIncomingUnrepliedWebhookTimer" placeholder="وقت"
+                            style="width: 70px;" min="1" value="5">
+                        <select id="newIncomingUnrepliedWebhookUnit" style="width: 80px;">
+                            <option value="minutes">دقيقة</option>
+                            <option value="hours">ساعة</option>
+                        </select>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="addIncomingUnrepliedWebhook()">+
+                            إضافة</button>
+                    </div>
+                    <div id="incomingUnrepliedWebhooksList" class="webhooks-list"></div>
                 </div>
 
             </div>
