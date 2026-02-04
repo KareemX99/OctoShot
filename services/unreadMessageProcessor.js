@@ -93,7 +93,7 @@ class UnreadMessageProcessor {
                     webhook.timer_unit
                 );
 
-                console.log(`🔍 Checking webhook for client ${clientId}: timer=${timerMinutes} minutes`);
+                console.log(`🔍 Checking webhook for client ${clientId}: timer=${timerMinutes} minutes, directMessages=${webhook.include_direct_messages}`);
 
                 // PART 1: Check API message queue (outgoing messages delivered but not read)
                 const apiResult = await pool.query(`
@@ -118,6 +118,25 @@ class UnreadMessageProcessor {
                     AND timestamp IS NOT NULL
                     ORDER BY from_number, timestamp DESC
                 `, [clientId]);
+
+                // PART 3: Check direct WhatsApp messages (if toggle is enabled)
+                // Outgoing messages sent directly from WhatsApp that are delivered but not read
+                let directMessagesResult = { rows: [] };
+                if (webhook.include_direct_messages) {
+                    directMessagesResult = await pool.query(`
+                        SELECT DISTINCT ON (to_number) 
+                            id, to_number as recipient, message_id as whatsapp_message_id, 
+                            timestamp as sent_at, body, type, ack
+                        FROM messages
+                        WHERE client_id = $1
+                        AND is_from_me = true
+                        AND ack >= 2
+                        AND ack < 3
+                        AND COALESCE(unread_notified, false) = false
+                        AND timestamp IS NOT NULL
+                        ORDER BY to_number, timestamp DESC
+                    `, [clientId]);
+                }
 
                 // Combine and filter by timer
                 const now = new Date();
@@ -155,8 +174,16 @@ class UnreadMessageProcessor {
                     }
                 }
 
-                const totalEligible = eligibleApiMessages.length + eligibleIncomingMessages.length;
-                console.log(`🔍 Query result: ${totalEligible} eligible messages (${eligibleApiMessages.length} API + ${eligibleIncomingMessages.length} incoming) for client ${clientId}`);
+                // Filter direct messages by timer
+                const eligibleDirectMessages = directMessagesResult.rows.filter(msg => {
+                    const sentAt = new Date(msg.sent_at);
+                    const elapsedMs = now.getTime() - sentAt.getTime();
+                    const elapsedMinutes = elapsedMs / 1000 / 60;
+                    return elapsedMinutes >= timerMinutes;
+                });
+
+                const totalEligible = eligibleApiMessages.length + eligibleIncomingMessages.length + eligibleDirectMessages.length;
+                console.log(`🔍 Query result: ${totalEligible} eligible messages (${eligibleApiMessages.length} API + ${eligibleIncomingMessages.length} incoming + ${eligibleDirectMessages.length} direct) for client ${clientId}`);
 
                 if (totalEligible === 0) continue;
 
@@ -171,6 +198,11 @@ class UnreadMessageProcessor {
                 for (const message of eligibleIncomingMessages) {
                     await this.sendIncomingUnrepliedNotification(webhook, message, timerMinutes, clientId);
                 }
+
+                // Send direct WhatsApp messages to the webhook
+                for (const message of eligibleDirectMessages) {
+                    await this.sendDirectMessageNotification(webhook, message, timerMinutes, clientId);
+                }
             } catch (error) {
                 console.error(`Error processing webhook ${webhook.id}:`, error.message);
                 ProfileLogger.error(clientId, error.message, { webhookId: webhook.id }, 'unread_webhook');
@@ -183,6 +215,11 @@ class UnreadMessageProcessor {
      */
     async sendIncomingUnrepliedNotification(webhook, message, timerMinutes, clientId) {
         try {
+            // Mark as notified FIRST to prevent duplicate sends
+            await pool.query(`
+                UPDATE messages SET unread_notified = true WHERE id = $1
+            `, [message.id]);
+
             const payload = {
                 type: 'incoming_unreplied',
                 clientId: clientId,
@@ -207,16 +244,66 @@ class UnreadMessageProcessor {
             });
 
             if (response.ok) {
-                // Mark as notified
-                await pool.query(`
-                    UPDATE messages SET unread_notified = true WHERE id = $1
-                `, [message.id]);
                 console.log(`✅ Incoming unreplied webhook sent successfully for message ${message.id}`);
             } else {
                 console.error(`❌ Webhook failed with status ${response.status}`);
             }
         } catch (error) {
             console.error(`Error sending incoming unreplied webhook:`, error.message);
+        }
+    }
+
+    /**
+     * Send notification for direct WhatsApp message that remains unread
+     */
+    async sendDirectMessageNotification(webhook, message, timerMinutes, clientId) {
+        try {
+            // Mark as notified FIRST to prevent duplicate sends
+            await pool.query(`
+                UPDATE messages SET unread_notified = true WHERE id = $1
+            `, [message.id]);
+
+            // Fetch chat history
+            const chatHistory = await this.fetchChatHistory(clientId, message.recipient);
+
+            const payload = {
+                type: 'direct_message_unread',
+                recipient: message.recipient?.replace('@c.us', '').replace('@g.us', ''),
+                message_id: message.whatsapp_message_id,
+                sent_at: message.sent_at,
+                unread_duration_minutes: timerMinutes,
+                timer_setting: `${webhook.timer_value} ${webhook.timer_unit}`,
+                device_id: clientId,
+                message_body: message.body || '',
+                message_type: message.type || 'text',
+                chat_history: chatHistory
+            };
+
+            console.log(`📤 Sending direct message unread webhook for message ${message.id} to ${webhook.webhook_url}`);
+
+            const response = await fetch(webhook.webhook_url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                console.log(`✅ Direct message unread webhook sent successfully for message ${message.id}`);
+
+                ProfileLogger.log(clientId, ProfileLogger.LOG_TYPES.WEBHOOK_UNREAD, ProfileLogger.LOG_LEVELS.INFO,
+                    `Direct message unread webhook triggered after ${timerMinutes} minutes`,
+                    {
+                        recipient: message.recipient,
+                        messageId: message.whatsapp_message_id,
+                        webhookUrl: webhook.webhook_url,
+                        messageType: 'direct_whatsapp'
+                    }
+                );
+            } else {
+                console.error(`❌ Direct message unread webhook failed with status ${response.status}`);
+            }
+        } catch (error) {
+            console.error(`Error sending direct message unread webhook:`, error.message);
         }
     }
 

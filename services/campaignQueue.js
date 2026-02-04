@@ -85,10 +85,9 @@ class CampaignQueue {
      * Register queue workers
      */
     static async registerWorkers() {
-        // Create queues first (pg-boss requires this)
-        await boss.createQueue(CAMPAIGN_QUEUE);
-        await boss.createQueue(WHATSAPP_SEND_QUEUE);
-        console.log('📋 Campaign queues created');
+        // Note: In pg-boss v9+, queues are created automatically when send() is called
+        // No need to call createQueue() - it was removed in v9
+        console.log('📋 Setting up campaign workers...');
 
         // Campaign step processor - handles business logic, scheduling
         // Note: pg-boss v12+ passes jobs as array when using teamConcurrency

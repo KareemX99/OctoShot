@@ -5,6 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
+const { pool } = require('../config/database');
 const Client = require('../models/Client');
 const whatsappManager = require('../whatsapp-manager');
 
@@ -500,6 +501,42 @@ router.delete('/:id/unread-webhooks/:webhookId', async (req, res) => {
         res.json({
             success: true,
             message: 'Unread webhook deleted successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+/**
+ * PUT /api/profiles/:id/unread-webhooks/:webhookId/direct-messages
+ * Toggle include_direct_messages for a webhook
+ */
+router.put('/:id/unread-webhooks/:webhookId/direct-messages', async (req, res) => {
+    try {
+        const { webhookId } = req.params;
+        const { include_direct_messages } = req.body;
+
+        // Get existing webhook first
+        const existing = await UnreadWebhook.getById(webhookId);
+        if (!existing) {
+            return res.status(404).json({
+                success: false,
+                error: 'Webhook not found'
+            });
+        }
+
+        // Update only the include_direct_messages field
+        const result = await pool.query(
+            `UPDATE unread_webhooks SET include_direct_messages = $1 WHERE id = $2 RETURNING *`,
+            [include_direct_messages, webhookId]
+        );
+
+        res.json({
+            success: true,
+            data: result.rows[0]
         });
     } catch (error) {
         res.status(500).json({

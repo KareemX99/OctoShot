@@ -33,7 +33,7 @@ class UnreadWebhook {
     /**
      * Create a new webhook (max 5 per client)
      */
-    static async create(clientId, webhookUrl, timerValue, timerUnit) {
+    static async create(clientId, webhookUrl, timerValue, timerUnit, includeDirectMessages = false) {
         // Check current count
         const countResult = await pool.query(
             'SELECT COUNT(*) FROM unread_webhooks WHERE client_id = $1',
@@ -51,10 +51,10 @@ class UnreadWebhook {
         }
 
         const result = await pool.query(
-            `INSERT INTO unread_webhooks (client_id, webhook_url, timer_value, timer_unit, is_active)
-             VALUES ($1, $2, $3, $4, true)
+            `INSERT INTO unread_webhooks (client_id, webhook_url, timer_value, timer_unit, is_active, include_direct_messages)
+             VALUES ($1, $2, $3, $4, true, $5)
              RETURNING *`,
-            [clientId, webhookUrl, timerValue, timerUnit]
+            [clientId, webhookUrl, timerValue, timerUnit, includeDirectMessages]
         );
         return result.rows[0];
     }
@@ -62,7 +62,7 @@ class UnreadWebhook {
     /**
      * Update a webhook
      */
-    static async update(id, webhookUrl, timerValue, timerUnit, isActive) {
+    static async update(id, webhookUrl, timerValue, timerUnit, isActive, includeDirectMessages) {
         const validUnits = ['minutes', 'hours', 'days'];
         if (!validUnits.includes(timerUnit)) {
             throw new Error('Invalid timer unit. Use: minutes, hours, or days');
@@ -70,10 +70,10 @@ class UnreadWebhook {
 
         const result = await pool.query(
             `UPDATE unread_webhooks 
-             SET webhook_url = $1, timer_value = $2, timer_unit = $3, is_active = $4
-             WHERE id = $5
+             SET webhook_url = $1, timer_value = $2, timer_unit = $3, is_active = $4, include_direct_messages = COALESCE($5, include_direct_messages)
+             WHERE id = $6
              RETURNING *`,
-            [webhookUrl, timerValue, timerUnit, isActive, id]
+            [webhookUrl, timerValue, timerUnit, isActive, includeDirectMessages, id]
         );
         return result.rows[0];
     }

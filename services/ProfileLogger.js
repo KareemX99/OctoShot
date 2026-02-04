@@ -35,6 +35,8 @@ const LOG_TYPES = {
     // New comprehensive types
     WEBHOOK_SENT: 'webhook_sent',
     WEBHOOK_INCOMING: 'webhook_incoming',
+    WEBHOOK_UNREAD: 'webhook_unread',
+    WEBHOOK_NOREPLY: 'webhook_noreply',
     BATCH_CREATED: 'batch_created',
     BATCH_COMPLETED: 'batch_completed',
     AUTO_REPLY: 'auto_reply',

@@ -830,6 +830,13 @@ function renderWebhooks() {
             <div class="webhook-info">
                 <div class="webhook-url" title="${webhook.webhook_url}">${webhook.webhook_url}</div>
                 <div class="webhook-timer">⏱️ بعد ${webhook.timer_value} ${getArabicUnit(webhook.timer_unit)}</div>
+                <div class="webhook-direct-toggle" style="display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 8px; background: rgba(139, 92, 246, 0.05); border-radius: 6px;">
+                    <label class="toggle-switch-small">
+                        <input type="checkbox" ${webhook.include_direct_messages ? 'checked' : ''} onchange="toggleDirectMessages(${webhook.id}, this.checked)">
+                        <span class="toggle-slider-small"></span>
+                    </label>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">شامل رسائل الواتساب المباشرة</span>
+                </div>
             </div>
             <button type="button" class="webhook-delete-btn" onclick="deleteUnreadWebhook(${webhook.id})">🗑️ حذف</button>
         </div>
@@ -840,13 +847,23 @@ function renderWebhooks() {
  * Update webhook count display
  */
 function updateWebhookCount() {
-    const countEl = document.getElementById('unreadWebhookCount');
+    const countEl = document.getElementById('unreadWebhookCountBadge');
     if (countEl) {
-        countEl.textContent = currentWebhooks.length;
+        const count = currentWebhooks.length;
+        countEl.textContent = `${count} مفعل`;
+
+        // Dynamic badge styling
+        if (count > 0) {
+            countEl.style.background = 'rgba(249, 115, 22, 0.15)';
+            countEl.style.color = '#f97316';
+        } else {
+            countEl.style.background = '';
+            countEl.style.color = '';
+        }
     }
 
     // Disable add if at max
-    const addBtn = document.querySelector('#unreadTab .add-webhook-form button');
+    const addBtn = document.querySelector('#unreadPanel .add-webhook-form button');
     if (addBtn) {
         if (currentWebhooks.length >= 5) {
             addBtn.disabled = true;
@@ -945,6 +962,38 @@ async function deleteUnreadWebhook(webhookId) {
     }
 }
 
+/**
+ * Toggle direct messages mode for a webhook
+ */
+async function toggleDirectMessages(webhookId, enabled) {
+    try {
+        const response = await fetch(`/api/profiles/${currentProfileId}/unread-webhooks/${webhookId}/direct-messages`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ include_direct_messages: enabled })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast(enabled ? 'تم تفعيل رسائل الواتساب المباشرة' : 'تم إلغاء رسائل الواتساب المباشرة', 'success');
+            // Update local state
+            const webhook = currentWebhooks.find(w => w.id === webhookId);
+            if (webhook) {
+                webhook.include_direct_messages = enabled;
+            }
+        } else {
+            showToast(data.error || 'فشل في تحديث الإعداد', 'error');
+            // Reload to reset checkbox
+            await loadUnreadWebhooks(currentProfileId);
+        }
+    } catch (error) {
+        console.error('Error toggling direct messages:', error);
+        showToast('خطأ في تحديث الإعداد', 'error');
+        await loadUnreadWebhooks(currentProfileId);
+    }
+}
+
 // ============================================
 // TAB SWITCHING
 // ============================================
@@ -1004,12 +1053,22 @@ function renderNoReplyWebhooks() {
  * Update read-no-reply webhook count
  */
 function updateNoReplyWebhookCount() {
-    const countEl = document.getElementById('noReplyWebhookCount');
+    const countEl = document.getElementById('noReplyWebhookCountBadge');
     if (countEl) {
-        countEl.textContent = currentNoReplyWebhooks.length;
+        const count = currentNoReplyWebhooks.length;
+        countEl.textContent = `${count} مفعل`;
+
+        // Dynamic badge styling
+        if (count > 0) {
+            countEl.style.background = 'rgba(16, 185, 129, 0.15)';
+            countEl.style.color = '#10b981';
+        } else {
+            countEl.style.background = '';
+            countEl.style.color = '';
+        }
     }
 
-    const addBtn = document.querySelector('#noReplyTab .add-webhook-form button');
+    const addBtn = document.querySelector('#noreplyPanel .add-webhook-form button');
     if (addBtn) {
         if (currentNoReplyWebhooks.length >= 5) {
             addBtn.disabled = true;
