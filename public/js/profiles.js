@@ -827,18 +827,33 @@ function renderWebhooks() {
 
     container.innerHTML = currentWebhooks.map(webhook => `
         <div class="webhook-card" data-id="${webhook.id}">
-            <div class="webhook-info">
-                <div class="webhook-url" title="${webhook.webhook_url}">${webhook.webhook_url}</div>
-                <div class="webhook-timer">⏱️ بعد ${webhook.timer_value} ${getArabicUnit(webhook.timer_unit)}</div>
-                <div class="webhook-direct-toggle" style="display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 8px; background: rgba(139, 92, 246, 0.05); border-radius: 6px;">
-                    <label class="toggle-switch-small">
-                        <input type="checkbox" ${webhook.include_direct_messages ? 'checked' : ''} onchange="toggleDirectMessages(${webhook.id}, this.checked)">
-                        <span class="toggle-slider-small"></span>
-                    </label>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">شامل رسائل الواتساب المباشرة</span>
+            <div class="webhook-content">
+                <div class="webhook-url-box">
+                    <span class="url-text" title="${webhook.webhook_url}">${webhook.webhook_url}</span>
+                    <button class="btn-copy-mini" onclick="copyToClipboard('${webhook.webhook_url}')" title="نسخ الرابط">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="webhook-meta-row">
+                    <span class="timer-badge">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        بعد ${webhook.timer_value} ${getArabicUnit(webhook.timer_unit)}
+                    </span>
+                    <div class="webhook-direct-toggle">
+                        <label class="toggle-switch-small">
+                            <input type="checkbox" ${webhook.include_direct_messages ? 'checked' : ''} onchange="toggleDirectMessages(${webhook.id}, this.checked)">
+                            <span class="toggle-slider-small"></span>
+                        </label>
+                        <span class="toggle-label">شامل الرسائل المباشرة</span>
+                    </div>
                 </div>
             </div>
-            <button type="button" class="webhook-delete-btn" onclick="deleteUnreadWebhook(${webhook.id})">🗑️ حذف</button>
+            <button type="button" class="btn-icon-danger" onclick="deleteUnreadWebhook(${webhook.id})" title="حذف">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            </button>
         </div>
     `).join('');
 }
@@ -863,14 +878,14 @@ function updateWebhookCount() {
     }
 
     // Disable add if at max
-    const addBtn = document.querySelector('#unreadPanel .add-webhook-form button');
+    const addBtn = document.querySelector('#unreadPanel .btn-add');
     if (addBtn) {
         if (currentWebhooks.length >= 5) {
             addBtn.disabled = true;
-            addBtn.textContent = 'اكتمل الحد';
+            addBtn.querySelector('span').textContent = 'اكتمل الحد';
         } else {
             addBtn.disabled = false;
-            addBtn.textContent = '+ إضافة';
+            addBtn.querySelector('span').textContent = 'إضافة';
         }
     }
 }
@@ -1040,11 +1055,26 @@ function renderNoReplyWebhooks() {
 
     container.innerHTML = currentNoReplyWebhooks.map(webhook => `
         <div class="webhook-card" data-id="${webhook.id}">
-            <div class="webhook-info">
-                <div class="webhook-url" title="${webhook.webhook_url}">${webhook.webhook_url}</div>
-                <div class="webhook-timer">👁️ بعد ${webhook.timer_value} ${getArabicUnit(webhook.timer_unit)} من القراءة</div>
+            <div class="webhook-content">
+                <div class="webhook-url-box">
+                    <span class="url-text" title="${webhook.webhook_url}">${webhook.webhook_url}</span>
+                    <button class="btn-copy-mini" onclick="copyToClipboard('${webhook.webhook_url}')" title="نسخ الرابط">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="webhook-meta-row">
+                    <span class="timer-badge">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        بعد ${webhook.timer_value} ${getArabicUnit(webhook.timer_unit)} من القراءة
+                    </span>
+                </div>
             </div>
-            <button type="button" class="webhook-delete-btn" onclick="deleteNoReplyWebhook(${webhook.id})">🗑️ حذف</button>
+            <button type="button" class="btn-icon-danger" onclick="deleteNoReplyWebhook(${webhook.id})" title="حذف">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            </button>
         </div>
     `).join('');
 }
@@ -1068,14 +1098,14 @@ function updateNoReplyWebhookCount() {
         }
     }
 
-    const addBtn = document.querySelector('#noreplyPanel .add-webhook-form button');
+    const addBtn = document.querySelector('#noreplyPanel .btn-add');
     if (addBtn) {
         if (currentNoReplyWebhooks.length >= 5) {
             addBtn.disabled = true;
-            addBtn.textContent = 'اكتمل الحد';
+            addBtn.querySelector('span').textContent = 'اكتمل الحد';
         } else {
             addBtn.disabled = false;
-            addBtn.textContent = '+ إضافة';
+            addBtn.querySelector('span').textContent = 'إضافة';
         }
     }
 }
@@ -1205,11 +1235,26 @@ function renderIncomingUnrepliedWebhooks() {
 
     container.innerHTML = currentIncomingUnrepliedWebhooks.map(webhook => `
         <div class="webhook-card" data-id="${webhook.id}">
-            <div class="webhook-info">
-                <div class="webhook-url" title="${webhook.webhook_url}">${webhook.webhook_url}</div>
-                <div class="webhook-timer">📨 بعد ${webhook.timer_value} ${getArabicUnit(webhook.timer_unit)} بدون رد</div>
+            <div class="webhook-content">
+                <div class="webhook-url-box">
+                    <span class="url-text" title="${webhook.webhook_url}">${webhook.webhook_url}</span>
+                    <button class="btn-copy-mini" onclick="copyToClipboard('${webhook.webhook_url}')" title="نسخ الرابط">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="webhook-meta-row">
+                    <span class="timer-badge">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        بعد ${webhook.timer_value} ${getArabicUnit(webhook.timer_unit)} بدون رد
+                    </span>
+                </div>
             </div>
-            <button type="button" class="webhook-delete-btn" onclick="deleteIncomingUnrepliedWebhook(${webhook.id})">🗑️ حذف</button>
+            <button type="button" class="btn-icon-danger" onclick="deleteIncomingUnrepliedWebhook(${webhook.id})" title="حذف">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            </button>
         </div>
     `).join('');
 }
@@ -1823,5 +1868,30 @@ function updateStatusMessage(mainText, detailText = '') {
     }
     if (statusDetailEl) {
         statusDetailEl.textContent = detailText;
+    }
+}
+
+/**
+ * Update the webhook timer unit (Smart Selector)
+ * @param {string} inputId - ID of the hidden input
+ * @param {string} value - Unit value (minutes, hours, days)
+ * @param {HTMLElement} btn - The button clicked
+ */
+function setUnit(inputId, value, btn) {
+    // Update hidden input
+    document.getElementById(inputId).value = value;
+
+    // Update visual state
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Update placeholder based on context
+    const container = btn.closest('.form-row-group');
+    const timerInput = container.querySelector('.input-timer');
+    if (timerInput) {
+        if (value === 'days') timerInput.placeholder = '1';
+        else if (value === 'hours') timerInput.placeholder = '2';
+        else timerInput.placeholder = '30';
     }
 }

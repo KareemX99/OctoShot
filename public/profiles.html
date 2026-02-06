@@ -1018,7 +1018,7 @@
                             </svg>
                         </div>
                         <div class="card-content">
-                            <h5>رسائل غير مقروءة</h5>
+                            <h5>الرسائل غير المقروءة</h5>
                             <span id="unreadWebhookCountBadge" class="status-badge">0 مفعل</span>
                         </div>
                         <div class="card-arrow">
@@ -1077,17 +1077,41 @@
                 <!-- Unread Panel -->
                 <div id="unreadPanel" class="webhook-panel hidden">
                     <div class="panel-header">
-                        <h5>🔔 إعدادات الرسائل غير المقروءة</h5>
+                        <h5>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                            إعدادات الرسائل غير المقروءة
+                        </h5>
                     </div>
                     <div class="add-webhook-form">
-                        <input type="url" id="newUnreadWebhookUrl" placeholder="رابط Webhook" style="flex: 2;">
-                        <input type="number" id="newUnreadWebhookTimer" placeholder="وقت" style="width: 70px;" min="1">
-                        <select id="newUnreadWebhookUnit" style="width: 80px;">
-                            <option value="minutes">دقيقة</option>
-                            <option value="hours">ساعة</option>
-                        </select>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="addUnreadWebhook()">+
-                            إضافة</button>
+                        <input type="url" id="newUnreadWebhookUrl" class="input-url full-width"
+                            placeholder="https://example.com/webhook...">
+                        <div class="form-controls-row">
+                            <div class="form-row-group">
+                                <input type="number" id="newUnreadWebhookTimer" class="input-timer" placeholder="5"
+                                    min="1">
+                                <div class="smart-unit-selector">
+                                    <button type="button" class="unit-btn active"
+                                        onclick="setUnit('newUnreadWebhookUnit', 'minutes', this)">دقائق</button>
+                                    <button type="button" class="unit-btn"
+                                        onclick="setUnit('newUnreadWebhookUnit', 'hours', this)">ساعات</button>
+                                    <button type="button" class="unit-btn"
+                                        onclick="setUnit('newUnreadWebhookUnit', 'days', this)">أيام</button>
+                                </div>
+                                <input type="hidden" id="newUnreadWebhookUnit" value="minutes">
+                            </div>
+                            <button type="button" class="btn btn-primary btn-add" onclick="addUnreadWebhook()">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>إضافة</span>
+                            </button>
+                        </div>
                     </div>
                     <div id="unreadWebhooksList" class="webhooks-list"></div>
                 </div>
@@ -1095,17 +1119,40 @@
                 <!-- No-Reply Panel -->
                 <div id="noreplyPanel" class="webhook-panel hidden">
                     <div class="panel-header">
-                        <h5>💬 إعدادات القراءة بدون رد</h5>
+                        <h5>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            إعدادات القراءة بدون رد
+                        </h5>
                     </div>
                     <div class="add-webhook-form">
-                        <input type="url" id="newNoReplyWebhookUrl" placeholder="رابط Webhook" style="flex: 2;">
-                        <input type="number" id="newNoReplyWebhookTimer" placeholder="وقت" style="width: 70px;" min="1">
-                        <select id="newNoReplyWebhookUnit" style="width: 80px;">
-                            <option value="minutes">دقيقة</option>
-                            <option value="hours">ساعة</option>
-                        </select>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="addNoReplyWebhook()">+
-                            إضافة</button>
+                        <input type="url" id="newNoReplyWebhookUrl" class="input-url full-width"
+                            placeholder="https://example.com/webhook...">
+                        <div class="form-controls-row">
+                            <div class="form-row-group">
+                                <input type="number" id="newNoReplyWebhookTimer" class="input-timer" placeholder="5"
+                                    min="1">
+                                <div class="smart-unit-selector">
+                                    <button type="button" class="unit-btn active"
+                                        onclick="setUnit('newNoReplyWebhookUnit', 'minutes', this)">دقائق</button>
+                                    <button type="button" class="unit-btn"
+                                        onclick="setUnit('newNoReplyWebhookUnit', 'hours', this)">ساعات</button>
+                                    <button type="button" class="unit-btn"
+                                        onclick="setUnit('newNoReplyWebhookUnit', 'days', this)">أيام</button>
+                                </div>
+                                <input type="hidden" id="newNoReplyWebhookUnit" value="minutes">
+                            </div>
+                            <button type="button" class="btn btn-primary btn-add" onclick="addNoReplyWebhook()">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>إضافة</span>
+                            </button>
+                        </div>
                     </div>
                     <div id="noReplyWebhooksList" class="webhooks-list"></div>
                 </div>
@@ -1113,22 +1160,45 @@
                 <!-- Incoming Unreplied Panel (NEW) -->
                 <div id="incomingPanel" class="webhook-panel hidden">
                     <div class="panel-header">
-                        <h5>📨 إعدادات الرسائل الواردة بدون رد</h5>
+                        <h5>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                            </svg>
+                            إعدادات الرسائل الواردة بدون رد
+                        </h5>
                     </div>
                     <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
                         تنبيه عندما يرسل عميل رسالة ولا ترد عليه خلال الوقت المحدد
                     </p>
                     <div class="add-webhook-form">
-                        <input type="url" id="newIncomingUnrepliedWebhookUrl" placeholder="رابط Webhook"
-                            style="flex: 2;">
-                        <input type="number" id="newIncomingUnrepliedWebhookTimer" placeholder="وقت"
-                            style="width: 70px;" min="1" value="5">
-                        <select id="newIncomingUnrepliedWebhookUnit" style="width: 80px;">
-                            <option value="minutes">دقيقة</option>
-                            <option value="hours">ساعة</option>
-                        </select>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="addIncomingUnrepliedWebhook()">+
-                            إضافة</button>
+                        <input type="url" id="newIncomingUnrepliedWebhookUrl" class="input-url full-width"
+                            placeholder="https://example.com/webhook...">
+                        <div class="form-controls-row">
+                            <div class="form-row-group">
+                                <input type="number" id="newIncomingUnrepliedWebhookTimer" class="input-timer"
+                                    placeholder="5" min="1" value="5">
+                                <div class="smart-unit-selector">
+                                    <button type="button" class="unit-btn active"
+                                        onclick="setUnit('newIncomingUnrepliedWebhookUnit', 'minutes', this)">دقائق</button>
+                                    <button type="button" class="unit-btn"
+                                        onclick="setUnit('newIncomingUnrepliedWebhookUnit', 'hours', this)">ساعات</button>
+                                    <button type="button" class="unit-btn"
+                                        onclick="setUnit('newIncomingUnrepliedWebhookUnit', 'days', this)">أيام</button>
+                                </div>
+                                <input type="hidden" id="newIncomingUnrepliedWebhookUnit" value="minutes">
+                            </div>
+                            <button type="button" class="btn btn-primary btn-add"
+                                onclick="addIncomingUnrepliedWebhook()">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>إضافة</span>
+                            </button>
+                        </div>
                     </div>
                     <div id="incomingUnrepliedWebhooksList" class="webhooks-list"></div>
                 </div>

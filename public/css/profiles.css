@@ -787,6 +787,7 @@
 .table-container .data-table {
     display: none;
 }
+
 /* ================================
    WEBHOOKS MODAL & PREMIUM CARDS
    ================================ */
@@ -969,366 +970,247 @@
     opacity: 1;
 }
 
-/* Webhook Panel */
-.webhook-panel {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 16px;
-    padding: 20px;
-    border: 1px solid var(--border-color);
-    margin-top: 20px;
-    animation: slideDown 0.3s ease-out;
-}
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-.panel-header h5 {
-    margin: 0 0 15px 0;
-    font-size: 1rem;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.add-webhook-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 15px;
-    border-radius: 12px;
-}
-
-/* Webhook List Items */
-.webhook-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 15px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 10px;
-    margin-bottom: 10px;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-}
-
-.webhook-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-.webhook-details {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.webhook-url {
-    font-family: monospace;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-
-.webhook-meta {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    display: flex;
-    gap: 10px;
-}
 /* ================================
    WEBHOOKS MODAL & PREMIUM CARDS (ENHANCED)
    ================================ */
 
-/* Webhooks Button - Electric Purple Glow */
+/* Webhooks Button - Professional SaaS Look */
 .device-action.webhooks {
-    background: rgba(124, 58, 237, 0.1);
-    color: #a78bfa;
+    background: rgba(124, 58, 237, 0.05);
+    /* Subtle purple background */
+    color: #8b5cf6;
+    /* Brighter purple text */
     border: 1px solid rgba(124, 58, 237, 0.2);
-    position: relative;
-    overflow: hidden;
-}
-
-.device-action.webhooks::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.device-action.webhooks:hover::before {
-    left: 100%;
+    font-weight: 500;
 }
 
 .device-action.webhooks:hover {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(109, 40, 217, 0.3) 100%);
-    color: white;
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
-    border-color: rgba(167, 139, 250, 0.5);
-    transform: translateY(-2px);
+    background: rgba(124, 58, 237, 0.1);
+    border-color: rgba(124, 58, 237, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
 }
 
-/* Main Webhook Section - Hero Style */
+/* Main Webhook Section - Clean Card */
 .webhook-section {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    /* Very subtle background */
+    border-radius: 12px;
     padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
     margin-bottom: 24px;
 }
 
 [data-theme="light"] .webhook-section {
-    background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+    background: #ffffff;
     border-color: #e2e8f0;
-    box-shadow: 0 10px 30px rgba(148, 163, 184, 0.1);
-}
-
-/* Hero Glow Effect */
-.webhook-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
-    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .webhook-header {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
     margin-bottom: 20px;
-    position: relative;
-    z-index: 1;
 }
 
 .webhook-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     color: white;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .webhook-icon.main {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
-}
-
-.webhook-info h4 {
-    margin: 0 0 6px 0;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.webhook-info p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-muted);
+    background: #3b82f6;
+    /* Solid blue */
+    box-shadow: none;
+    /* Removed neon shadow */
 }
 
 /* Modern Input Group */
 .webhook-input-group {
     display: flex;
     gap: 12px;
-    position: relative;
-    z-index: 1;
 }
 
 .webhook-input {
     flex: 1;
-    padding: 12px 18px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: transparent;
     color: var(--text-primary);
-    font-family: 'Plus Jakarta Sans', monospace;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-}
-
-[data-theme="light"] .webhook-input {
-    background: white;
-    border-color: #e2e8f0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
 }
 
 .webhook-input:focus {
-    outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-    background: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
 }
 
-[data-theme="light"] .webhook-input:focus {
-    background: white;
-}
-
-.divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
-    margin: 30px 0;
-    opacity: 0.7;
-}
-
-/* Premium Webhooks Grid */
+/* Premium Webhooks Grid - Professional Cards */
 .webhooks-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
+    gap: 16px;
     margin-bottom: 24px;
 }
 
 .webhook-option-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    padding: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
 [data-theme="light"] .webhook-option-card {
-    background: white;
+    background: #ffffff;
     border-color: #e2e8f0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Hover Effects */
 .webhook-option-card:hover {
-    transform: translateY(-6px);
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="light"] .webhook-option-card:hover {
     background: #f8fafc;
     border-color: #cbd5e1;
-    box-shadow: 0 15px 30px rgba(148, 163, 184, 0.15);
 }
 
-/* Active State - Premium Selection */
 .webhook-option-card.active {
-    background: rgba(124, 58, 237, 0.08);
-    /* Fallback */
-    border-color: #8b5cf6;
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3), 0 10px 25px rgba(124, 58, 237, 0.15);
+    background: rgba(59, 130, 246, 0.05);
+    /* Subtle blue active background */
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
 }
 
 [data-theme="light"] .webhook-option-card.active {
-    background: #f5f3ff;
-    border-color: #8b5cf6;
+    background: #eff6ff;
+    border-color: #3b82f6;
 }
 
 /* Card Icons */
 .card-icon {
-    width: 65px;
-    height: 65px;
-    border-radius: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    flex-shrink: 0;
-    font-size: 1.5rem;
-    position: relative;
-    z-index: 1;
-    transition: transform 0.3s;
+    color: #64748b;
+    /* Default gray */
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s;
+}
+
+[data-theme="light"] .card-icon {
+    background: #f1f5f9;
+}
+
+.webhook-option-card.active .card-icon {
+    color: #3b82f6;
+    /* Blue when active */
+    background: rgba(59, 130, 246, 0.1);
 }
 
 .webhook-option-card:hover .card-icon {
-    transform: scale(1.1) rotate(-5deg);
+    transform: none;
+    /* Removed rotation */
 }
 
-.webhook-option-card.unread .card-icon {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.25);
+/* Specific Card Colors Only on Active/Hover */
+.webhook-option-card.unread.active .card-icon {
+    color: #f97316;
+    background: rgba(249, 115, 22, 0.1);
 }
 
-.webhook-option-card.noreply .card-icon {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.25);
+.webhook-option-card.noreply.active .card-icon {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
 }
 
 /* Card Content Typography */
 .card-content h5 {
-    margin: 0 0 6px 0;
-    font-size: 1.05rem;
-    font-weight: 700;
+    margin: 0 0 4px 0;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: var(--text-primary);
 }
 
 .status-badge {
     font-size: 0.75rem;
-    padding: 4px 10px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.08);
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-muted);
-    font-weight: 600;
-    transition: all 0.3s;
-    display: inline-block;
-}
-
-[data-theme="light"] .status-badge {
-    background: #f1f5f9;
-    color: #64748b;
 }
 
 .webhook-option-card.active .status-badge {
-    background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    font-weight: 500;
 }
 
-[data-theme="light"] .webhook-option-card.active .status-badge {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-/* Arrow Animation */
+/* Arrow */
 .card-arrow {
     color: var(--text-muted);
-    opacity: 0.4;
-    transition: all 0.3s;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 8px;
-    border-radius: 50%;
+    opacity: 0.5;
+    transition: transform 0.2s;
 }
 
-[data-theme="light"] .card-arrow {
-    background: #f1f5f9;
-}
-
-.webhook-option-card:hover .card-arrow {
+.webhook-option-card.active .card-arrow {
+    transform: rotate(90deg);
+    color: #3b82f6;
     opacity: 1;
-    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Webhook Panel - Clean & Integrated */
+.webhook-panel {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    margin-top: 16px;
+    border-top: 3px solid #3b82f6;
+    /* Color accent on top only */
+}
+
+[data-theme="light"] .webhook-panel {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    border-top-color: #3b82f6;
+}
+
+/* Panel Header with Icon */
+.panel-header h5 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.panel-header h5 svg {
+    color: #3b82f6;
 }
 
 .webhook-option-card.active .card-arrow {
@@ -1387,6 +1269,13 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.panel-header h5 svg {
+    color: #3b82f6;
 }
 
 .add-webhook-form {
@@ -1394,61 +1283,353 @@
     gap: 12px;
     margin-bottom: 24px;
     background: rgba(255, 255, 255, 0.03);
-    padding: 18px;
-    border-radius: 16px;
+    padding: 20px;
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="light"] .add-webhook-form {
-    background: white;
+    background: #ffffff;
     border-color: #e2e8f0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Webhook List Items */
-.webhook-item {
+/* Add Webhook Form Layout */
+/* Add Webhook Form Layout (2 Rows) */
+.add-webhook-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.input-url.full-width {
+    width: 100%;
+}
+
+.form-controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.form-row-group {
+    display: flex;
+    gap: 0;
+    /* No gap - elements touch */
+    align-items: center;
+    background: rgba(139, 92, 246, 0.08);
+    /* Subtle purple background */
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 10px;
+    padding: 2px;
+    overflow: hidden;
+}
+
+[data-theme="light"] .form-row-group {
+    background: rgba(139, 92, 246, 0.05);
+    border-color: rgba(139, 92, 246, 0.15);
+}
+
+.form-row-group .input-timer {
+    border: none;
+    background: transparent;
+    border-radius: 0 8px 8px 0;
+    /* RTL: RIGHT side rounded (appears first) */
+}
+
+.form-row-group .smart-unit-selector {
+    border: none;
+    border-radius: 8px 0 0 8px;
+    /* RTL: LEFT side rounded (appears last) */
+    background: transparent;
+}
+
+.input-timer {
+    width: 70px;
+    text-align: center;
+}
+
+/* Smart Unit Selector (Button Group) - Platform Purple Theme */
+.smart-unit-selector {
+    display: flex;
+    flex-direction: row;
+    /* Natural order: minutes, hours, days */
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(168, 85, 247, 0.1));
+    padding: 4px;
+    border-radius: 8px;
+    gap: 2px;
+    height: 42px;
+    align-items: center;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+/* Dark Mode - Purple tint */
+[data-theme="dark"] .smart-unit-selector {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.15));
+    border-color: rgba(139, 92, 246, 0.4);
+}
+
+/* Light Mode - Subtle purple */
+[data-theme="light"] .smart-unit-selector {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(168, 85, 247, 0.05));
+    border-color: rgba(139, 92, 246, 0.25);
+}
+
+.unit-btn {
+    border: none;
+    background: transparent;
+    color: rgba(139, 92, 246, 0.9);
+    /* Purple text */
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+[data-theme="light"] .unit-btn {
+    color: #7c3aed;
+    /* Violet 600 */
+}
+
+.unit-btn:hover {
+    color: #a855f7;
+    background: rgba(139, 92, 246, 0.15);
+}
+
+.unit-btn.active {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
+
+.btn-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    width: auto;
+    height: 42px;
+    border-radius: 8px;
+    min-width: 80px;
+    gap: 8px;
+    font-weight: 500;
+}
+
+/* Widen the Modals */
+#detailsModal .modal-content,
+#deviceModal .modal-content {
+    max-width: 700px;
+}
+
+/* Modern Inputs with Visible Borders */
+.add-webhook-form input {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Visible Border */
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    height: 42px;
+}
+
+[data-theme="light"] .add-webhook-form input {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    /* Visible Slate-300 Border */
+    color: #1e293b;
+}
+
+.add-webhook-form input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .add-webhook-form input:focus {
+    background: #ffffff;
+}
+
+/* Remove Number Spinner */
+.add-webhook-form input[type=number]::-webkit-inner-spin-button,
+.add-webhook-form input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* New Webhook Card Design */
+.webhook-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    gap: 16px;
+    transition: all 0.2s;
+}
+
+[data-theme="light"] .webhook-card {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.webhook-card:hover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.02);
+}
+
+[data-theme="light"] .webhook-card:hover {
+    background: #f8fafc;
+    border-color: #3b82f6;
+}
+
+.webhook-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+    /* For text truncation */
+}
+
+/* URL Box with Copy Button */
+.webhook-url-box {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 14px;
-    margin-bottom: 12px;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-    position: relative;
-}
-
-[data-theme="light"] .webhook-item {
-    background: white;
-    border: 1px solid #f1f5f9;
-}
-
-.webhook-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1);
-    transform: translateX(-4px);
-}
-
-[data-theme="light"] .webhook-item:hover {
-    background: #f8fafc;
-    border-color: #cbd5e1;
-}
-
-.webhook-url {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    letter-spacing: -0.5px;
     background: rgba(0, 0, 0, 0.2);
-    padding: 4px 8px;
-    border-radius: 6px;
+    /* Dark Mode Default */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 6px 6px 6px 12px;
+    gap: 8px;
+    width: 100%;
 }
 
-[data-theme="light"] .webhook-url {
-    background: #f1f5f9;
-    color: #0f172a;
+[data-theme="light"] .webhook-url-box {
+    background: #ffffff;
+    border-color: #e2e8f0;
 }
+
+.url-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    white-space: normal;
+    /* Allow wrapping */
+    word-break: break-all;
+    /* Break long URLs */
+    flex: 1;
+    direction: ltr;
+    text-align: left;
+    line-height: 1.4;
+}
+
+[data-theme="light"] .url-text {
+    color: #334155;
+}
+
+.btn-copy-mini {
+    background: rgba(59, 130, 246, 0.1);
+    /* Subtle blue bg */
+    border: none;
+    color: #3b82f6;
+    /* Blue icon */
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-copy-mini:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+[data-theme="light"] .btn-copy-mini:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Meta Row */
+.webhook-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.timer-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+[data-theme="light"] .timer-badge {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.webhook-direct-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Delete Button Icon */
+.btn-icon-danger {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+}
+
+.btn-icon-danger:hover {
+    background: #ef4444;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
 /* ================================
    LIGHT MODE REFINEMENTS (HIGH CONTRAST)
    ================================ */
@@ -1567,6 +1748,7 @@
     color: #475569;
     /* Darker muted text */
 }
+
 /* ================================
    ULTRA HIGH CONTRAST LIGHT MODE FIXES
    ================================ */
@@ -1658,6 +1840,7 @@
     background: #e2e8f0 !important;
     color: #1e293b !important;
 }
+
 /* ================================
    CORRECTED LIGHT MODE CSS
    Uses body:not(.dark-theme) for Light Mode targeting
@@ -1793,6 +1976,7 @@ body:not(.dark-theme) .device-action.webhooks:hover {
     background: #7c3aed !important;
     color: white !important;
 }
+
 /* ================================
    PREMIUM DEVICE CARD ENHANCEMENTS
    Random Color Borders & Hover Fixes
@@ -1936,6 +2120,7 @@ body:not(.dark-theme) .device-action.delete {
 body:not(.dark-theme) .device-action.webhooks {
     color: #7c3aed !important;
 }
+
 /* ================================
    LIGHT MODE - ICON VISIBILITY FIX
    Keep icons dark/colored on hover, NOT white
@@ -2059,14 +2244,14 @@ body:not(.dark-theme) .device-action.webhooks:hover svg * {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.toggle-switch-small input:checked + .toggle-slider-small {
+.toggle-switch-small input:checked+.toggle-slider-small {
     background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
 }
 
-.toggle-switch-small input:checked + .toggle-slider-small:before {
+.toggle-switch-small input:checked+.toggle-slider-small:before {
     transform: translateX(16px);
 }
 
-.toggle-switch-small input:focus + .toggle-slider-small {
+.toggle-switch-small input:focus+.toggle-slider-small {
     box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
 }
