@@ -93,8 +93,10 @@ class ReadNoReplyProcessor {
                     webhook.timer_unit
                 );
 
-                // Find messages that are read but customer didn't reply
-                const result = await pool.query(`
+                console.log(`📖 Checking read-no-reply webhook for client ${clientId}: timer=${timerMinutes} minutes, directMessages=${webhook.include_direct_messages}`);
+
+                // PART 1: Check API message queue (messages sent via API that are read but no customer reply)
+                const apiResult = await pool.query(`
                     SELECT id, recipient, whatsapp_message_id, sent_at, read_at, status
                     FROM api_message_queue
                     WHERE device_id = $1
@@ -104,23 +106,71 @@ class ReadNoReplyProcessor {
                     AND read_at IS NOT NULL
                 `, [clientId]);
 
-                // Filter in JavaScript to handle timezone properly
+                // PART 2: Check direct WhatsApp messages (if toggle is enabled)
+                // Outgoing messages sent directly from WhatsApp that are read but customer didn't reply
+                let directMessagesResult = { rows: [] };
+                if (webhook.include_direct_messages !== false) {
+                    directMessagesResult = await pool.query(`
+                        SELECT DISTINCT ON (m.to_number) 
+                            m.id, m.to_number as recipient, m.message_id as whatsapp_message_id, 
+                            m.timestamp as sent_at, m.timestamp as read_at, m.body, m.type, m.ack
+                        FROM messages m
+                        WHERE m.client_id = $1
+                        AND m.is_from_me = true
+                        AND m.ack >= 3
+                        AND COALESCE(m.no_reply_notified, false) = false
+                        AND m.timestamp IS NOT NULL
+                        AND m.to_number NOT LIKE '%@g.us'
+                        -- Exclude messages that are in api_message_queue (already handled above)
+                        AND NOT EXISTS (
+                            SELECT 1 FROM api_message_queue amq 
+                            WHERE amq.whatsapp_message_id = m.message_id 
+                            AND amq.device_id = m.client_id
+                        )
+                        -- Check no customer reply: no newer incoming message from the same number
+                        AND NOT EXISTS (
+                            SELECT 1 FROM messages m2 
+                            WHERE m2.client_id = m.client_id 
+                            AND m2.is_from_me = false 
+                            AND REPLACE(REPLACE(m2.from_number, '@c.us', ''), '@g.us', '') = REPLACE(REPLACE(m.to_number, '@c.us', ''), '@g.us', '')
+                            AND m2.timestamp > m.timestamp
+                        )
+                        ORDER BY m.to_number, m.timestamp DESC
+                    `, [clientId]);
+                }
+
+                // Filter by timer - API messages
                 const now = new Date();
-                const eligibleMessages = result.rows.filter(msg => {
+                const eligibleApiMessages = apiResult.rows.filter(msg => {
                     const readAt = new Date(msg.read_at);
                     const elapsedMs = now.getTime() - readAt.getTime();
                     const elapsedMinutes = elapsedMs / 1000 / 60;
-
                     return elapsedMinutes >= timerMinutes;
                 });
 
-                if (eligibleMessages.length === 0) continue;
+                // Filter by timer - Direct messages (use sent_at since ack=3 means already read)
+                const eligibleDirectMessages = directMessagesResult.rows.filter(msg => {
+                    const readAt = new Date(msg.read_at);
+                    const elapsedMs = now.getTime() - readAt.getTime();
+                    const elapsedMinutes = elapsedMs / 1000 / 60;
+                    return elapsedMinutes >= timerMinutes;
+                });
 
-                console.log(`📖 Found ${eligibleMessages.length} read-no-reply messages for webhook (${webhook.timer_value} ${webhook.timer_unit})`);
+                const totalEligible = eligibleApiMessages.length + eligibleDirectMessages.length;
+                console.log(`📖 Query result: ${totalEligible} eligible messages (${eligibleApiMessages.length} API + ${eligibleDirectMessages.length} direct) for client ${clientId}`);
 
-                // Send each message to the webhook
-                for (const message of eligibleMessages) {
+                if (totalEligible === 0) continue;
+
+                console.log(`📖 Found ${totalEligible} read-no-reply messages for webhook (${webhook.timer_value} ${webhook.timer_unit})`);
+
+                // Send API messages to the webhook
+                for (const message of eligibleApiMessages) {
                     await this.sendWebhookNotification(webhook, message, timerMinutes, clientId);
+                }
+
+                // Send direct WhatsApp messages to the webhook
+                for (const message of eligibleDirectMessages) {
+                    await this.sendDirectMessageNotification(webhook, message, timerMinutes, clientId);
                 }
             } catch (error) {
                 console.error(`Error processing read-no-reply webhook ${webhook.id}:`, error.message);
@@ -129,6 +179,7 @@ class ReadNoReplyProcessor {
         }
     }
 
+
     /**
      * Fetch last 10 messages from chat
      */
@@ -136,28 +187,35 @@ class ReadNoReplyProcessor {
         try {
             // Try whatsappManager first
             let client = whatsappManager.getClient(clientId);
+            console.log(`📖 WhatsApp client for ${clientId}: ${client ? 'found' : 'not found'}`);
 
             // Fallback to legacy whatsapp-client
             if (!client) {
                 const legacyClient = require('../whatsapp-client');
                 const status = legacyClient.getStatus();
+                console.log(`📖 Legacy client status: ${status.connected ? 'connected' : 'disconnected'}`);
                 if (status.connected) {
                     client = legacyClient.getClient();
                 }
             }
 
             if (!client) {
+                console.log(`⚠️ No WhatsApp client available for chat history (client ${clientId})`);
                 return [];
             }
 
             const chatId = recipient.includes('@') ? recipient : `${recipient}@c.us`;
+            console.log(`📖 Fetching chat by ID: ${chatId}`);
             const chat = await client.getChatById(chatId);
 
             if (!chat) {
+                console.log(`⚠️ Chat not found for ${chatId}`);
                 return [];
             }
 
+            console.log(`📖 Fetching last 10 messages from chat...`);
             const messages = await chat.fetchMessages({ limit: 10 });
+            console.log(`📖 Found ${messages.length} messages in chat`);
             const formattedMessages = [];
 
             for (const msg of messages) {
@@ -171,6 +229,7 @@ class ReadNoReplyProcessor {
             return [];
         }
     }
+
 
     /**
      * Format a single message
@@ -276,19 +335,26 @@ class ReadNoReplyProcessor {
      */
     async sendWebhookNotification(webhook, message, timerMinutes, clientId) {
         try {
+            console.log(`📖 Fetching chat history for ${message.recipient} (client ${clientId})...`);
             const chatHistory = await this.fetchChatHistory(clientId, message.recipient);
+            console.log(`📖 Chat history fetched: ${chatHistory.length} messages`);
 
             const payload = {
                 type: 'read_no_reply',
                 recipient: message.recipient,
                 message_id: message.whatsapp_message_id,
                 sent_at: this.formatLocalTimestampFromDate(message.sent_at),
+                local_sent_at: this.formatLocalTimestampFromDate(message.sent_at),
                 read_at: this.formatLocalTimestampFromDate(message.read_at),
+                local_read_at: this.formatLocalTimestampFromDate(message.read_at),
                 no_reply_duration_minutes: timerMinutes,
                 timer_setting: `${webhook.timer_value} ${webhook.timer_unit}`,
                 device_id: webhook.client_id,
+                triggered_at: this.formatLocalTimestampFromDate(new Date()),
                 chat_history: chatHistory
             };
+
+            console.log(`📤 Sending read-no-reply webhook to ${webhook.webhook_url}`);
 
             const response = await fetch(webhook.webhook_url, {
                 method: 'POST',
@@ -313,6 +379,65 @@ class ReadNoReplyProcessor {
             }
         } catch (error) {
             console.error(`Error sending read no-reply webhook:`, error.message);
+        }
+    }
+
+
+    /**
+     * Send notification for direct WhatsApp message that was read but customer didn't reply
+     */
+    async sendDirectMessageNotification(webhook, message, timerMinutes, clientId) {
+        try {
+            // Mark as notified FIRST to prevent duplicate sends
+            await pool.query(`
+                UPDATE messages SET no_reply_notified = true, no_reply_notified_at = CURRENT_TIMESTAMP WHERE id = $1
+            `, [message.id]);
+
+            // Fetch chat history
+            const chatHistory = await this.fetchChatHistory(clientId, message.recipient);
+
+            const payload = {
+                type: 'direct_message_read_no_reply',
+                recipient: message.recipient?.replace('@c.us', '').replace('@g.us', ''),
+                message_id: message.whatsapp_message_id,
+                sent_at: this.formatLocalTimestampFromDate(message.sent_at),
+                local_sent_at: this.formatLocalTimestampFromDate(message.sent_at),
+                read_at: this.formatLocalTimestampFromDate(message.read_at),
+                local_read_at: this.formatLocalTimestampFromDate(message.read_at),
+                no_reply_duration_minutes: timerMinutes,
+                timer_setting: `${webhook.timer_value} ${webhook.timer_unit}`,
+                device_id: clientId,
+                triggered_at: this.formatLocalTimestampFromDate(new Date()),
+                message_body: message.body || '',
+                message_type: message.type || 'text',
+                chat_history: chatHistory
+            };
+
+            console.log(`📤 Sending direct message read-no-reply webhook for message ${message.id} to ${webhook.webhook_url}`);
+
+            const response = await fetch(webhook.webhook_url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                console.log(`✅ Direct message read-no-reply webhook sent successfully for message ${message.id}`);
+
+                ProfileLogger.log(clientId, ProfileLogger.LOG_TYPES.WEBHOOK_SENT || 'webhook_sent', ProfileLogger.LOG_LEVELS.INFO || 'info',
+                    `Direct message read-no-reply webhook triggered after ${timerMinutes} minutes`,
+                    {
+                        recipient: message.recipient,
+                        messageId: message.whatsapp_message_id,
+                        webhookUrl: webhook.webhook_url,
+                        messageType: 'direct_whatsapp'
+                    }
+                );
+            } else {
+                console.error(`❌ Direct message read-no-reply webhook failed with status ${response.status}`);
+            }
+        } catch (error) {
+            console.error(`Error sending direct message read-no-reply webhook:`, error.message);
         }
     }
 }

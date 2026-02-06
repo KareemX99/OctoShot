@@ -150,6 +150,7 @@ async function simulateTyping(client, chatId, messageContent) {
 /**
  * POST /api/v1/messages/send-text
  * Send a text message (supports bulk with comma-separated numbers)
+ * Returns immediately with queued status - message is sent in background
  */
 router.post('/messages/send-text', authenticateDevice, async (req, res) => {
     try {
@@ -188,40 +189,63 @@ router.post('/messages/send-text', authenticateDevice, async (req, res) => {
 
         // Check if single or bulk
         if (validRecipients.length === 1) {
-            // Single message - send immediately with typing simulation
+            // Single message - queue and return immediately
             const chatId = formatPhoneNumber(validRecipients[0]);
             const resolvedMessage = spintax.resolve(message);
+            const tempMessageId = uuidv4(); // Temporary ID until sent
 
-            // Simulate typing before sending
-            let typingDuration = 0;
-            const client = whatsappManager.getClient(req.device.id);
-            if (client) {
-                typingDuration = await simulateTyping(client, chatId, resolvedMessage);
-            }
-
-            const result = await whatsappManager.sendMessage(req.device.id, chatId, resolvedMessage);
-
-            // Save to message queue for logging (with 'sent' status)
-            await ApiMessageQueue.create({
-                batch_id: null, // Single messages don't have a batch
+            // Create queue entry with 'queued' status
+            const queueEntry = await ApiMessageQueue.create({
+                batch_id: null,
                 device_id: req.device.id,
                 recipient: validRecipients[0],
                 message_type: 'text',
                 original_content: message,
                 resolved_content: resolvedMessage,
                 scheduled_at: new Date(),
-                status: 'sent',
-                whatsapp_message_id: result.messageId,
-                sent_at: new Date()
+                status: 'queued'
             });
 
+            // RETURN IMMEDIATELY - message will be sent in background
             res.json({
                 success: true,
-                messageId: result.messageId,
-                timestamp: result.timestamp,
+                status: 'queued',
+                queueId: queueEntry.id,
                 to: chatId,
-                typingDurationMs: typingDuration,
-                messageLength: resolvedMessage.length
+                messageLength: resolvedMessage.length,
+                message: 'Message queued for sending'
+            });
+
+            // BACKGROUND: Send message asynchronously (after response)
+            setImmediate(async () => {
+                try {
+                    const client = whatsappManager.getClient(req.device.id);
+                    if (!client) {
+                        console.error(`❌ No WhatsApp client for device ${req.device.id}`);
+                        await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: 'WhatsApp client not available' });
+                        return;
+                    }
+
+                    // Update status to 'sending'
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'sending');
+
+                    // Simulate typing
+                    const typingDuration = await simulateTyping(client, chatId, resolvedMessage);
+
+                    // Send the message
+                    const result = await whatsappManager.sendMessage(req.device.id, chatId, resolvedMessage);
+
+                    // Update queue entry with actual message ID and sent status
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'sent', {
+                        whatsapp_message_id: result.messageId,
+                        sent_at: new Date()
+                    });
+
+                    console.log(`📤 Sent message ${queueEntry.id} via profile ${req.device.id} (typing: ${typingDuration}ms)`);
+                } catch (error) {
+                    console.error(`❌ Background send error for queue ${queueEntry.id}:`, error.message);
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: error.message });
+                }
             });
         } else {
             // Bulk - queue messages with smart batching
@@ -282,6 +306,7 @@ router.post('/messages/send-text', authenticateDevice, async (req, res) => {
         });
     }
 });
+
 
 /**
  * POST /api/v1/messages/send-image
