@@ -311,6 +311,7 @@ router.post('/messages/send-text', authenticateDevice, async (req, res) => {
 /**
  * POST /api/v1/messages/send-image
  * Send an image message
+ * Returns immediately with queued status - message is sent in background
  */
 router.post('/messages/send-image', authenticateDevice, async (req, res) => {
     try {
@@ -324,31 +325,9 @@ router.post('/messages/send-image', authenticateDevice, async (req, res) => {
         }
 
         const chatId = formatPhoneNumber(to);
-        let media;
 
-        if (imageBase64) {
-            // Base64 image
-            const matches = imageBase64.match(/^data:(.+);base64,(.+)$/);
-            if (matches) {
-                media = new MessageMedia(matches[1], matches[2]);
-            } else {
-                media = new MessageMedia('image/jpeg', imageBase64);
-            }
-        } else {
-            // URL image
-            media = await MessageMedia.fromUrl(imageUrl);
-        }
-
-        const client = whatsappManager.getClient(req.device.id);
-        if (!client) throw new Error('WhatsApp client not available');
-
-        // Simulate typing before sending
-        await simulateTyping(client, chatId, caption?.length || 0);
-
-        const result = await client.sendMessage(chatId, media, { caption });
-
-        // Save to message queue for logging
-        await ApiMessageQueue.create({
+        // Create queue entry with 'queued' status
+        const queueEntry = await ApiMessageQueue.create({
             batch_id: null,
             device_id: req.device.id,
             recipient: to,
@@ -358,16 +337,54 @@ router.post('/messages/send-image', authenticateDevice, async (req, res) => {
             media_url: imageUrl || '[Base64]',
             caption: caption,
             scheduled_at: new Date(),
-            status: 'sent',
-            whatsapp_message_id: result.id._serialized,
-            sent_at: new Date()
+            status: 'queued'
         });
 
+        // RETURN IMMEDIATELY
         res.json({
             success: true,
-            messageId: result.id._serialized,
-            timestamp: result.timestamp,
-            to: chatId
+            status: 'queued',
+            queueId: queueEntry.id,
+            to: chatId,
+            message: 'Image message queued for sending'
+        });
+
+        // BACKGROUND: Send message asynchronously
+        setImmediate(async () => {
+            try {
+                let media;
+                if (imageBase64) {
+                    const matches = imageBase64.match(/^data:(.+);base64,(.+)$/);
+                    if (matches) {
+                        media = new MessageMedia(matches[1], matches[2]);
+                    } else {
+                        media = new MessageMedia('image/jpeg', imageBase64);
+                    }
+                } else {
+                    media = await MessageMedia.fromUrl(imageUrl);
+                }
+
+                const client = whatsappManager.getClient(req.device.id);
+                if (!client) {
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: 'WhatsApp client not available' });
+                    return;
+                }
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sending');
+                await simulateTyping(client, chatId, caption?.length || 0);
+
+                const result = await client.sendMessage(chatId, media, { caption });
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sent', {
+                    whatsapp_message_id: result.id._serialized,
+                    sent_at: new Date()
+                });
+
+                console.log(`📤 Sent image ${queueEntry.id} via profile ${req.device.id}`);
+            } catch (error) {
+                console.error(`❌ Background send-image error for queue ${queueEntry.id}:`, error.message);
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: error.message });
+            }
         });
     } catch (error) {
         console.error('Send image error:', error);
@@ -378,9 +395,11 @@ router.post('/messages/send-image', authenticateDevice, async (req, res) => {
     }
 });
 
+
 /**
  * POST /api/v1/messages/send-document
  * Send a document/file
+ * Returns immediately with queued status - message is sent in background
  */
 router.post('/messages/send-document', authenticateDevice, async (req, res) => {
     try {
@@ -394,31 +413,9 @@ router.post('/messages/send-document', authenticateDevice, async (req, res) => {
         }
 
         const chatId = formatPhoneNumber(to);
-        let media;
 
-        if (documentBase64) {
-            const mimetype = 'application/octet-stream';
-            media = new MessageMedia(mimetype, documentBase64, filename);
-        } else {
-            media = await MessageMedia.fromUrl(documentUrl);
-            if (filename) {
-                media.filename = filename;
-            }
-        }
-
-        const client = whatsappManager.getClient(req.device.id);
-        if (!client) throw new Error('WhatsApp client not available');
-
-        // Simulate typing before sending
-        await simulateTyping(client, chatId, caption?.length || 0);
-
-        const result = await client.sendMessage(chatId, media, {
-            caption,
-            sendMediaAsDocument: true
-        });
-
-        // Save to message queue for logging
-        await ApiMessageQueue.create({
+        // Create queue entry
+        const queueEntry = await ApiMessageQueue.create({
             batch_id: null,
             device_id: req.device.id,
             recipient: to,
@@ -428,16 +425,51 @@ router.post('/messages/send-document', authenticateDevice, async (req, res) => {
             media_url: documentUrl || '[Base64]',
             caption: caption,
             scheduled_at: new Date(),
-            status: 'sent',
-            whatsapp_message_id: result.id._serialized,
-            sent_at: new Date()
+            status: 'queued'
         });
 
+        // RETURN IMMEDIATELY
         res.json({
             success: true,
-            messageId: result.id._serialized,
-            timestamp: result.timestamp,
-            to: chatId
+            status: 'queued',
+            queueId: queueEntry.id,
+            to: chatId,
+            message: 'Document queued for sending'
+        });
+
+        // BACKGROUND: Send asynchronously
+        setImmediate(async () => {
+            try {
+                let media;
+                if (documentBase64) {
+                    const mimetype = 'application/octet-stream';
+                    media = new MessageMedia(mimetype, documentBase64, filename);
+                } else {
+                    media = await MessageMedia.fromUrl(documentUrl);
+                    if (filename) media.filename = filename;
+                }
+
+                const client = whatsappManager.getClient(req.device.id);
+                if (!client) {
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: 'WhatsApp client not available' });
+                    return;
+                }
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sending');
+                await simulateTyping(client, chatId, caption?.length || 0);
+
+                const result = await client.sendMessage(chatId, media, { caption, sendMediaAsDocument: true });
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sent', {
+                    whatsapp_message_id: result.id._serialized,
+                    sent_at: new Date()
+                });
+
+                console.log(`📤 Sent document ${queueEntry.id} via profile ${req.device.id}`);
+            } catch (error) {
+                console.error(`❌ Background send-document error:`, error.message);
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: error.message });
+            }
         });
     } catch (error) {
         console.error('Send document error:', error);
@@ -448,9 +480,11 @@ router.post('/messages/send-document', authenticateDevice, async (req, res) => {
     }
 });
 
+
 /**
  * POST /api/v1/messages/send-audio
  * Send an audio message
+ * Returns immediately with queued status
  */
 router.post('/messages/send-audio', authenticateDevice, async (req, res) => {
     try {
@@ -464,26 +498,8 @@ router.post('/messages/send-audio', authenticateDevice, async (req, res) => {
         }
 
         const chatId = formatPhoneNumber(to);
-        let media;
 
-        if (audioBase64) {
-            media = new MessageMedia('audio/ogg; codecs=opus', audioBase64);
-        } else {
-            media = await MessageMedia.fromUrl(audioUrl);
-        }
-
-        const client = whatsappManager.getClient(req.device.id);
-        if (!client) throw new Error('WhatsApp client not available');
-
-        // Simulate typing before sending (recording state for audio)
-        await simulateTyping(client, chatId, 0);
-
-        const result = await client.sendMessage(chatId, media, {
-            sendAudioAsVoice: ptt === true
-        });
-
-        // Save to message queue for logging
-        await ApiMessageQueue.create({
+        const queueEntry = await ApiMessageQueue.create({
             batch_id: null,
             device_id: req.device.id,
             recipient: to,
@@ -492,16 +508,47 @@ router.post('/messages/send-audio', authenticateDevice, async (req, res) => {
             resolved_content: '[Audio]',
             media_url: audioUrl || '[Base64]',
             scheduled_at: new Date(),
-            status: 'sent',
-            whatsapp_message_id: result.id._serialized,
-            sent_at: new Date()
+            status: 'queued'
         });
 
         res.json({
             success: true,
-            messageId: result.id._serialized,
-            timestamp: result.timestamp,
-            to: chatId
+            status: 'queued',
+            queueId: queueEntry.id,
+            to: chatId,
+            message: 'Audio queued for sending'
+        });
+
+        setImmediate(async () => {
+            try {
+                let media;
+                if (audioBase64) {
+                    media = new MessageMedia('audio/ogg; codecs=opus', audioBase64);
+                } else {
+                    media = await MessageMedia.fromUrl(audioUrl);
+                }
+
+                const client = whatsappManager.getClient(req.device.id);
+                if (!client) {
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: 'WhatsApp client not available' });
+                    return;
+                }
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sending');
+                await simulateTyping(client, chatId, 0);
+
+                const result = await client.sendMessage(chatId, media, { sendAudioAsVoice: ptt === true });
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sent', {
+                    whatsapp_message_id: result.id._serialized,
+                    sent_at: new Date()
+                });
+
+                console.log(`📤 Sent audio ${queueEntry.id} via profile ${req.device.id}`);
+            } catch (error) {
+                console.error(`❌ Background send-audio error:`, error.message);
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: error.message });
+            }
         });
     } catch (error) {
         console.error('Send audio error:', error);
@@ -515,6 +562,7 @@ router.post('/messages/send-audio', authenticateDevice, async (req, res) => {
 /**
  * POST /api/v1/messages/send-video
  * Send a video message
+ * Returns immediately with queued status
  */
 router.post('/messages/send-video', authenticateDevice, async (req, res) => {
     try {
@@ -528,24 +576,8 @@ router.post('/messages/send-video', authenticateDevice, async (req, res) => {
         }
 
         const chatId = formatPhoneNumber(to);
-        let media;
 
-        if (videoBase64) {
-            media = new MessageMedia('video/mp4', videoBase64);
-        } else {
-            media = await MessageMedia.fromUrl(videoUrl);
-        }
-
-        const client = whatsappManager.getClient(req.device.id);
-        if (!client) throw new Error('WhatsApp client not available');
-
-        // Simulate typing before sending
-        await simulateTyping(client, chatId, caption?.length || 0);
-
-        const result = await client.sendMessage(chatId, media, { caption });
-
-        // Save to message queue for logging
-        await ApiMessageQueue.create({
+        const queueEntry = await ApiMessageQueue.create({
             batch_id: null,
             device_id: req.device.id,
             recipient: to,
@@ -555,16 +587,47 @@ router.post('/messages/send-video', authenticateDevice, async (req, res) => {
             media_url: videoUrl || '[Base64]',
             caption: caption,
             scheduled_at: new Date(),
-            status: 'sent',
-            whatsapp_message_id: result.id._serialized,
-            sent_at: new Date()
+            status: 'queued'
         });
 
         res.json({
             success: true,
-            messageId: result.id._serialized,
-            timestamp: result.timestamp,
-            to: chatId
+            status: 'queued',
+            queueId: queueEntry.id,
+            to: chatId,
+            message: 'Video queued for sending'
+        });
+
+        setImmediate(async () => {
+            try {
+                let media;
+                if (videoBase64) {
+                    media = new MessageMedia('video/mp4', videoBase64);
+                } else {
+                    media = await MessageMedia.fromUrl(videoUrl);
+                }
+
+                const client = whatsappManager.getClient(req.device.id);
+                if (!client) {
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: 'WhatsApp client not available' });
+                    return;
+                }
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sending');
+                await simulateTyping(client, chatId, caption?.length || 0);
+
+                const result = await client.sendMessage(chatId, media, { caption });
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sent', {
+                    whatsapp_message_id: result.id._serialized,
+                    sent_at: new Date()
+                });
+
+                console.log(`📤 Sent video ${queueEntry.id} via profile ${req.device.id}`);
+            } catch (error) {
+                console.error(`❌ Background send-video error:`, error.message);
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: error.message });
+            }
         });
     } catch (error) {
         console.error('Send video error:', error);
@@ -578,6 +641,7 @@ router.post('/messages/send-video', authenticateDevice, async (req, res) => {
 /**
  * POST /api/v1/messages/send-location
  * Send a location message
+ * Returns immediately with queued status
  */
 router.post('/messages/send-location', authenticateDevice, async (req, res) => {
     try {
@@ -591,19 +655,8 @@ router.post('/messages/send-location', authenticateDevice, async (req, res) => {
         }
 
         const chatId = formatPhoneNumber(to);
-        const { Location } = require('whatsapp-web.js');
-        const location = new Location(latitude, longitude, description || '');
 
-        const client = whatsappManager.getClient(req.device.id);
-        if (!client) throw new Error('WhatsApp client not available');
-
-        // Simulate typing before sending
-        await simulateTyping(client, chatId, 0);
-
-        const result = await client.sendMessage(chatId, location);
-
-        // Save to message queue for logging
-        await ApiMessageQueue.create({
+        const queueEntry = await ApiMessageQueue.create({
             batch_id: null,
             device_id: req.device.id,
             recipient: to,
@@ -611,16 +664,43 @@ router.post('/messages/send-location', authenticateDevice, async (req, res) => {
             original_content: `📍 ${latitude}, ${longitude}`,
             resolved_content: description || `📍 ${latitude}, ${longitude}`,
             scheduled_at: new Date(),
-            status: 'sent',
-            whatsapp_message_id: result.id._serialized,
-            sent_at: new Date()
+            status: 'queued'
         });
 
         res.json({
             success: true,
-            messageId: result.id._serialized,
-            timestamp: result.timestamp,
-            to: chatId
+            status: 'queued',
+            queueId: queueEntry.id,
+            to: chatId,
+            message: 'Location queued for sending'
+        });
+
+        setImmediate(async () => {
+            try {
+                const { Location } = require('whatsapp-web.js');
+                const location = new Location(latitude, longitude, description || '');
+
+                const client = whatsappManager.getClient(req.device.id);
+                if (!client) {
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: 'WhatsApp client not available' });
+                    return;
+                }
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sending');
+                await simulateTyping(client, chatId, 0);
+
+                const result = await client.sendMessage(chatId, location);
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sent', {
+                    whatsapp_message_id: result.id._serialized,
+                    sent_at: new Date()
+                });
+
+                console.log(`📤 Sent location ${queueEntry.id} via profile ${req.device.id}`);
+            } catch (error) {
+                console.error(`❌ Background send-location error:`, error.message);
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: error.message });
+            }
         });
     } catch (error) {
         console.error('Send location error:', error);
@@ -634,6 +714,7 @@ router.post('/messages/send-location', authenticateDevice, async (req, res) => {
 /**
  * POST /api/v1/messages/send-contact
  * Send a contact card
+ * Returns immediately with queued status
  */
 router.post('/messages/send-contact', authenticateDevice, async (req, res) => {
     try {
@@ -648,23 +729,7 @@ router.post('/messages/send-contact', authenticateDevice, async (req, res) => {
 
         const chatId = formatPhoneNumber(to);
 
-        // Create vCard
-        const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:${contactName}
-TEL;TYPE=CELL:${contactNumber}
-END:VCARD`;
-
-        const client = whatsappManager.getClient(req.device.id);
-        if (!client) throw new Error('WhatsApp client not available');
-
-        // Simulate typing before sending
-        await simulateTyping(client, chatId, 0);
-
-        const result = await client.sendMessage(chatId, vcard);
-
-        // Save to message queue for logging
-        await ApiMessageQueue.create({
+        const queueEntry = await ApiMessageQueue.create({
             batch_id: null,
             device_id: req.device.id,
             recipient: to,
@@ -672,16 +737,42 @@ END:VCARD`;
             original_content: `👤 ${contactName}: ${contactNumber}`,
             resolved_content: `👤 ${contactName}: ${contactNumber}`,
             scheduled_at: new Date(),
-            status: 'sent',
-            whatsapp_message_id: result.id._serialized,
-            sent_at: new Date()
+            status: 'queued'
         });
 
         res.json({
             success: true,
-            messageId: result.id._serialized,
-            timestamp: result.timestamp,
-            to: chatId
+            status: 'queued',
+            queueId: queueEntry.id,
+            to: chatId,
+            message: 'Contact queued for sending'
+        });
+
+        setImmediate(async () => {
+            try {
+                const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${contactName}\nTEL;TYPE=CELL:${contactNumber}\nEND:VCARD`;
+
+                const client = whatsappManager.getClient(req.device.id);
+                if (!client) {
+                    await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: 'WhatsApp client not available' });
+                    return;
+                }
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sending');
+                await simulateTyping(client, chatId, 0);
+
+                const result = await client.sendMessage(chatId, vcard);
+
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'sent', {
+                    whatsapp_message_id: result.id._serialized,
+                    sent_at: new Date()
+                });
+
+                console.log(`📤 Sent contact ${queueEntry.id} via profile ${req.device.id}`);
+            } catch (error) {
+                console.error(`❌ Background send-contact error:`, error.message);
+                await ApiMessageQueue.updateStatus(queueEntry.id, 'failed', { error_message: error.message });
+            }
         });
     } catch (error) {
         console.error('Send contact error:', error);
