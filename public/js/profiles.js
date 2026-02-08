@@ -1716,6 +1716,9 @@ function openWebhooksModal(id) {
     // Set Echo Checkbox
     document.getElementById('webhookEchoEnabled').checked = profile.webhook_echo_enabled || false;
 
+    // Set Include Groups Checkbox (default true if not set)
+    document.getElementById('webhookIncludeGroups').checked = profile.webhook_include_groups !== false;
+
     // Load Advanced Webhooks
     loadUnreadWebhooks(id);
     loadNoReplyWebhooks(id);
@@ -1792,6 +1795,38 @@ async function saveEchoSetting() {
         showToast('خطأ في حفظ الإعداد', 'error');
         // Revert checkbox
         document.getElementById('webhookEchoEnabled').checked = !echoEnabled;
+    }
+}
+
+/**
+ * Save Include Groups Setting
+ */
+async function saveGroupsSetting() {
+    const id = document.getElementById('webhookProfileId').value;
+    const includeGroups = document.getElementById('webhookIncludeGroups').checked;
+
+    try {
+        const response = await fetch(`/api/profiles/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ webhook_include_groups: includeGroups })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showToast(includeGroups ? 'تم تفعيل رسائل المجموعات' : 'تم إلغاء رسائل المجموعات', 'success');
+            loadProfiles(); // Refresh
+        } else {
+            showToast(result.error || 'خطأ في حفظ الإعداد', 'error');
+            // Revert checkbox
+            document.getElementById('webhookIncludeGroups').checked = !includeGroups;
+        }
+    } catch (error) {
+        console.error('Error saving groups setting:', error);
+        showToast('خطأ في حفظ الإعداد', 'error');
+        // Revert checkbox
+        document.getElementById('webhookIncludeGroups').checked = !includeGroups;
     }
 }
 

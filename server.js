@@ -643,6 +643,7 @@ async function startServer() {
         try {
             const { query } = require('./config/database');
             await query('ALTER TABLE clients ADD COLUMN IF NOT EXISTS webhook_echo_enabled BOOLEAN DEFAULT false');
+            await query('ALTER TABLE clients ADD COLUMN IF NOT EXISTS webhook_include_groups BOOLEAN DEFAULT true');
             await query('ALTER TABLE messages ADD COLUMN IF NOT EXISTS unread_notified BOOLEAN DEFAULT false');
             await query('ALTER TABLE messages ADD COLUMN IF NOT EXISTS incoming_notified BOOLEAN DEFAULT false');
             await query('ALTER TABLE unread_webhooks ADD COLUMN IF NOT EXISTS include_direct_messages BOOLEAN DEFAULT false');

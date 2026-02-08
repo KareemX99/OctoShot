@@ -123,8 +123,9 @@ class Client {
                 webhook_url = COALESCE($2, webhook_url),
                 timezone = COALESCE($3, timezone),
                 webhook_echo_enabled = COALESCE($4, webhook_echo_enabled),
+                webhook_include_groups = COALESCE($5, webhook_include_groups),
                 updated_at = CURRENT_TIMESTAMP 
-            WHERE id = $5
+            WHERE id = $6
             RETURNING *
         `;
         const result = await query(sql, [
@@ -132,6 +133,7 @@ class Client {
             data.webhook_url,
             data.timezone,
             data.webhook_echo_enabled,
+            data.webhook_include_groups,
             id
         ]);
         return result.rows[0];

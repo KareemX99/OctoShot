@@ -125,13 +125,14 @@ router.post('/', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
     try {
-        const { device_name, webhook_url, timezone, webhook_echo_enabled } = req.body;
+        const { device_name, webhook_url, timezone, webhook_echo_enabled, webhook_include_groups } = req.body;
 
         const profile = await Client.update(req.params.id, {
             device_name,
             webhook_url,
             timezone,
-            webhook_echo_enabled
+            webhook_echo_enabled,
+            webhook_include_groups
         });
 
         if (!profile) {

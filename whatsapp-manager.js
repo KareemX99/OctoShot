@@ -558,6 +558,12 @@ class WhatsAppManager {
                         // Determine if group
                         const isGroup = msg.to?.endsWith('@g.us');
 
+                        // Skip group messages if webhook_include_groups is false
+                        if (isGroup && profile?.webhook_include_groups === false) {
+                            console.log(`📤 Echo webhook skipped for group message (groups disabled) for profile ${profileId}`);
+                            return;
+                        }
+
                         // Get recipient info
                         let recipientName = '';
                         try {
@@ -892,11 +898,21 @@ class WhatsAppManager {
 
             // Send to webhook if configured
             // For outgoing messages (fromMe), only send if webhook_echo_enabled is true
-            const shouldSendWebhook = profile?.webhook_url && (!msg.fromMe || profile?.webhook_echo_enabled);
+            // For group messages, only send if webhook_include_groups is true (check explicitly for false)
+            const includeGroupsEnabled = profile?.webhook_include_groups === true || profile?.webhook_include_groups === undefined || profile?.webhook_include_groups === null;
+
+            // Debug logging for group message filtering
+            if (isGroup) {
+                console.log(`📊 Group message filter check - Profile ${profileId}: webhook_include_groups=${profile?.webhook_include_groups}, includeGroupsEnabled=${includeGroupsEnabled}`);
+            }
+
+            const shouldSendWebhook = profile?.webhook_url &&
+                (!msg.fromMe || profile?.webhook_echo_enabled) &&
+                (!isGroup || includeGroupsEnabled);
 
             if (shouldSendWebhook) {
                 await this._sendToWebhook(profile.webhook_url, webhookData, profileId, msg.fromMe ? 'echo_message' : 'incoming_message');
-                console.log(`📤 Webhook sent for profile ${profileId}${msg.fromMe ? ' (echo)' : ''}`);
+                console.log(`📤 Webhook sent for profile ${profileId}${msg.fromMe ? ' (echo)' : ''}${isGroup ? ' (group)' : ''}`);
                 // Log webhook with full details
                 ProfileLogger.log(profileId, ProfileLogger.LOG_TYPES.WEBHOOK_INCOMING, ProfileLogger.LOG_LEVELS.INFO,
                     `${msg.fromMe ? 'Echo' : 'Incoming'} message ${isGroup ? `from group: ${groupName}` : `from: ${pushName}`}`,
