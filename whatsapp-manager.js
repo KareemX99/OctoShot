@@ -281,13 +281,22 @@ class WhatsAppManager {
                             console.log(`⏰ [DEBUG] Set connectedAt for profile ${profileId}: ${clientData.connectedAt}`);
                         }
 
+                        // Fetch profile picture
+                        let profilePicUrl = null;
+                        try {
+                            profilePicUrl = await client.getProfilePicUrl(client.info.wid._serialized);
+                        } catch (e) {
+                            // Profile picture not available
+                        }
+
                         try {
                             await ClientModel.updateConnection(profileId, {
                                 phone_number: client.info.wid.user,
                                 name: client.info.pushname,
                                 push_name: client.info.pushname,
                                 platform: client.info.platform,
-                                status: 'connected'
+                                status: 'connected',
+                                profile_picture_url: profilePicUrl
                             });
                             // Emit updated info to frontend
                             this._emitToProfile(profileId, 'ready', {
@@ -319,13 +328,25 @@ class WhatsAppManager {
                 clientData.connectedAt = Date.now(); // Track connection time for message filtering
             }
 
+            // Fetch device's own profile picture
+            let profilePicUrl = null;
+            try {
+                if (client.info?.wid?._serialized) {
+                    profilePicUrl = await client.getProfilePicUrl(client.info.wid._serialized);
+                    console.log(`🖼️ Profile picture fetched for profile ${profileId}: ${profilePicUrl ? 'yes' : 'none'}`);
+                }
+            } catch (e) {
+                console.log(`⚠️ Could not fetch profile picture for profile ${profileId}`);
+            }
+
             try {
                 await ClientModel.updateConnection(profileId, {
                     phone_number: client.info?.wid?.user,
                     name: client.info?.pushname,
                     push_name: client.info?.pushname,
                     platform: client.info?.platform,
-                    status: 'connected'
+                    status: 'connected',
+                    profile_picture_url: profilePicUrl
                 });
             } catch (error) {
                 console.error('Error updating client info:', error);

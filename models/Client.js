@@ -161,6 +161,7 @@ class Client {
                 push_name = COALESCE($3, push_name),
                 platform = COALESCE($4, platform),
                 status = $5,
+                profile_picture_url = COALESCE($7, profile_picture_url),
                 updated_at = CURRENT_TIMESTAMP 
             WHERE id = $6
             RETURNING *
@@ -171,7 +172,8 @@ class Client {
             data.push_name,
             data.platform,
             data.status,
-            id
+            id,
+            data.profile_picture_url || null
         ]);
         return result.rows[0];
     }

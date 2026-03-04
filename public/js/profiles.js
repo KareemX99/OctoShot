@@ -263,7 +263,9 @@ function renderProfiles() {
         <div class="device-card ${profile.status === 'connected' ? 'connected' : 'disconnected'}" data-id="${profile.id}">
             <div class="device-card-header">
                 <div class="device-avatar ${profile.status === 'connected' ? 'connected' : 'disconnected'}">
-                    ${getDeviceInitials(profile.device_name || profile.name || 'D')}
+                    ${profile.profile_picture_url
+            ? `<img src="${profile.profile_picture_url}" alt="${profile.device_name || ''}" onerror="this.style.display='none';this.parentElement.querySelector('.avatar-fallback').style.display='flex'"/><span class="avatar-fallback" style="display:none">${getDeviceInitials(profile.device_name || profile.name || 'D')}</span>`
+            : getDeviceInitials(profile.device_name || profile.name || 'D')}
                 </div>
                 <div class="device-info">
                     <div class="device-name">

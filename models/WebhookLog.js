@@ -107,6 +107,7 @@ class WebhookLog {
                 wl.profile_id,
                 c.device_name as profile_name,
                 c.phone_number,
+                c.profile_picture_url,
                 COUNT(*) as total_webhooks,
                 SUM(CASE WHEN wl.status = 'success' THEN 1 ELSE 0 END) as success_count,
                 SUM(CASE WHEN wl.status = 'failed' THEN 1 ELSE 0 END) as failed_count,
@@ -116,7 +117,7 @@ class WebhookLog {
             FROM webhook_logs wl
             LEFT JOIN clients c ON wl.profile_id = c.id
             WHERE wl.created_at >= NOW() - INTERVAL '48 hours'
-            GROUP BY wl.profile_id, c.device_name, c.phone_number
+            GROUP BY wl.profile_id, c.device_name, c.phone_number, c.profile_picture_url
             ORDER BY total_webhooks DESC
         `;
 
